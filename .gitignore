@@ -1,0 +1,52 @@
+# Node / pnpm
+node_modules/
+dist/
+.next/
+.turbo/
+.cache/
+*.tsbuildinfo
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# JWT keys
+keys/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+
+# Flutter / Dart
+apps/mobile/build/
+apps/mobile/.dart_tool/
+apps/mobile/.flutter-plugins
+apps/mobile/.flutter-plugins-dependencies
+apps/mobile/pubspec.lock
+apps/mobile/.packages
+apps/mobile/ios/.symlinks/
+apps/mobile/android/.gradle/
+apps/mobile/android/local.properties
+apps/mobile/linux/flutter/ephemeral/
+apps/mobile/windows/flutter/ephemeral/
+apps/mobile/macos/Flutter/ephemeral/
+*.g.dart
+*.freezed.dart
+apps/mobile/lib/l10n/app_localizations*.dart
+
+# Serena
+.serena/
+
+# Coverage
+coverage/
+.nyc_output/

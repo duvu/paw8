@@ -1,0 +1,71 @@
+{
+  "validation": {
+    "required": "This field is required",
+    "isEmail": "Invalid email address",
+    "minLength": "Minimum $constraint1 characters",
+    "maxLength": "Maximum $constraint1 characters",
+    "isString": "Must be a string",
+    "isNumber": "Must be a number",
+    "isEnum": "Invalid value",
+    "isDate": "Invalid date",
+    "isArray": "Must be an array",
+    "isUUID": "Invalid ID",
+    "isPositive": "Must be a positive number",
+    "isInt": "Must be an integer"
+  },
+  "auth": {
+    "invalidCredentials": "Invalid email or password",
+    "invalidToken": "Invalid or expired token",
+    "invalidPayload": "Invalid token payload",
+    "accountLocked": "Account is locked",
+    "tenantLocked": "Tenant account is locked",
+    "currentPasswordIncorrect": "Current password is incorrect",
+    "unauthorized": "Unauthorized",
+    "forbidden": "You do not have permission to perform this action"
+  },
+  "tenant": {
+    "notFound": "Tenant not found",
+    "codeExists": "Tenant code already exists"
+  },
+  "store": {
+    "notFound": "Store not found",
+    "accessDenied": "Access to this store is not allowed",
+    "notBelongToTenant": "Store does not belong to this tenant"
+  },
+  "user": {
+    "notFound": "User not found",
+    "emailExists": "Email is already in use"
+  },
+  "customer": {
+    "notFound": "Customer not found",
+    "notBelongToTenant": "Customer does not belong to this tenant",
+    "duplicateIdentity": "Identity number already exists in the system",
+    "duplicatePhone": "Phone number already exists in the system"
+  },
+  "asset": {
+    "notFound": "Asset not found",
+    "notBelongToTenantStore": "Some assets do not belong to this tenant/store",
+    "alreadyPawned": "Some assets are already pawned"
+  },
+  "contract": {
+    "notFound": "Contract not found",
+    "notInStore": "Contract not found in your store",
+    "cannotUpdateDueDate": "Cannot update due date after transactions have been recorded",
+    "cannotExtend": "Contract cannot be extended in its current status",
+    "disbursementNotAllowed": "Disbursement only allowed for draft/active contracts"
+  },
+  "transaction": {
+    "cannotVoid": "Cannot void a void or reversal transaction"
+  },
+  "file": {
+    "notFound": "File not found",
+    "entityNotFound": "Related entity not found",
+    "invalidUploadToken": "Invalid upload token or does not belong to this tenant",
+    "invalidUploadTokenFormat": "Invalid upload token format"
+  },
+  "common": {
+    "internalError": "Internal server error, please try again",
+    "badRequest": "Bad request",
+    "notFound": "Resource not found"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "validation": {
+    "required": "此字段为必填项",
+    "isEmail": "邮箱格式无效",
+    "minLength": "最少 $constraint1 个字符",
+    "maxLength": "最多 $constraint1 个字符",
+    "isString": "必须是字符串",
+    "isNumber": "必须是数字",
+    "isEnum": "无效值",
+    "isDate": "日期无效",
+    "isArray": "必须是数组",
+    "isUUID": "ID无效",
+    "isPositive": "必须是正数",
+    "isInt": "必须是整数"
+  },
+  "auth": {
+    "invalidCredentials": "邮箱或密码错误",
+    "invalidToken": "令牌无效或已过期",
+    "invalidPayload": "令牌信息无效",
+    "accountLocked": "账号已被锁定",
+    "tenantLocked": "租户账号已被锁定",
+    "currentPasswordIncorrect": "当前密码错误",
+    "unauthorized": "未授权",
+    "forbidden": "您没有权限执行此操作"
+  },
+  "tenant": {
+    "notFound": "未找到租户",
+    "codeExists": "租户代码已存在"
+  },
+  "store": {
+    "notFound": "未找到门店",
+    "accessDenied": "不允许访问此门店",
+    "notBelongToTenant": "门店不属于此租户"
+  },
+  "user": {
+    "notFound": "未找到用户",
+    "emailExists": "邮箱已被使用"
+  },
+  "customer": {
+    "notFound": "未找到客户",
+    "notBelongToTenant": "客户不属于此租户",
+    "duplicateIdentity": "身份证号码在系统中已存在",
+    "duplicatePhone": "手机号码在系统中已存在"
+  },
+  "asset": {
+    "notFound": "未找到资产",
+    "notBelongToTenantStore": "部分资产不属于此租户/门店",
+    "alreadyPawned": "部分资产已处于质押状态"
+  },
+  "contract": {
+    "notFound": "未找到合同",
+    "notInStore": "在您的门店中未找到合同",
+    "cannotUpdateDueDate": "已有交易记录后无法更新到期日期",
+    "cannotExtend": "合同在当前状态下无法续期",
+    "disbursementNotAllowed": "仅允许对草稿/活跃合同进行放款"
+  },
+  "transaction": {
+    "cannotVoid": "无法作废已作废或已冲销的交易"
+  },
+  "file": {
+    "notFound": "未找到文件",
+    "entityNotFound": "未找到关联实体",
+    "invalidUploadToken": "上传令牌无效或不属于此租户",
+    "invalidUploadTokenFormat": "上传令牌格式无效"
+  },
+  "common": {
+    "internalError": "系统错误，请重试",
+    "badRequest": "请求无效",
+    "notFound": "未找到资源"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "validation": {
+    "required": "Trường này là bắt buộc",
+    "isEmail": "Email không hợp lệ",
+    "minLength": "Tối thiểu $constraint1 ký tự",
+    "maxLength": "Tối đa $constraint1 ký tự",
+    "isString": "Phải là chuỗi ký tự",
+    "isNumber": "Phải là số",
+    "isEnum": "Giá trị không hợp lệ",
+    "isDate": "Ngày không hợp lệ",
+    "isArray": "Phải là mảng",
+    "isUUID": "ID không hợp lệ",
+    "isPositive": "Phải là số dương",
+    "isInt": "Phải là số nguyên"
+  },
+  "auth": {
+    "invalidCredentials": "Email hoặc mật khẩu không đúng",
+    "invalidToken": "Token không hợp lệ hoặc đã hết hạn",
+    "invalidPayload": "Thông tin token không hợp lệ",
+    "accountLocked": "Tài khoản đã bị khóa",
+    "tenantLocked": "Tài khoản tenant đã bị khóa",
+    "currentPasswordIncorrect": "Mật khẩu hiện tại không đúng",
+    "unauthorized": "Không có quyền truy cập",
+    "forbidden": "Không có quyền thực hiện thao tác này"
+  },
+  "tenant": {
+    "notFound": "Không tìm thấy tenant",
+    "codeExists": "Mã tenant đã tồn tại"
+  },
+  "store": {
+    "notFound": "Không tìm thấy cửa hàng",
+    "accessDenied": "Không có quyền truy cập cửa hàng này",
+    "notBelongToTenant": "Cửa hàng không thuộc tenant này"
+  },
+  "user": {
+    "notFound": "Không tìm thấy người dùng",
+    "emailExists": "Email đã được sử dụng"
+  },
+  "customer": {
+    "notFound": "Không tìm thấy khách hàng",
+    "notBelongToTenant": "Khách hàng không thuộc tenant này",
+    "duplicateIdentity": "Số CMND/CCCD đã tồn tại trong hệ thống",
+    "duplicatePhone": "Số điện thoại đã tồn tại trong hệ thống"
+  },
+  "asset": {
+    "notFound": "Không tìm thấy tài sản",
+    "notBelongToTenantStore": "Một số tài sản không thuộc tenant/cửa hàng này",
+    "alreadyPawned": "Một số tài sản đã đang được cầm cố"
+  },
+  "contract": {
+    "notFound": "Không tìm thấy hợp đồng",
+    "notInStore": "Không tìm thấy hợp đồng trong cửa hàng này",
+    "cannotUpdateDueDate": "Không thể cập nhật ngày đến hạn khi đã có giao dịch",
+    "cannotExtend": "Hợp đồng không thể gia hạn trong trạng thái hiện tại",
+    "disbursementNotAllowed": "Chỉ được giải ngân cho hợp đồng nháp hoặc đang hoạt động"
+  },
+  "transaction": {
+    "cannotVoid": "Không thể hủy giao dịch hủy hoặc giao dịch đảo chiều"
+  },
+  "file": {
+    "notFound": "Không tìm thấy tệp tin",
+    "entityNotFound": "Không tìm thấy thực thể liên quan",
+    "invalidUploadToken": "Token upload không hợp lệ hoặc không thuộc tenant này",
+    "invalidUploadTokenFormat": "Định dạng token upload không hợp lệ"
+  },
+  "common": {
+    "internalError": "Lỗi hệ thống, vui lòng thử lại",
+    "badRequest": "Yêu cầu không hợp lệ",
+    "notFound": "Không tìm thấy tài nguyên"
+  }
+}

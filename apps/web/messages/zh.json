@@ -1,0 +1,429 @@
+{
+  "nav": {
+    "dashboard": "总览",
+    "customers": "客户",
+    "assets": "资产",
+    "contracts": "合同",
+    "transactions": "交易",
+    "reports": "报表",
+    "users": "用户",
+    "stores": "门店",
+    "auditLogs": "审计日志"
+  },
+  "landing": {
+    "eyebrow": "安全的租户级运营",
+    "title": "面向安全典当流程的现代化运营界面。",
+    "description": "Paw8 将客户接待、资产跟踪、合同、收款与运营视图集中在一个面向租户的统一工作区中。",
+    "primaryCta": "前往登录",
+    "secondaryCta": "打开工作区",
+    "operationsTitle": "运营一目了然",
+    "operationsDescription": "在同一受保护界面中跟踪客户、合同、资产和到期义务。",
+    "securityTitle": "以安全为先的访问",
+    "securityDescription": "会话处理、角色导航和租户感知 API 合同均围绕已认证用户展开。",
+    "visibilityTitle": "可直接决策的报表",
+    "visibilityDescription": "收款、待还余额、逾期暴露和门店表现始终触手可及。",
+    "statusBadge": "受保护工作区",
+    "panelTitle": "为门店日常运营而设计。",
+    "panelDescription": "使用 Paw8 将前台交易、监管视图和审计敏感操作纳入同一运营节奏。",
+    "panelCards": {
+      "contractsLabel": "运营流",
+      "contractsValue": "合同",
+      "contractsDescription": "创建、展期、结清并跟踪到期状态变化，而不丢失上下文。",
+      "securityLabel": "访问姿态",
+      "securityValue": "租户范围",
+      "securityDescription": "工作区围绕角色、门店范围和安全会话恢复能力构建。"
+    }
+  },
+  "auth": {
+    "title": "安全登录",
+    "emailLabel": "邮箱",
+    "passwordLabel": "密码",
+    "loginButton": "登录",
+    "logoutButton": "退出",
+    "signingIn": "登录中...",
+    "invalidCredentials": "邮箱或密码错误。",
+    "loading": "加载中...",
+    "backHome": "返回总览",
+    "secureNotice": "受保护的会话访问",
+    "welcomeBack": "登录以继续运营工作。",
+    "subtitle": "使用分配到当前租户和门店范围的账户，访问报表、合同流程以及受保护的运营操作。",
+    "helperTitle": "按角色访问",
+    "helperDescription": "导航和业务视图会根据当前登录会话中的权限自动调整。",
+    "supportTitle": "会话恢复",
+    "supportDescription": "如果会话过期或失效，Paw8 会清除本地访问并提示重新登录。",
+    "formHint": "输入账户凭证以进入安全工作区。",
+    "emailPlaceholder": "name@company.com",
+    "passwordPlaceholder": "输入密码",
+    "sessionExpired": "你的会话已过期，请重新登录后继续。",
+    "invalidResponse": "登录响应缺少必要字段，请重试或联系支持团队。",
+    "accessForbidden": "当前账户暂时无法访问工作区。",
+    "unexpectedError": "登录过程中发生异常，请稍后再试。"
+  },
+  "dashboard": {
+    "eyebrow": "运营总览",
+    "title": "总览",
+    "subtitle": "在同一受保护视图中监控余额暴露、收款节奏与到期状态变化。",
+    "totalActiveContracts": "有效合同数",
+    "totalOutstanding": "待还本金（越盾）",
+    "disbursedToday": "今日放款",
+    "disbursedThisMonth": "本月放款",
+    "collectedToday": "今日收款",
+    "collectedThisMonth": "本月收款",
+    "interestCollected": "已收利息",
+    "upcomingDue": "即将到期",
+    "overdueContracts": "已逾期",
+    "assetsHeld": "在押资产",
+    "loadingError": "总览数据加载失败。",
+    "invalidData": "总览响应缺少预期字段。"
+  },
+  "customers": {
+    "pageTitle": "客户",
+    "addButton": "+ 添加客户",
+    "searchPlaceholder": "搜索姓名、电话、证件号...",
+    "searchButton": "搜索",
+    "total": "共：{total}",
+    "tableHeaders": {
+      "name": "姓名",
+      "phone": "电话",
+      "identity": "证件号",
+      "status": "状态",
+      "actions": ""
+    },
+    "viewButton": "查看",
+    "noData": "未找到客户。",
+    "loadError": "客户列表加载失败。",
+    "newTitle": "新建客户",
+    "form": {
+      "fullName": "姓名",
+      "phone": "电话",
+      "identityNumber": "证件号（身份证/护照）",
+      "dateOfBirth": "出生日期",
+      "occupation": "职业",
+      "emergencyContactName": "紧急联系人",
+      "emergencyContactPhone": "紧急联系电话",
+      "permanentAddress": "户籍地址",
+      "currentAddress": "现居地址",
+      "notes": "备注"
+    },
+    "createButton": "创建客户",
+    "saving": "保存中...",
+    "createError": "客户创建失败。",
+    "contracts": "合同",
+    "newContract": "+ 新建合同",
+    "documents": "文件",
+    "contractHeaders": {
+      "code": "合同编号",
+      "status": "状态",
+      "principal": "本金",
+      "dueDate": "到期日"
+    },
+    "noContracts": "暂无合同。",
+    "noDocuments": "暂无文件。",
+    "detailLoadError": "客户信息加载失败。",
+    "fieldLabels": {
+      "phone": "电话",
+      "identityNo": "证件号",
+      "dateOfBirth": "出生日期",
+      "occupation": "职业",
+      "emergencyContact": "紧急联系人",
+      "permanentAddress": "户籍地址",
+      "currentAddress": "现居地址",
+      "notes": "备注",
+      "created": "创建时间"
+    }
+  },
+  "assets": {
+    "pageTitle": "资产",
+    "addButton": "+ 添加资产",
+    "searchPlaceholder": "搜索IMEI、序列号、车牌...",
+    "allStatus": "全部状态",
+    "allTypes": "全部类型",
+    "searchButton": "搜索",
+    "total": "共：{total}",
+    "tableHeaders": {
+      "name": "名称",
+      "type": "类型",
+      "brand": "品牌",
+      "serialImeiPlate": "序列/IMEI/车牌",
+      "valuation": "估价",
+      "status": "状态"
+    },
+    "noData": "未找到资产。",
+    "loadError": "资产列表加载失败。",
+    "newTitle": "新建资产",
+    "form": {
+      "assetType": "资产类型",
+      "assetName": "资产名称 *",
+      "brand": "品牌",
+      "model": "型号",
+      "color": "颜色",
+      "serialNumber": "序列号",
+      "imei": "IMEI",
+      "licensePlate": "车牌",
+      "chassisNumber": "车架号",
+      "engineNumber": "发动机号",
+      "valuationAmount": "估值（越盾）",
+      "proposedLoanAmount": "建议贷款金额（越盾）",
+      "locationCode": "存放位置编码",
+      "conditionDescription": "物品状况描述",
+      "locationNote": "位置备注"
+    },
+    "createButton": "创建资产",
+    "saving": "保存中...",
+    "createError": "资产创建失败。"
+  },
+  "contracts": {
+    "pageTitle": "合同",
+    "addButton": "+ 新建合同",
+    "searchPlaceholder": "搜索合同编号、客户、状态...",
+    "searchButton": "搜索",
+    "total": "共：{total}",
+    "tabs": {
+      "all": "全部",
+      "upcoming": "即将到期",
+      "overdue": "已逾期"
+    },
+    "status": {
+      "draft": "草稿",
+      "active": "生效中",
+      "near_due": "即将到期",
+      "overdue": "已逾期",
+      "extended": "已展期",
+      "settled": "已结清",
+      "cancelled": "已取消",
+      "liquidation_pending": "待处置",
+      "liquidated": "已处置"
+    },
+    "tableHeaders": {
+      "code": "合同编号",
+      "customer": "客户",
+      "status": "状态",
+      "principal": "本金",
+      "dueDate": "到期日"
+    },
+    "viewButton": "查看",
+    "noData": "未找到合同。",
+    "loadError": "合同列表加载失败。",
+    "newTitle": "新建合同",
+    "steps": {
+      "customer": "1. 客户",
+      "assets": "2. 资产",
+      "loanTerms": "3. 贷款条款"
+    },
+    "form": {
+      "searchCustomerPlaceholder": "按姓名/电话/证件号搜索客户",
+      "selected": "已选择：{name}",
+      "selectAssets": "选择质押资产（可选）",
+      "searchAssetsPlaceholder": "搜索资产...",
+      "principalAmount": "贷款金额（越盾）*",
+      "interestRate": "利率（%）*",
+      "interestType": "利率类型 *",
+      "startDate": "起始日期",
+      "dueDate": "到期日 *",
+      "notes": "备注"
+    },
+    "interestType": {
+      "daily": "按日",
+      "monthly": "按月",
+      "periodic": "按期"
+    },
+    "next": "下一步 →",
+    "back": "← 返回",
+    "createButton": "创建合同",
+    "creating": "创建中...",
+    "createError": "合同创建失败。",
+    "pleaseSelectCustomer": "请选择客户。",
+    "modalTitles": {
+      "collect": "收取利息/费用",
+      "extend": "展期合同",
+      "settle": "结清合同"
+    },
+    "actions": {
+      "collectInterest": "收利息",
+      "extend": "展期",
+      "settle": "结清"
+    },
+    "contractInfo": {
+      "customer": "客户",
+      "principal": "本金",
+      "interestRate": "利率",
+      "startDate": "起始日期",
+      "dueDate": "到期日",
+      "store": "门店",
+      "created": "创建时间",
+      "notes": "备注"
+    },
+    "pawnedAssets": "质押资产",
+    "transactionHistory": "交易记录",
+    "assetHeaders": {
+      "name": "名称",
+      "type": "类型",
+      "brand": "品牌",
+      "status": "状态"
+    },
+    "txHeaders": {
+      "type": "类型",
+      "amount": "金额",
+      "method": "方式",
+      "date": "日期",
+      "note": "备注"
+    },
+    "noAssets": "暂无资产。",
+    "noTransactions": "暂无交易。",
+    "modalFields": {
+      "amount": "金额（越盾）",
+      "paymentMethod": "支付方式",
+      "note": "备注",
+      "newDueDate": "新到期日"
+    },
+    "collect": "收款",
+    "extend": "展期",
+    "settle": "结清",
+    "saving": "保存中...",
+    "collectError": "收款失败。",
+    "extendError": "展期失败。",
+    "settleError": "结清失败。",
+    "loadError2": "合同详情加载失败。"
+  },
+  "transactions": {
+    "pageTitle": "交易",
+    "filterFrom": "起始日期",
+    "filterTo": "截止日期",
+    "filterButton": "筛选",
+    "total": "共：{total}",
+    "tableHeaders": {
+      "contract": "合同",
+      "type": "类型",
+      "amount": "金额",
+      "method": "方式",
+      "date": "日期",
+      "note": "备注"
+    },
+    "paymentMethod": {
+      "cash": "现金",
+      "transfer": "转账",
+      "other": "其他"
+    },
+    "noData": "暂无交易。",
+    "loadError": "交易列表加载失败。",
+    "unavailableTitle": "暂时没有总账交易列表",
+    "unavailableDescription": "当前后端仅提供按合同查询的交易历史，尚未提供全局交易列表接口。请暂时使用合同详情页面查看交易。",
+    "goToContracts": "前往合同"
+  },
+  "reports": {
+    "pageTitle": "报表",
+    "subtitle": "使用已接入后台的标签页查看组合健康度、收款、余额风险与团队表现。",
+    "filterFrom": "起始日期",
+    "filterTo": "截止日期",
+    "applyButton": "应用",
+    "noData": "该报表暂无数据。",
+    "loadError": "报表加载失败。",
+    "emptyTitle": "暂无报表数据行",
+    "emptyDescription": "请调整日期范围或切换到其他报表标签后继续。",
+    "tabs": {
+      "contracts": "合同",
+      "collections": "收款",
+      "outstanding": "待还余额",
+      "overdue": "逾期",
+      "byStore": "按门店",
+      "byStaff": "按员工",
+      "inventory": "库存"
+    }
+  },
+  "users": {
+    "pageTitle": "用户",
+    "addButton": "+ 添加用户",
+    "total": "共：{total}",
+    "tableHeaders": {
+      "name": "姓名",
+      "email": "邮箱",
+      "phone": "电话",
+      "role": "角色",
+      "status": "状态",
+      "created": "创建时间"
+    },
+    "noData": "未找到用户。",
+    "loadError": "用户列表加载失败。",
+    "newTitle": "新建用户",
+    "form": {
+      "email": "邮箱",
+      "fullName": "姓名",
+      "phone": "电话",
+      "password": "密码",
+      "role": "角色"
+    },
+    "roles": {
+      "staff": "员工",
+      "store_manager": "门店经理",
+      "accountant": "会计",
+      "tenant_admin": "租户管理员",
+      "tenant_owner": "租户所有者",
+      "platform_admin": "平台管理员"
+    },
+    "createButton": "创建用户",
+    "saving": "保存中...",
+    "createError": "用户创建失败。"
+  },
+  "stores": {
+    "pageTitle": "门店",
+    "total": "共：{total}",
+    "tableHeaders": {
+      "name": "名称",
+      "address": "地址",
+      "phone": "电话",
+      "status": "状态",
+      "created": "创建时间"
+    },
+    "noData": "暂无门店。",
+    "loadError": "门店列表加载失败。"
+  },
+  "auditLogs": {
+    "pageTitle": "审计日志",
+    "subtitle": "查看当前租户范围内记录的安全敏感操作与运营轨迹。",
+    "total": "共：{total}",
+    "tableHeaders": {
+      "action": "操作",
+      "entity": "对象",
+      "entityId": "对象ID",
+      "user": "用户",
+      "ip": "IP",
+      "time": "时间"
+    },
+    "noData": "暂无日志。",
+    "loadError": "审计日志加载失败。",
+    "emptyTitle": "暂时没有审计活动",
+    "emptyDescription": "当受保护操作被记录后，日志会显示在这里。"
+  },
+  "shell": {
+    "workspace": "工作区",
+    "productName": "Paw8 Operations",
+    "sessionProtected": "围绕当前账户提供受保护导航、范围访问与运营视图。",
+    "accountLabel": "当前登录账户",
+    "storeScope": "{count, plural, =0 {未分配门店} one {# 个门店范围} other {# 个门店范围}}",
+    "headerDescription": "当前以 {role} 身份登录。门店范围：{stores}。",
+    "signInRequired": "正在检查你的安全会话",
+    "signInRequiredDescription": "Paw8 恢复当前用户上下文后，受保护页面才会解锁。"
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "back": "返回",
+    "edit": "编辑",
+    "delete": "删除",
+    "search": "搜索",
+    "loading": "加载中...",
+    "noData": "暂无数据",
+    "error": "发生错误",
+    "success": "成功",
+    "confirm": "确认",
+    "actions": "操作",
+    "view": "查看",
+    "total": "共"
+  },
+  "languageSwitcher": {
+    "label": "选择语言",
+    "vi": "Tiếng Việt",
+    "en": "English",
+    "zh": "中文"
+  }
+}

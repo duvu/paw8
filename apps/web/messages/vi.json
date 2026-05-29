@@ -1,0 +1,429 @@
+{
+  "nav": {
+    "dashboard": "Tổng quan",
+    "customers": "Khách hàng",
+    "assets": "Tài sản",
+    "contracts": "Hợp đồng",
+    "transactions": "Giao dịch",
+    "reports": "Báo cáo",
+    "users": "Người dùng",
+    "stores": "Cửa hàng",
+    "auditLogs": "Nhật ký hệ thống"
+  },
+  "landing": {
+    "eyebrow": "Vận hành an toàn theo tenant",
+    "title": "Không gian điều hành hiện đại cho quy trình cầm đồ an toàn.",
+    "description": "Paw8 tập trung hồ sơ khách hàng, tài sản, hợp đồng, thu tiền và báo cáo vận hành trong một không gian làm việc thống nhất cho từng tenant.",
+    "primaryCta": "Đến trang đăng nhập",
+    "secondaryCta": "Mở không gian làm việc",
+    "operationsTitle": "Vận hành rõ ràng",
+    "operationsDescription": "Theo dõi khách hàng, hợp đồng, tài sản và nghĩa vụ đến hạn trong một giao diện được kiểm soát.",
+    "securityTitle": "Truy cập ưu tiên an toàn",
+    "securityDescription": "Phiên đăng nhập, điều hướng theo vai trò và hợp đồng API tenant-aware đều xoay quanh người dùng đã xác thực.",
+    "visibilityTitle": "Báo cáo sẵn sàng ra quyết định",
+    "visibilityDescription": "Số liệu thu tiền, dư nợ, hợp đồng quá hạn và hiệu quả cửa hàng luôn trong tầm tay.",
+    "statusBadge": "Không gian làm việc được bảo vệ",
+    "panelTitle": "Thiết kế cho vận hành chi nhánh hằng ngày.",
+    "panelDescription": "Dùng Paw8 để giữ giao dịch tuyến đầu, góc nhìn giám sát và thao tác nhạy cảm trong một nhịp làm việc thống nhất.",
+    "panelCards": {
+      "contractsLabel": "Dòng vận hành",
+      "contractsValue": "Hợp đồng",
+      "contractsDescription": "Tạo, gia hạn, tất toán và theo dõi trạng thái đến hạn mà không mất ngữ cảnh.",
+      "securityLabel": "Tư thế truy cập",
+      "securityValue": "Theo tenant",
+      "securityDescription": "Không gian làm việc được định hình theo vai trò, phạm vi cửa hàng và khả năng khôi phục phiên an toàn."
+    }
+  },
+  "auth": {
+    "title": "Đăng nhập an toàn",
+    "emailLabel": "Email",
+    "passwordLabel": "Mật khẩu",
+    "loginButton": "Đăng nhập",
+    "logoutButton": "Đăng xuất",
+    "signingIn": "Đang đăng nhập...",
+    "invalidCredentials": "Email hoặc mật khẩu không đúng.",
+    "loading": "Đang tải...",
+    "backHome": "Quay về tổng quan",
+    "secureNotice": "Truy cập phiên được bảo vệ",
+    "welcomeBack": "Đăng nhập để tiếp tục vận hành.",
+    "subtitle": "Dùng tài khoản được gán cho tenant và cửa hàng của bạn để truy cập báo cáo, quy trình hợp đồng và các thao tác vận hành được bảo vệ.",
+    "helperTitle": "Truy cập theo vai trò",
+    "helperDescription": "Điều hướng và màn hình nghiệp vụ sẽ thay đổi theo quyền nằm trong phiên đăng nhập của bạn.",
+    "supportTitle": "Khôi phục phiên",
+    "supportDescription": "Nếu phiên hết hạn hoặc không còn hợp lệ, Paw8 sẽ xóa truy cập cục bộ và yêu cầu bạn đăng nhập lại.",
+    "formHint": "Nhập thông tin tài khoản để mở không gian làm việc an toàn.",
+    "emailPlaceholder": "ten@congty.com",
+    "passwordPlaceholder": "Nhập mật khẩu",
+    "sessionExpired": "Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại để tiếp tục.",
+    "invalidResponse": "Phản hồi đăng nhập không đầy đủ. Vui lòng thử lại hoặc liên hệ hỗ trợ.",
+    "accessForbidden": "Tài khoản này hiện không thể truy cập không gian làm việc.",
+    "unexpectedError": "Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại."
+  },
+  "dashboard": {
+    "eyebrow": "Toàn cảnh vận hành",
+    "title": "Tổng quan",
+    "subtitle": "Theo dõi dư nợ, dòng tiền và trạng thái đến hạn trong một màn hình được bảo vệ.",
+    "totalActiveContracts": "Hợp đồng đang hiệu lực",
+    "totalOutstanding": "Dư nợ (VND)",
+    "disbursedToday": "Giải ngân hôm nay",
+    "disbursedThisMonth": "Giải ngân tháng này",
+    "collectedToday": "Thu về hôm nay",
+    "collectedThisMonth": "Thu về tháng này",
+    "interestCollected": "Lãi đã thu",
+    "upcomingDue": "Sắp đến hạn",
+    "overdueContracts": "Quá hạn",
+    "assetsHeld": "Tài sản đang giữ",
+    "loadingError": "Không thể tải dữ liệu tổng quan.",
+    "invalidData": "Phản hồi tổng quan đang thiếu các trường dữ liệu cần thiết."
+  },
+  "customers": {
+    "pageTitle": "Khách hàng",
+    "addButton": "+ Thêm khách hàng",
+    "searchPlaceholder": "Tìm theo tên, SĐT, CCCD...",
+    "searchButton": "Tìm kiếm",
+    "total": "Tổng: {total}",
+    "tableHeaders": {
+      "name": "Họ tên",
+      "phone": "SĐT",
+      "identity": "Số giấy tờ",
+      "status": "Trạng thái",
+      "actions": ""
+    },
+    "viewButton": "Xem",
+    "noData": "Không tìm thấy khách hàng.",
+    "loadError": "Không thể tải danh sách khách hàng.",
+    "newTitle": "Thêm khách hàng mới",
+    "form": {
+      "fullName": "Họ tên",
+      "phone": "Số điện thoại",
+      "identityNumber": "Số CCCD/CMND/Hộ chiếu",
+      "dateOfBirth": "Ngày sinh",
+      "occupation": "Nghề nghiệp",
+      "emergencyContactName": "Người liên hệ khẩn cấp",
+      "emergencyContactPhone": "SĐT liên hệ khẩn cấp",
+      "permanentAddress": "Địa chỉ thường trú",
+      "currentAddress": "Địa chỉ hiện tại",
+      "notes": "Ghi chú"
+    },
+    "createButton": "Tạo khách hàng",
+    "saving": "Đang lưu...",
+    "createError": "Không thể tạo khách hàng.",
+    "contracts": "Hợp đồng",
+    "newContract": "+ Hợp đồng mới",
+    "documents": "Tài liệu",
+    "contractHeaders": {
+      "code": "Mã HĐ",
+      "status": "Trạng thái",
+      "principal": "Gốc",
+      "dueDate": "Ngày hết hạn"
+    },
+    "noContracts": "Không có hợp đồng.",
+    "noDocuments": "Không có tài liệu.",
+    "detailLoadError": "Không thể tải thông tin khách hàng.",
+    "fieldLabels": {
+      "phone": "SĐT",
+      "identityNo": "Số giấy tờ",
+      "dateOfBirth": "Ngày sinh",
+      "occupation": "Nghề nghiệp",
+      "emergencyContact": "Người liên hệ khẩn cấp",
+      "permanentAddress": "Địa chỉ thường trú",
+      "currentAddress": "Địa chỉ hiện tại",
+      "notes": "Ghi chú",
+      "created": "Ngày tạo"
+    }
+  },
+  "assets": {
+    "pageTitle": "Tài sản",
+    "addButton": "+ Thêm tài sản",
+    "searchPlaceholder": "Tìm IMEI, serial, biển số...",
+    "allStatus": "Tất cả trạng thái",
+    "allTypes": "Tất cả loại",
+    "searchButton": "Tìm kiếm",
+    "total": "Tổng: {total}",
+    "tableHeaders": {
+      "name": "Tên tài sản",
+      "type": "Loại",
+      "brand": "Nhãn hiệu",
+      "serialImeiPlate": "Serial/IMEI/Biển số",
+      "valuation": "Định giá",
+      "status": "Trạng thái"
+    },
+    "noData": "Không tìm thấy tài sản.",
+    "loadError": "Không thể tải danh sách tài sản.",
+    "newTitle": "Thêm tài sản mới",
+    "form": {
+      "assetType": "Loại tài sản",
+      "assetName": "Tên tài sản *",
+      "brand": "Nhãn hiệu",
+      "model": "Model",
+      "color": "Màu sắc",
+      "serialNumber": "Số seri",
+      "imei": "IMEI",
+      "licensePlate": "Biển số xe",
+      "chassisNumber": "Số khung",
+      "engineNumber": "Số máy",
+      "valuationAmount": "Giá trị định giá (VND)",
+      "proposedLoanAmount": "Số tiền đề xuất vay (VND)",
+      "locationCode": "Mã vị trí kho",
+      "conditionDescription": "Mô tả tình trạng",
+      "locationNote": "Ghi chú vị trí"
+    },
+    "createButton": "Tạo tài sản",
+    "saving": "Đang lưu...",
+    "createError": "Không thể tạo tài sản."
+  },
+  "contracts": {
+    "pageTitle": "Hợp đồng",
+    "addButton": "+ Hợp đồng mới",
+    "searchPlaceholder": "Tìm mã HĐ, khách hàng, trạng thái...",
+    "searchButton": "Tìm kiếm",
+    "total": "Tổng: {total}",
+    "tabs": {
+      "all": "Tất cả",
+      "upcoming": "Sắp đến hạn",
+      "overdue": "Quá hạn"
+    },
+    "status": {
+      "draft": "Nháp",
+      "active": "Đang hiệu lực",
+      "near_due": "Sắp đến hạn",
+      "overdue": "Quá hạn",
+      "extended": "Đã gia hạn",
+      "settled": "Đã tất toán",
+      "cancelled": "Đã hủy",
+      "liquidation_pending": "Chờ thanh lý",
+      "liquidated": "Đã thanh lý"
+    },
+    "tableHeaders": {
+      "code": "Mã HĐ",
+      "customer": "Khách hàng",
+      "status": "Trạng thái",
+      "principal": "Gốc",
+      "dueDate": "Ngày hết hạn"
+    },
+    "viewButton": "Xem",
+    "noData": "Không tìm thấy hợp đồng.",
+    "loadError": "Không thể tải danh sách hợp đồng.",
+    "newTitle": "Hợp đồng mới",
+    "steps": {
+      "customer": "1. Khách hàng",
+      "assets": "2. Tài sản",
+      "loanTerms": "3. Điều khoản vay"
+    },
+    "form": {
+      "searchCustomerPlaceholder": "Tìm khách hàng theo tên/SĐT/CCCD",
+      "selected": "Đã chọn: {name}",
+      "selectAssets": "Chọn tài sản cầm (không bắt buộc)",
+      "searchAssetsPlaceholder": "Tìm tài sản...",
+      "principalAmount": "Số tiền vay (VND) *",
+      "interestRate": "Lãi suất (%) *",
+      "interestType": "Loại lãi *",
+      "startDate": "Ngày vay",
+      "dueDate": "Ngày đến hạn *",
+      "notes": "Ghi chú"
+    },
+    "interestType": {
+      "daily": "Theo ngày",
+      "monthly": "Theo tháng",
+      "periodic": "Theo kỳ"
+    },
+    "next": "Tiếp theo →",
+    "back": "← Quay lại",
+    "createButton": "Tạo hợp đồng",
+    "creating": "Đang tạo...",
+    "createError": "Không thể tạo hợp đồng.",
+    "pleaseSelectCustomer": "Vui lòng chọn khách hàng.",
+    "modalTitles": {
+      "collect": "Thu lãi / Thu phí",
+      "extend": "Gia hạn hợp đồng",
+      "settle": "Tất toán hợp đồng"
+    },
+    "actions": {
+      "collectInterest": "Thu lãi",
+      "extend": "Gia hạn",
+      "settle": "Tất toán"
+    },
+    "contractInfo": {
+      "customer": "Khách hàng",
+      "principal": "Số tiền gốc",
+      "interestRate": "Lãi suất",
+      "startDate": "Ngày vay",
+      "dueDate": "Ngày đến hạn",
+      "store": "Cửa hàng",
+      "created": "Ngày tạo",
+      "notes": "Ghi chú"
+    },
+    "pawnedAssets": "Tài sản cầm cố",
+    "transactionHistory": "Lịch sử giao dịch",
+    "assetHeaders": {
+      "name": "Tên",
+      "type": "Loại",
+      "brand": "Nhãn hiệu",
+      "status": "Trạng thái"
+    },
+    "txHeaders": {
+      "type": "Loại",
+      "amount": "Số tiền",
+      "method": "Phương thức",
+      "date": "Ngày",
+      "note": "Ghi chú"
+    },
+    "noAssets": "Không có tài sản.",
+    "noTransactions": "Không có giao dịch.",
+    "modalFields": {
+      "amount": "Số tiền (VND)",
+      "paymentMethod": "Phương thức thanh toán",
+      "note": "Ghi chú",
+      "newDueDate": "Ngày hết hạn mới"
+    },
+    "collect": "Thu",
+    "extend": "Gia hạn",
+    "settle": "Tất toán",
+    "saving": "Đang lưu...",
+    "collectError": "Không thể thu tiền.",
+    "extendError": "Không thể gia hạn.",
+    "settleError": "Không thể tất toán.",
+    "loadError2": "Không thể tải thông tin hợp đồng."
+  },
+  "transactions": {
+    "pageTitle": "Giao dịch",
+    "filterFrom": "Từ ngày",
+    "filterTo": "Đến ngày",
+    "filterButton": "Lọc",
+    "total": "Tổng: {total}",
+    "tableHeaders": {
+      "contract": "Hợp đồng",
+      "type": "Loại",
+      "amount": "Số tiền",
+      "method": "Phương thức",
+      "date": "Ngày",
+      "note": "Ghi chú"
+    },
+    "paymentMethod": {
+      "cash": "Tiền mặt",
+      "transfer": "Chuyển khoản",
+      "other": "Khác"
+    },
+    "noData": "Không có giao dịch.",
+    "loadError": "Không thể tải danh sách giao dịch.",
+    "unavailableTitle": "Chưa có màn hình sổ giao dịch tổng hợp",
+    "unavailableDescription": "Backend hiện chỉ cung cấp lịch sử giao dịch theo từng hợp đồng, chưa có endpoint danh sách giao dịch toàn cục. Hãy dùng màn hình chi tiết hợp đồng trong lúc này.",
+    "goToContracts": "Đi đến hợp đồng"
+  },
+  "reports": {
+    "pageTitle": "Báo cáo",
+    "subtitle": "Dùng các tab gắn với backend để theo dõi danh mục, thu tiền, dư nợ và hiệu suất đội ngũ.",
+    "filterFrom": "Từ ngày",
+    "filterTo": "Đến ngày",
+    "applyButton": "Áp dụng",
+    "noData": "Không có dữ liệu cho báo cáo này.",
+    "loadError": "Không thể tải báo cáo.",
+    "emptyTitle": "Chưa có dòng dữ liệu báo cáo",
+    "emptyDescription": "Hãy điều chỉnh khoảng thời gian hoặc chuyển sang tab báo cáo khác để tiếp tục.",
+    "tabs": {
+      "contracts": "Hợp đồng",
+      "collections": "Thu tiền",
+      "outstanding": "Dư nợ",
+      "overdue": "Quá hạn",
+      "byStore": "Theo cửa hàng",
+      "byStaff": "Theo nhân viên",
+      "inventory": "Kho tài sản"
+    }
+  },
+  "users": {
+    "pageTitle": "Người dùng",
+    "addButton": "+ Thêm người dùng",
+    "total": "Tổng: {total}",
+    "tableHeaders": {
+      "name": "Họ tên",
+      "email": "Email",
+      "phone": "SĐT",
+      "role": "Vai trò",
+      "status": "Trạng thái",
+      "created": "Ngày tạo"
+    },
+    "noData": "Không tìm thấy người dùng.",
+    "loadError": "Không thể tải danh sách người dùng.",
+    "newTitle": "Thêm người dùng mới",
+    "form": {
+      "email": "Email",
+      "fullName": "Họ tên",
+      "phone": "Số điện thoại",
+      "password": "Mật khẩu",
+      "role": "Vai trò"
+    },
+    "roles": {
+      "staff": "Nhân viên",
+      "store_manager": "Quản lý cửa hàng",
+      "accountant": "Kế toán",
+      "tenant_admin": "Quản trị viên",
+      "tenant_owner": "Chủ hệ thống",
+      "platform_admin": "Quản trị nền tảng"
+    },
+    "createButton": "Tạo người dùng",
+    "saving": "Đang lưu...",
+    "createError": "Không thể tạo người dùng."
+  },
+  "stores": {
+    "pageTitle": "Cửa hàng",
+    "total": "Tổng: {total}",
+    "tableHeaders": {
+      "name": "Tên cửa hàng",
+      "address": "Địa chỉ",
+      "phone": "SĐT",
+      "status": "Trạng thái",
+      "created": "Ngày tạo"
+    },
+    "noData": "Không có cửa hàng.",
+    "loadError": "Không thể tải danh sách cửa hàng."
+  },
+  "auditLogs": {
+    "pageTitle": "Nhật ký hệ thống",
+    "subtitle": "Theo dõi các thao tác nhạy cảm và dấu vết vận hành được ghi nhận trong phạm vi tenant hiện tại.",
+    "total": "Tổng: {total}",
+    "tableHeaders": {
+      "action": "Hành động",
+      "entity": "Đối tượng",
+      "entityId": "ID đối tượng",
+      "user": "Người dùng",
+      "ip": "IP",
+      "time": "Thời gian"
+    },
+    "noData": "Không có nhật ký.",
+    "loadError": "Không thể tải nhật ký hệ thống.",
+    "emptyTitle": "Chưa có hoạt động audit",
+    "emptyDescription": "Nhật ký sẽ xuất hiện tại đây khi có thao tác được ghi nhận."
+  },
+  "shell": {
+    "workspace": "Không gian làm việc",
+    "productName": "Paw8 Operations",
+    "sessionProtected": "Điều hướng bảo vệ, truy cập theo phạm vi và góc nhìn vận hành cho tài khoản đang đăng nhập.",
+    "accountLabel": "Tài khoản hiện tại",
+    "storeScope": "{count, plural, =0 {Chưa có cửa hàng được gán} one {# cửa hàng được gán} other {# cửa hàng được gán}}",
+    "headerDescription": "Đang đăng nhập với vai trò {role}. Phạm vi cửa hàng hiện tại: {stores}.",
+    "signInRequired": "Đang kiểm tra phiên an toàn của bạn",
+    "signInRequiredDescription": "Màn hình được bảo vệ sẽ mở sau khi Paw8 khôi phục ngữ cảnh người dùng hiện tại."
+  },
+  "common": {
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "back": "Quay lại",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "search": "Tìm kiếm",
+    "loading": "Đang tải...",
+    "noData": "Không có dữ liệu",
+    "error": "Có lỗi xảy ra",
+    "success": "Thành công",
+    "confirm": "Xác nhận",
+    "actions": "Thao tác",
+    "view": "Xem",
+    "total": "Tổng"
+  },
+  "languageSwitcher": {
+    "label": "Chọn ngôn ngữ",
+    "vi": "Tiếng Việt",
+    "en": "English",
+    "zh": "中文"
+  }
+}
