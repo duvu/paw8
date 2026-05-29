@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { useLocale, useTranslations } from 'next-intl';
-import { MetricTile, PageIntro, StatePanel } from '@/components/page-states';
+import { Alert, Card, CardContent, EmptyState, Skeleton, Spinner } from '@/components/ui';
 
 interface DashboardData {
   activeContracts: number;
@@ -70,38 +70,81 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <StatePanel title={t('title')} description={t('subtitle')} />
+      <div className="space-y-6">
+        <div className="space-y-1">
+          <h1 className="text-xl font-semibold text-neutral-900">{t('title')}</h1>
+          <p className="text-sm text-neutral-500">{t('subtitle')}</p>
+        </div>
+        <div className="flex items-center justify-center py-8">
+          <Spinner size="lg" />
+        </div>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Card key={i}>
+              <CardContent className="pt-5 space-y-2">
+                <Skeleton className="h-3 w-24" />
+                <Skeleton className="h-7 w-16" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
     );
   }
 
   if (error) {
-    return <StatePanel title={t('title')} description={error} tone="error" />;
+    return (
+      <div className="space-y-6">
+        <div className="space-y-1">
+          <h1 className="text-xl font-semibold text-neutral-900">{t('title')}</h1>
+          <p className="text-sm text-neutral-500">{t('subtitle')}</p>
+        </div>
+        <Alert variant="destructive">{error}</Alert>
+      </div>
+    );
   }
 
-  if (!data) return <StatePanel title={t('title')} description={t('invalidData')} tone="warning" />;
+  if (!data) {
+    return (
+      <div className="space-y-6">
+        <div className="space-y-1">
+          <h1 className="text-xl font-semibold text-neutral-900">{t('title')}</h1>
+          <p className="text-sm text-neutral-500">{t('subtitle')}</p>
+        </div>
+        <EmptyState title={t('invalidData')} />
+      </div>
+    );
+  }
+
+  const metrics: { label: string; value: string | number }[] = [
+    { label: t('totalActiveContracts'), value: fmt(locale, data.activeContracts) },
+    { label: t('totalOutstanding'), value: fmt(locale, data.totalOutstandingPrincipal) },
+    { label: t('collectedToday'), value: fmt(locale, data.collectedToday) },
+    { label: t('interestCollected'), value: fmt(locale, data.interestCollected) },
+    { label: t('disbursedToday'), value: fmt(locale, data.disbursedToday) },
+    { label: t('disbursedThisMonth'), value: fmt(locale, data.disbursedThisMonth) },
+    { label: t('collectedThisMonth'), value: fmt(locale, data.collectedThisMonth) },
+    { label: t('upcomingDue'), value: data.upcomingDueCount },
+    { label: t('overdueContracts'), value: data.overdueCount },
+    { label: t('assetsHeld'), value: data.assetsInCustody },
+  ];
 
   return (
     <div className="space-y-6">
-      <PageIntro
-        eyebrow={t('eyebrow')}
-        title={t('title')}
-        description={t('subtitle')}
-      />
-
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <MetricTile label={t('totalActiveContracts')} value={fmt(locale, data.activeContracts)} />
-        <MetricTile label={t('totalOutstanding')} value={fmt(locale, data.totalOutstandingPrincipal)} />
-        <MetricTile label={t('collectedToday')} value={fmt(locale, data.collectedToday)} />
-        <MetricTile label={t('interestCollected')} value={fmt(locale, data.interestCollected)} />
+      <div className="space-y-1">
+        <h1 className="text-xl font-semibold text-neutral-900">{t('title')}</h1>
+        <p className="text-sm text-neutral-500">{t('subtitle')}</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <MetricTile label={t('disbursedToday')} value={fmt(locale, data.disbursedToday)} />
-        <MetricTile label={t('disbursedThisMonth')} value={fmt(locale, data.disbursedThisMonth)} />
-        <MetricTile label={t('collectedThisMonth')} value={fmt(locale, data.collectedThisMonth)} />
-        <MetricTile label={t('upcomingDue')} value={data.upcomingDueCount} />
-        <MetricTile label={t('overdueContracts')} value={data.overdueCount} />
-        <MetricTile label={t('assetsHeld')} value={data.assetsInCustody} />
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        {metrics.map((metric) => (
+          <Card key={metric.label}>
+            <CardContent className="pt-5">
+              <p className="text-xs text-neutral-500">{metric.label}</p>
+              <p className="mt-1 text-2xl font-bold text-neutral-900">{metric.value}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </div>
   );

@@ -3,6 +3,19 @@
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { useTranslations } from 'next-intl';
+import {
+  Badge,
+  TableContainer,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  Spinner,
+  EmptyState,
+  Alert,
+} from '@/components/ui';
 
 interface Store {
   id: string;
@@ -37,44 +50,54 @@ export default function StoresPage() {
   }, [t]);
 
   return (
-    <div>
-      <h1 className="text-xl font-bold text-gray-800 mb-4">{t('pageTitle')}</h1>
-      {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+    <div className="space-y-4">
+      <h1 className="text-xl font-bold text-neutral-900">{t('pageTitle')}</h1>
+
+      {error && <Alert variant="destructive">{error}</Alert>}
+
       {loading ? (
-        <p className="text-gray-500">...</p>
+        <div className="flex items-center justify-center py-20">
+          <Spinner size="lg" />
+        </div>
       ) : (
         <>
-          <p className="text-xs text-gray-500 mb-2">{t('total', { total })}</p>
-          <div className="bg-white rounded border border-gray-200 overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.name')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.address')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.phone')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.status')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.created')}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {stores.map((s) => (
-                  <tr key={s.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-medium">{s.name}</td>
-                    <td className="px-4 py-3">{s.address}</td>
-                    <td className="px-4 py-3">{s.phone}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-0.5 rounded-full text-xs ${s.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
-                        {s.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-xs">{new Date(s.createdAt).toLocaleDateString('vi-VN')}</td>
-                  </tr>
-                ))}
-                {stores.length === 0 && (
-                  <tr><td colSpan={5} className="px-4 py-6 text-center text-gray-400">{t('noData')}</td></tr>
-                )}
-              </tbody>
-            </table>
+          <p className="text-xs text-neutral-500">{t('total', { total })}</p>
+          <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
+            <TableContainer>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('tableHeaders.name')}</TableHead>
+                    <TableHead>{t('tableHeaders.address')}</TableHead>
+                    <TableHead>{t('tableHeaders.phone')}</TableHead>
+                    <TableHead>{t('tableHeaders.status')}</TableHead>
+                    <TableHead>{t('tableHeaders.created')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {stores.map((s) => (
+                    <TableRow key={s.id}>
+                      <TableCell className="font-medium">{s.name}</TableCell>
+                      <TableCell>{s.address}</TableCell>
+                      <TableCell>{s.phone}</TableCell>
+                      <TableCell>
+                        <Badge variant={s.status === 'active' ? 'success' : 'default'}>
+                          {s.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-xs">{new Date(s.createdAt).toLocaleDateString('vi-VN')}</TableCell>
+                    </TableRow>
+                  ))}
+                  {stores.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={5}>
+                        <EmptyState title={t('noData')} className="py-12" />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
         </>
       )}

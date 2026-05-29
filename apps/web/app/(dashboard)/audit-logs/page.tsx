@@ -3,7 +3,20 @@
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { useLocale, useTranslations } from 'next-intl';
-import { PageIntro, StatePanel, Surface } from '@/components/page-states';
+import { PageIntro, Surface } from '@/components/page-states';
+import {
+  Badge,
+  TableContainer,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  Spinner,
+  EmptyState,
+  Alert,
+} from '@/components/ui';
 
 interface AuditLog {
   id: string;
@@ -18,6 +31,14 @@ interface AuditLog {
 interface PagedResult {
   data: AuditLog[];
   total: number;
+}
+
+function actionBadgeVariant(action: string) {
+  if (action.startsWith('LOGIN')) return 'info';
+  if (action.startsWith('CREATE')) return 'success';
+  if (action.startsWith('UPDATE')) return 'warning';
+  if (action.startsWith('DELETE') || action.startsWith('VOID') || action.startsWith('CANCEL')) return 'destructive';
+  return 'default';
 }
 
 export default function AuditLogsPage() {
@@ -45,58 +66,64 @@ export default function AuditLogsPage() {
     <div className="space-y-6">
       <PageIntro title={t('pageTitle')} description={t('subtitle')} />
 
-      {error ? <StatePanel title={t('pageTitle')} description={error} tone="error" /> : null}
+      {error && <Alert variant="destructive">{error}</Alert>}
 
       {loading ? (
-        <StatePanel title={t('pageTitle')} description={t('subtitle')} />
+        <div className="flex items-center justify-center py-20">
+          <Spinner size="lg" />
+        </div>
       ) : (
         <>
           <p className="text-sm text-slate-500">{t('total', { total })}</p>
           <Surface className="overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] text-sm">
-                <thead className="border-b border-slate-200 bg-slate-50/80">
-                <tr>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-600">{t('tableHeaders.action')}</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-600">{t('tableHeaders.entity')}</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-600">{t('tableHeaders.entityId')}</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-600">{t('tableHeaders.user')}</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-600">{t('tableHeaders.ip')}</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-600">{t('tableHeaders.time')}</th>
-                </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                {logs.map((l) => (
-                  <tr key={l.id} className="hover:bg-slate-50/70">
-                    <td className="px-4 py-3 font-medium text-slate-900">{l.action}</td>
-                    <td className="px-4 py-3 text-slate-700">{l.entityType || '—'}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{l.entityId || '—'}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{l.userId || '—'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-500">{l.ipAddress || '—'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-600">
-                      {new Intl.DateTimeFormat(locale, {
-                        dateStyle: 'medium',
-                        timeStyle: 'short',
-                      }).format(new Date(l.createdAt))}
-                    </td>
-                  </tr>
-                ))}
-                {logs.length === 0 && (
-                  <tr>
-                    <td colSpan={6} className="px-4 py-8">
-                      <StatePanel
-                        title={t('emptyTitle')}
-                        description={t('emptyDescription')}
-                        tone="warning"
-                      />
-                    </td>
-                  </tr>
-                )}
-                </tbody>
-              </table>
-            </div>
+            <TableContainer>
+              <Table className="min-w-[760px]">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('tableHeaders.action')}</TableHead>
+                    <TableHead>{t('tableHeaders.entity')}</TableHead>
+                    <TableHead>{t('tableHeaders.entityId')}</TableHead>
+                    <TableHead>{t('tableHeaders.user')}</TableHead>
+                    <TableHead>{t('tableHeaders.ip')}</TableHead>
+                    <TableHead>{t('tableHeaders.time')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {logs.map((l) => (
+                    <TableRow key={l.id}>
+                      <TableCell>
+                        <Badge variant={actionBadgeVariant(l.action) as 'default' | 'success' | 'warning' | 'destructive' | 'info' | 'outline'}>
+                          {l.action}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{l.entityType || '—'}</TableCell>
+                      <TableCell className="font-mono text-xs">{l.entityId || '—'}</TableCell>
+                      <TableCell className="font-mono text-xs">{l.userId || '—'}</TableCell>
+                      <TableCell className="text-xs">{l.ipAddress || '—'}</TableCell>
+                      <TableCell className="text-xs">
+                        {new Intl.DateTimeFormat(locale, {
+                          dateStyle: 'medium',
+                          timeStyle: 'short',
+                        }).format(new Date(l.createdAt))}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {logs.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={6}>
+                        <EmptyState
+                          title={t('emptyTitle')}
+                          description={t('emptyDescription')}
+                          className="py-12"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Surface>
-          {logs.length === 0 ? null : (
+          {logs.length > 0 && (
             <p className="text-xs text-slate-500">{t('subtitle')}</p>
           )}
         </>

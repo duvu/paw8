@@ -4,6 +4,24 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { useTranslations } from 'next-intl';
+import {
+  Badge,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  TableContainer,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  EmptyState,
+  Alert,
+  Spinner,
+} from '@/components/ui';
+import { cn } from '@/lib/cn';
 
 interface Customer {
   id: string;
@@ -37,6 +55,30 @@ interface Document {
   createdAt: string;
 }
 
+const contractStatusVariant = (status: string): 'success' | 'warning' | 'destructive' | 'info' | 'default' => {
+  const map: Record<string, 'success' | 'warning' | 'destructive' | 'info' | 'default'> = {
+    active: 'success',
+    near_due: 'warning',
+    overdue: 'destructive',
+    settled: 'info',
+  };
+  return map[status] ?? 'default';
+};
+
+const FileIcon = () => (
+  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+  </svg>
+);
+
+const ContractIcon = () => (
+  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+    <rect x="9" y="3" width="6" height="4" rx="2" />
+  </svg>
+);
+
 export default function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const t = useTranslations('customers');
   const [id, setId] = useState('');
@@ -66,93 +108,150 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
       .finally(() => setLoading(false));
   }, [id, t]);
 
-  if (loading) return <p className="text-gray-500">...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (error) return <Alert variant="destructive">{error}</Alert>;
   if (!customer) return null;
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="max-w-3xl space-y-5">
+      {/* Page heading */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-gray-800">{customer.fullName}</h1>
-        <span className={`px-2 py-1 rounded text-xs ${customer.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+        <h1 className="text-xl font-semibold text-neutral-900">{customer.fullName}</h1>
+        <Badge variant={customer.status === 'active' ? 'success' : 'default'}>
           {customer.status}
-        </span>
+        </Badge>
       </div>
 
-      {/* Info */}
-      <div className="bg-white rounded border border-gray-200 p-4 grid grid-cols-2 gap-3 text-sm">
-        <Row label={t('fieldLabels.phone')} value={customer.phone} />
-        <Row label={t('fieldLabels.identityNo')} value={customer.identityNumber} />
-        <Row label={t('fieldLabels.dateOfBirth')} value={customer.dateOfBirth} />
-        <Row label={t('fieldLabels.occupation')} value={customer.occupation} />
-        <Row label={t('fieldLabels.emergencyContact')} value={`${customer.emergencyContactName} — ${customer.emergencyContactPhone}`} />
-        <Row label={t('fieldLabels.permanentAddress')} value={customer.permanentAddress} />
-        <Row label={t('fieldLabels.currentAddress')} value={customer.currentAddress} />
-        {customer.notes && <Row label={t('fieldLabels.notes')} value={customer.notes} />}
-        <Row label={t('fieldLabels.created')} value={new Date(customer.createdAt).toLocaleDateString('vi-VN')} />
-      </div>
+      {/* Customer info */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('fieldLabels.info') ?? 'Customer Information'}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+            <InfoRow label={t('fieldLabels.phone')} value={customer.phone} />
+            <InfoRow label={t('fieldLabels.identityNo')} value={customer.identityNumber} mono />
+            <InfoRow label={t('fieldLabels.dateOfBirth')} value={customer.dateOfBirth} />
+            <InfoRow label={t('fieldLabels.occupation')} value={customer.occupation} />
+            <InfoRow
+              label={t('fieldLabels.emergencyContact')}
+              value={`${customer.emergencyContactName} — ${customer.emergencyContactPhone}`}
+            />
+            <InfoRow label={t('fieldLabels.permanentAddress')} value={customer.permanentAddress} />
+            <InfoRow label={t('fieldLabels.currentAddress')} value={customer.currentAddress} />
+            {customer.notes && <InfoRow label={t('fieldLabels.notes')} value={customer.notes} />}
+            <InfoRow
+              label={t('fieldLabels.created')}
+              value={new Date(customer.createdAt).toLocaleDateString('vi-VN')}
+            />
+          </dl>
+        </CardContent>
+      </Card>
 
       {/* Contracts */}
-      <section>
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="font-semibold text-gray-700">{t('contracts')}</h2>
-          <Link href={`/contracts/new?customerId=${customer.id}`} className="text-xs text-blue-600 hover:underline">
-            {t('newContract')}
-          </Link>
-        </div>
-        <div className="bg-white rounded border border-gray-200 overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="text-left px-4 py-2 font-medium text-gray-600">{t('contractHeaders.code')}</th>
-                <th className="text-left px-4 py-2 font-medium text-gray-600">{t('contractHeaders.status')}</th>
-                <th className="text-left px-4 py-2 font-medium text-gray-600">{t('contractHeaders.principal')}</th>
-                <th className="text-left px-4 py-2 font-medium text-gray-600">{t('contractHeaders.dueDate')}</th>
-                <th className="px-4 py-2"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {contracts.map((c) => (
-                <tr key={c.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2 font-mono text-xs">{c.contractCode}</td>
-                  <td className="px-4 py-2">{c.status}</td>
-                  <td className="px-4 py-2">{new Intl.NumberFormat('vi-VN').format(c.principalAmount)}</td>
-                  <td className="px-4 py-2">{new Date(c.dueDate).toLocaleDateString('vi-VN')}</td>
-                  <td className="px-4 py-2">
-                    <Link href={`/contracts/${c.id}`} className="text-blue-600 hover:underline text-xs">{t('viewButton')}</Link>
-                  </td>
-                </tr>
-              ))}
-              {contracts.length === 0 && (
-                <tr><td colSpan={5} className="px-4 py-4 text-center text-gray-400">{t('noContracts')}</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>{t('contracts')}</CardTitle>
+            <Link
+              href={`/contracts/new?customerId=${customer.id}`}
+              className="text-xs text-primary-600 hover:underline font-medium"
+            >
+              {t('newContract')}
+            </Link>
+          </div>
+        </CardHeader>
+        <CardContent className="px-0 pb-0">
+          <TableContainer>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t('contractHeaders.code')}</TableHead>
+                  <TableHead>{t('contractHeaders.status')}</TableHead>
+                  <TableHead>{t('contractHeaders.principal')}</TableHead>
+                  <TableHead>{t('contractHeaders.dueDate')}</TableHead>
+                  <TableHead />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {contracts.length === 0 ? (
+                  <tr>
+                    <td colSpan={5}>
+                      <EmptyState icon={<ContractIcon />} title={t('noContracts')} />
+                    </td>
+                  </tr>
+                ) : (
+                  contracts.map((c) => (
+                    <TableRow key={c.id}>
+                      <TableCell className="font-mono text-xs">{c.contractCode}</TableCell>
+                      <TableCell>
+                        <Badge variant={contractStatusVariant(c.status)}>{c.status}</Badge>
+                      </TableCell>
+                      <TableCell>{new Intl.NumberFormat('vi-VN').format(c.principalAmount)}</TableCell>
+                      <TableCell>{new Date(c.dueDate).toLocaleDateString('vi-VN')}</TableCell>
+                      <TableCell>
+                        <Link
+                          href={`/contracts/${c.id}`}
+                          className="text-primary-600 hover:underline text-xs font-medium"
+                        >
+                          {t('viewButton')}
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
+      </Card>
 
       {/* Documents */}
-      <section>
-        <h2 className="font-semibold text-gray-700 mb-2">{t('documents')}</h2>
-        <ul className="bg-white rounded border border-gray-200 divide-y divide-gray-100">
-          {documents.map((d) => (
-            <li key={d.id} className="px-4 py-2 text-sm flex items-center justify-between">
-              <span>{d.originalFilename}</span>
-              <span className="text-xs text-gray-400">{new Date(d.createdAt).toLocaleDateString('vi-VN')}</span>
-            </li>
-          ))}
-          {documents.length === 0 && <li className="px-4 py-4 text-center text-gray-400 text-sm">{t('noDocuments')}</li>}
-        </ul>
-      </section>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('documents')}</CardTitle>
+        </CardHeader>
+        <CardContent className="px-0 pb-0">
+          {documents.length === 0 ? (
+            <EmptyState icon={<FileIcon />} title={t('noDocuments')} />
+          ) : (
+            <ul className="divide-y divide-neutral-100">
+              {documents.map((d) => (
+                <li key={d.id} className="px-5 py-3 flex items-center justify-between text-sm">
+                  <span className="text-neutral-800 font-medium">{d.originalFilename}</span>
+                  <span className="text-xs text-neutral-400">
+                    {new Date(d.createdAt).toLocaleDateString('vi-VN')}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function InfoRow({
+  label,
+  value,
+  mono,
+}: {
+  label: string;
+  value: string;
+  mono?: boolean;
+}) {
   return (
     <div>
-      <span className="text-gray-500">{label}: </span>
-      <span className="text-gray-800">{value}</span>
+      <dt className="text-neutral-500 text-xs mb-0.5">{label}</dt>
+      <dd className={cn('text-neutral-900', mono && 'font-mono text-xs')}>{value || '—'}</dd>
     </div>
   );
 }

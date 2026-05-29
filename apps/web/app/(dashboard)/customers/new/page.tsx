@@ -4,6 +4,15 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { useTranslations } from 'next-intl';
+import {
+  Button,
+  Input,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  Alert,
+} from '@/components/ui';
 
 interface CreateCustomerDto {
   fullName: string;
@@ -31,37 +40,6 @@ const initial: CreateCustomerDto = {
   notes: '',
 };
 
-function Field({
-  label,
-  name,
-  value,
-  onChange,
-  type = 'text',
-  required,
-}: {
-  label: string;
-  name: keyof CreateCustomerDto;
-  value: string;
-  onChange: (n: keyof CreateCustomerDto, v: string) => void;
-  type?: string;
-  required?: boolean;
-}) {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(name, e.target.value)}
-        required={required}
-        className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-  );
-}
-
 export default function NewCustomerPage() {
   const t = useTranslations('customers');
   const router = useRouter();
@@ -87,45 +65,97 @@ export default function NewCustomerPage() {
   };
 
   return (
-    <div className="max-w-2xl">
-      <h1 className="text-xl font-bold text-gray-800 mb-6">{t('newTitle')}</h1>
-      {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded text-sm">{error}</div>}
-      <form onSubmit={handleSubmit} className="bg-white rounded border border-gray-200 p-6 space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <Field label={t('form.fullName')} name="fullName" value={form.fullName} onChange={set} required />
-          <Field label={t('form.phone')} name="phone" value={form.phone} onChange={set} required />
-          <Field label={t('form.identityNumber')} name="identityNumber" value={form.identityNumber} onChange={set} required />
-          <Field label={t('form.dateOfBirth')} name="dateOfBirth" value={form.dateOfBirth} onChange={set} type="date" />
-          <Field label={t('form.occupation')} name="occupation" value={form.occupation} onChange={set} />
-          <Field label={t('form.emergencyContactName')} name="emergencyContactName" value={form.emergencyContactName} onChange={set} />
-          <Field label={t('form.emergencyContactPhone')} name="emergencyContactPhone" value={form.emergencyContactPhone} onChange={set} />
-        </div>
-        <Field label={t('form.permanentAddress')} name="permanentAddress" value={form.permanentAddress} onChange={set} />
-        <Field label={t('form.currentAddress')} name="currentAddress" value={form.currentAddress} onChange={set} />
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">{t('form.notes')}</label>
-          <textarea
-            value={form.notes}
-            onChange={(e) => set('notes', e.target.value)}
-            rows={3}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+    <div className="max-w-2xl space-y-4">
+      <h1 className="text-xl font-semibold text-neutral-900">{t('newTitle')}</h1>
+
+      {error && <Alert variant="destructive">{error}</Alert>}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('form.personalInfo') ?? 'Personal Information'}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Input
+                label={t('form.fullName')}
+                value={form.fullName}
+                onChange={(e) => set('fullName', e.target.value)}
+                required
+              />
+              <Input
+                label={t('form.phone')}
+                value={form.phone}
+                onChange={(e) => set('phone', e.target.value)}
+                required
+              />
+              <Input
+                label={t('form.identityNumber')}
+                value={form.identityNumber}
+                onChange={(e) => set('identityNumber', e.target.value)}
+                required
+              />
+              <Input
+                label={t('form.dateOfBirth')}
+                type="date"
+                value={form.dateOfBirth}
+                onChange={(e) => set('dateOfBirth', e.target.value)}
+              />
+              <Input
+                label={t('form.occupation')}
+                value={form.occupation}
+                onChange={(e) => set('occupation', e.target.value)}
+              />
+              <Input
+                label={t('form.emergencyContactName')}
+                value={form.emergencyContactName}
+                onChange={(e) => set('emergencyContactName', e.target.value)}
+              />
+              <Input
+                label={t('form.emergencyContactPhone')}
+                value={form.emergencyContactPhone}
+                onChange={(e) => set('emergencyContactPhone', e.target.value)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('form.addressInfo') ?? 'Address'}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 gap-4">
+              <Input
+                label={t('form.permanentAddress')}
+                value={form.permanentAddress}
+                onChange={(e) => set('permanentAddress', e.target.value)}
+              />
+              <Input
+                label={t('form.currentAddress')}
+                value={form.currentAddress}
+                onChange={(e) => set('currentAddress', e.target.value)}
+              />
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium text-neutral-700">{t('form.notes')}</label>
+                <textarea
+                  value={form.notes}
+                  onChange={(e) => set('notes', e.target.value)}
+                  rows={3}
+                  className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500/25 focus:border-primary-500 transition-all duration-150"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="flex gap-3">
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-blue-600 text-white px-6 py-2 rounded text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? t('saving') : t('createButton')}
-          </button>
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="border border-gray-300 text-gray-700 px-6 py-2 rounded text-sm hover:bg-gray-50"
-          >
+          <Button type="submit" loading={loading}>
+            {t('createButton')}
+          </Button>
+          <Button type="button" variant="secondary" onClick={() => router.back()}>
             Cancel
-          </button>
+          </Button>
         </div>
       </form>
     </div>
