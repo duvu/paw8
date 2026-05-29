@@ -1,0 +1,429 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "customers": "Customers",
+    "assets": "Assets",
+    "contracts": "Contracts",
+    "transactions": "Transactions",
+    "reports": "Reports",
+    "users": "Users",
+    "stores": "Stores",
+    "auditLogs": "Audit Logs"
+  },
+  "landing": {
+    "eyebrow": "Secure tenant-aware operations",
+    "title": "Modern operational control for secured pawn workflows.",
+    "description": "Paw8 gives store teams, managers, and controllers a single workspace for customer intake, asset tracking, contracts, collections, and operational visibility.",
+    "primaryCta": "Go to sign in",
+    "secondaryCta": "Open workspace",
+    "operationsTitle": "Operational clarity",
+    "operationsDescription": "Track customers, contracts, assets, and due obligations from one protected interface.",
+    "securityTitle": "Security-first access",
+    "securityDescription": "Session handling, scoped navigation, and tenant-aware API contracts are aligned around the authenticated user.",
+    "visibilityTitle": "Decision-ready reporting",
+    "visibilityDescription": "Collections, outstanding balances, overdue exposure, and store performance stay within reach.",
+    "statusBadge": "Protected workspace",
+    "panelTitle": "Built for daily branch operations.",
+    "panelDescription": "Use Paw8 to keep front-office transactions, oversight views, and audit-sensitive actions in a single operational rhythm.",
+    "panelCards": {
+      "contractsLabel": "Active flow",
+      "contractsValue": "Contracts",
+      "contractsDescription": "Create, extend, settle, and monitor due-state movement without losing context.",
+      "securityLabel": "Access posture",
+      "securityValue": "Tenant scoped",
+      "securityDescription": "The workspace is shaped around authenticated roles, store scope, and protected session recovery."
+    }
+  },
+  "auth": {
+    "title": "Secure sign in",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "loginButton": "Sign In",
+    "logoutButton": "Logout",
+    "signingIn": "Signing in...",
+    "invalidCredentials": "Invalid email or password.",
+    "loading": "Loading...",
+    "backHome": "Back to overview",
+    "secureNotice": "Protected session access",
+    "welcomeBack": "Sign in to continue store operations.",
+    "subtitle": "Use the account assigned to your tenant and store scope to access reporting, contract workflows, and protected operational actions.",
+    "helperTitle": "Role-aware access",
+    "helperDescription": "Navigation and operational views adapt to the permissions carried in your authenticated session.",
+    "supportTitle": "Session recovery",
+    "supportDescription": "If a session expires or becomes invalid, Paw8 clears local access and asks you to sign in again.",
+    "formHint": "Enter your account credentials to open the secure workspace.",
+    "emailPlaceholder": "name@company.com",
+    "passwordPlaceholder": "Enter your password",
+    "sessionExpired": "Your session expired. Sign in again to continue.",
+    "invalidResponse": "The sign-in response was incomplete. Please try again or contact support.",
+    "accessForbidden": "This account cannot access the workspace right now.",
+    "unexpectedError": "Something went wrong while signing you in. Please try again."
+  },
+  "dashboard": {
+    "eyebrow": "Operational overview",
+    "title": "Dashboard",
+    "subtitle": "Monitor exposure, collections, and due-state movement from one protected view.",
+    "totalActiveContracts": "Active Contracts",
+    "totalOutstanding": "Outstanding Principal (VND)",
+    "disbursedToday": "Disbursed Today",
+    "disbursedThisMonth": "Disbursed This Month",
+    "collectedToday": "Collected Today",
+    "collectedThisMonth": "Collected This Month",
+    "interestCollected": "Interest Collected",
+    "upcomingDue": "Upcoming Due",
+    "overdueContracts": "Overdue",
+    "assetsHeld": "Assets in Custody",
+    "loadingError": "Failed to load dashboard data.",
+    "invalidData": "The dashboard response was missing expected fields."
+  },
+  "customers": {
+    "pageTitle": "Customers",
+    "addButton": "+ Add Customer",
+    "searchPlaceholder": "Search name, phone, CCCD...",
+    "searchButton": "Search",
+    "total": "Total: {total}",
+    "tableHeaders": {
+      "name": "Name",
+      "phone": "Phone",
+      "identity": "Identity No.",
+      "status": "Status",
+      "actions": ""
+    },
+    "viewButton": "View",
+    "noData": "No customers found.",
+    "loadError": "Failed to load customers.",
+    "newTitle": "New Customer",
+    "form": {
+      "fullName": "Full Name",
+      "phone": "Phone",
+      "identityNumber": "Identity Number (CCCD/CMND)",
+      "dateOfBirth": "Date of Birth",
+      "occupation": "Occupation",
+      "emergencyContactName": "Emergency Contact Name",
+      "emergencyContactPhone": "Emergency Contact Phone",
+      "permanentAddress": "Permanent Address",
+      "currentAddress": "Current Address",
+      "notes": "Notes"
+    },
+    "createButton": "Create Customer",
+    "saving": "Saving...",
+    "createError": "Failed to create customer.",
+    "contracts": "Contracts",
+    "newContract": "+ New Contract",
+    "documents": "Documents",
+    "contractHeaders": {
+      "code": "Code",
+      "status": "Status",
+      "principal": "Principal",
+      "dueDate": "Due Date"
+    },
+    "noContracts": "No contracts.",
+    "noDocuments": "No documents.",
+    "detailLoadError": "Failed to load customer.",
+    "fieldLabels": {
+      "phone": "Phone",
+      "identityNo": "Identity No.",
+      "dateOfBirth": "Date of Birth",
+      "occupation": "Occupation",
+      "emergencyContact": "Emergency Contact",
+      "permanentAddress": "Permanent Address",
+      "currentAddress": "Current Address",
+      "notes": "Notes",
+      "created": "Created"
+    }
+  },
+  "assets": {
+    "pageTitle": "Assets",
+    "addButton": "+ Add Asset",
+    "searchPlaceholder": "Search IMEI, serial, plate...",
+    "allStatus": "All Status",
+    "allTypes": "All Types",
+    "searchButton": "Search",
+    "total": "Total: {total}",
+    "tableHeaders": {
+      "name": "Name",
+      "type": "Type",
+      "brand": "Brand",
+      "serialImeiPlate": "Serial/IMEI/Plate",
+      "valuation": "Valuation",
+      "status": "Status"
+    },
+    "noData": "No assets found.",
+    "loadError": "Failed to load assets.",
+    "newTitle": "New Asset",
+    "form": {
+      "assetType": "Asset Type",
+      "assetName": "Asset Name *",
+      "brand": "Brand",
+      "model": "Model",
+      "color": "Color",
+      "serialNumber": "Serial Number",
+      "imei": "IMEI",
+      "licensePlate": "License Plate",
+      "chassisNumber": "Chassis Number",
+      "engineNumber": "Engine Number",
+      "valuationAmount": "Valuation Amount (VND)",
+      "proposedLoanAmount": "Proposed Loan Amount (VND)",
+      "locationCode": "Location Code",
+      "conditionDescription": "Condition Description",
+      "locationNote": "Location Note"
+    },
+    "createButton": "Create Asset",
+    "saving": "Saving...",
+    "createError": "Failed to create asset."
+  },
+  "contracts": {
+    "pageTitle": "Contracts",
+    "addButton": "+ New Contract",
+    "searchPlaceholder": "Search contract code, customer, status...",
+    "searchButton": "Search",
+    "total": "Total: {total}",
+    "tabs": {
+      "all": "All",
+      "upcoming": "Upcoming Due",
+      "overdue": "Overdue"
+    },
+    "status": {
+      "draft": "Draft",
+      "active": "Active",
+      "near_due": "Near Due",
+      "overdue": "Overdue",
+      "extended": "Extended",
+      "settled": "Settled",
+      "cancelled": "Cancelled",
+      "liquidation_pending": "Liquidation Pending",
+      "liquidated": "Liquidated"
+    },
+    "tableHeaders": {
+      "code": "Code",
+      "customer": "Customer",
+      "status": "Status",
+      "principal": "Principal",
+      "dueDate": "Due Date"
+    },
+    "viewButton": "View",
+    "noData": "No contracts found.",
+    "loadError": "Failed to load contracts.",
+    "newTitle": "New Contract",
+    "steps": {
+      "customer": "1. Customer",
+      "assets": "2. Assets",
+      "loanTerms": "3. Loan Terms"
+    },
+    "form": {
+      "searchCustomerPlaceholder": "Search customer by name/phone/CCCD",
+      "selected": "Selected: {name}",
+      "selectAssets": "Select assets to pawn (optional)",
+      "searchAssetsPlaceholder": "Search assets...",
+      "principalAmount": "Principal Amount (VND) *",
+      "interestRate": "Interest Rate (%) *",
+      "interestType": "Interest Type *",
+      "startDate": "Start Date",
+      "dueDate": "Due Date *",
+      "notes": "Notes"
+    },
+    "interestType": {
+      "daily": "Daily",
+      "monthly": "Monthly",
+      "periodic": "Periodic"
+    },
+    "next": "Next →",
+    "back": "← Back",
+    "createButton": "Create Contract",
+    "creating": "Creating...",
+    "createError": "Failed to create contract.",
+    "pleaseSelectCustomer": "Please select a customer.",
+    "modalTitles": {
+      "collect": "Collect Interest / Fee",
+      "extend": "Extend Contract",
+      "settle": "Settle Contract"
+    },
+    "actions": {
+      "collectInterest": "Collect Interest",
+      "extend": "Extend",
+      "settle": "Settle"
+    },
+    "contractInfo": {
+      "customer": "Customer",
+      "principal": "Principal",
+      "interestRate": "Interest Rate",
+      "startDate": "Start Date",
+      "dueDate": "Due Date",
+      "store": "Store",
+      "created": "Created",
+      "notes": "Notes"
+    },
+    "pawnedAssets": "Pawned Assets",
+    "transactionHistory": "Transaction History",
+    "assetHeaders": {
+      "name": "Name",
+      "type": "Type",
+      "brand": "Brand",
+      "status": "Status"
+    },
+    "txHeaders": {
+      "type": "Type",
+      "amount": "Amount",
+      "method": "Method",
+      "date": "Date",
+      "note": "Note"
+    },
+    "noAssets": "No assets.",
+    "noTransactions": "No transactions.",
+    "modalFields": {
+      "amount": "Amount (VND)",
+      "paymentMethod": "Payment Method",
+      "note": "Note",
+      "newDueDate": "New Due Date"
+    },
+    "collect": "Collect",
+    "extend": "Extend",
+    "settle": "Settle",
+    "saving": "Saving...",
+    "collectError": "Failed to collect.",
+    "extendError": "Failed to extend.",
+    "settleError": "Failed to settle.",
+    "loadError2": "Failed to load contract."
+  },
+  "transactions": {
+    "pageTitle": "Transactions",
+    "filterFrom": "From",
+    "filterTo": "To",
+    "filterButton": "Filter",
+    "total": "Total: {total}",
+    "tableHeaders": {
+      "contract": "Contract",
+      "type": "Type",
+      "amount": "Amount",
+      "method": "Method",
+      "date": "Date",
+      "note": "Note"
+    },
+    "paymentMethod": {
+      "cash": "Cash",
+      "transfer": "Transfer",
+      "other": "Other"
+    },
+    "noData": "No transactions.",
+    "loadError": "Failed to load transactions.",
+    "unavailableTitle": "A transaction ledger view is not available yet",
+    "unavailableDescription": "The current backend exposes contract-level transaction history instead of a global transaction list. Use contract detail screens until a dedicated listing endpoint is added.",
+    "goToContracts": "Go to contracts"
+  },
+  "reports": {
+    "pageTitle": "Reports",
+    "subtitle": "Use backend-backed tabs to review portfolio health, collections, exposure, and team performance.",
+    "filterFrom": "From",
+    "filterTo": "To",
+    "applyButton": "Apply",
+    "noData": "No data for this report.",
+    "loadError": "Failed to load report.",
+    "emptyTitle": "No report rows available",
+    "emptyDescription": "Adjust the date range or switch to another report tab to continue.",
+    "tabs": {
+      "contracts": "Contracts",
+      "collections": "Collections",
+      "outstanding": "Outstanding",
+      "overdue": "Overdue",
+      "byStore": "By Store",
+      "byStaff": "By Staff",
+      "inventory": "Inventory"
+    }
+  },
+  "users": {
+    "pageTitle": "Users",
+    "addButton": "+ Add User",
+    "total": "Total: {total}",
+    "tableHeaders": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "role": "Role",
+      "status": "Status",
+      "created": "Created"
+    },
+    "noData": "No users found.",
+    "loadError": "Failed to load users.",
+    "newTitle": "New User",
+    "form": {
+      "email": "Email",
+      "fullName": "Full Name",
+      "phone": "Phone",
+      "password": "Password",
+      "role": "Role"
+    },
+    "roles": {
+      "staff": "Staff",
+      "store_manager": "Store Manager",
+      "accountant": "Accountant",
+      "tenant_admin": "Tenant Admin",
+      "tenant_owner": "Tenant Owner",
+      "platform_admin": "Platform Admin"
+    },
+    "createButton": "Create User",
+    "saving": "Saving...",
+    "createError": "Failed to create user."
+  },
+  "stores": {
+    "pageTitle": "Stores",
+    "total": "Total: {total}",
+    "tableHeaders": {
+      "name": "Name",
+      "address": "Address",
+      "phone": "Phone",
+      "status": "Status",
+      "created": "Created"
+    },
+    "noData": "No stores.",
+    "loadError": "Failed to load stores."
+  },
+  "auditLogs": {
+    "pageTitle": "Audit Logs",
+    "subtitle": "Review security-sensitive actions and operational traces recorded for the current tenant scope.",
+    "total": "Total: {total}",
+    "tableHeaders": {
+      "action": "Action",
+      "entity": "Entity",
+      "entityId": "Entity ID",
+      "user": "User",
+      "ip": "IP",
+      "time": "Time"
+    },
+    "noData": "No audit logs.",
+    "loadError": "Failed to load audit logs.",
+    "emptyTitle": "No audit activity yet",
+    "emptyDescription": "Logs will appear here when protected actions are recorded."
+  },
+  "shell": {
+    "workspace": "Workspace",
+    "productName": "Paw8 Operations",
+    "sessionProtected": "Protected navigation, scoped access, and operational visibility for the active account.",
+    "accountLabel": "Signed-in account",
+    "storeScope": "{count, plural, =0 {No assigned stores} one {# assigned store} other {# assigned stores}}",
+    "headerDescription": "Signed in as {role}. Current store scope: {stores}.",
+    "signInRequired": "Checking your secure session",
+    "signInRequiredDescription": "Protected screens unlock after Paw8 restores the current user context."
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "loading": "Loading...",
+    "noData": "No data",
+    "error": "An error occurred",
+    "success": "Success",
+    "confirm": "Confirm",
+    "actions": "Actions",
+    "view": "View",
+    "total": "Total"
+  },
+  "languageSwitcher": {
+    "label": "Select language",
+    "vi": "Tiếng Việt",
+    "en": "English",
+    "zh": "中文"
+  }
+}

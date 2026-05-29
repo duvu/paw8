@@ -1,0 +1,26 @@
+{
+  "name": "@paw8/audit",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/core": "^11.0.1",
+    "@nestjs/passport": "^11.0.5",
+    "@nestjs/typeorm": "^11.0.1",
+    "@paw8/common": "workspace:*",
+    "class-validator": "^0.14.4",
+    "class-transformer": "^0.5.1",
+    "typeorm": "^1.0.0",
+    "rxjs": "^7.8.1",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.7.3"
+  }
+}
