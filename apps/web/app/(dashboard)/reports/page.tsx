@@ -4,9 +4,24 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { useLocale, useTranslations } from 'next-intl';
+import { cn } from '@/lib/cn';
 import { PageIntro, StatePanel, Surface } from '@/components/page-states';
 import { canAccessRole } from '@/lib/role-access';
 import { useAuth } from '@/contexts/auth';
+import {
+  Button,
+  Input,
+  TableContainer,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  Spinner,
+  EmptyState,
+  Alert,
+} from '@/components/ui';
 
 function formatColumnLabel(value: string): string {
   return value
@@ -109,88 +124,84 @@ export default function ReportsPage() {
     <div className="space-y-6">
       <PageIntro title={t('pageTitle')} description={t('subtitle')} />
 
-      <div className="flex flex-wrap gap-2">
+      {/* Tab pills */}
+      <div className="overflow-x-auto flex gap-1 pb-1">
         {tabs.map((tabItem) => (
           <button
             key={tabItem.key}
             onClick={() => setTabNav(tabItem.key)}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+            className={cn(
+              'rounded-full px-4 py-2 text-sm font-medium transition whitespace-nowrap',
               current.key === tabItem.key
                 ? 'bg-slate-950 text-white shadow-lg shadow-slate-950/10'
-                : 'border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-950'
-            }`}
+                : 'border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-950',
+            )}
           >
             {tabItem.label}
           </button>
         ))}
       </div>
 
+      {/* Date filter */}
       <Surface className="p-5 sm:p-6">
-        <form onSubmit={handleFilter} className="flex flex-wrap gap-4 lg:items-end">
-          <div className="min-w-[180px] flex-1">
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+        <form onSubmit={handleFilter} className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-1 min-w-[160px]">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
               {t('filterFrom')}
             </label>
-            <input
+            <Input
               type="date"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900"
             />
           </div>
-          <div className="min-w-[180px] flex-1">
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="flex-1 min-w-[160px]">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
               {t('filterTo')}
             </label>
-            <input
+            <Input
               type="date"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900"
             />
           </div>
-          <button
-            type="submit"
-            className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-800"
-          >
-            {t('applyButton')}
-          </button>
+          <div className="flex items-end">
+            <Button type="submit">{t('applyButton')}</Button>
+          </div>
         </form>
       </Surface>
 
-      {error ? <StatePanel title={t('pageTitle')} description={error} tone="error" /> : null}
+      {error && <Alert variant="destructive">{error}</Alert>}
 
       {loading ? (
-        <StatePanel title={current.label} description={t('subtitle')} />
+        <div className="flex items-center justify-center py-20">
+          <Spinner size="lg" />
+        </div>
       ) : data && data.length > 0 ? (
         <Surface className="overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[720px] text-sm">
-              <thead className="border-b border-slate-200 bg-slate-50/80">
-                <tr>
+          <TableContainer>
+            <Table className="min-w-[720px]">
+              <TableHeader>
+                <TableRow>
                   {columns.map((column) => (
-                    <th key={column} className="px-4 py-3 text-left font-semibold text-slate-600">
-                      {formatColumnLabel(column)}
-                    </th>
+                    <TableHead key={column}>{formatColumnLabel(column)}</TableHead>
                   ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {data.map((row, index) => (
-                  <tr key={`${current.key}-${index}`} className="hover:bg-slate-50/70">
+                  <TableRow key={`${current.key}-${index}`}>
                     {columns.map((column) => (
-                      <td key={column} className="px-4 py-3 text-slate-700">
-                        {formatValue(locale, row[column])}
-                      </td>
+                      <TableCell key={column}>{formatValue(locale, row[column])}</TableCell>
                     ))}
-                  </tr>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Surface>
       ) : (
-        <StatePanel title={t('emptyTitle')} description={t('emptyDescription')} tone="warning" />
+        <EmptyState title={t('emptyTitle')} description={t('emptyDescription')} />
       )}
     </div>
   );

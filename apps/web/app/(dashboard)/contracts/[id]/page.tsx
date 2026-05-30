@@ -4,6 +4,29 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { useTranslations } from 'next-intl';
+import { cn } from '@/lib/cn';
+import {
+  Button,
+  Input,
+  Select,
+  Badge,
+  BadgeVariant,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  TableContainer,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  Modal,
+  Spinner,
+  EmptyState,
+  Alert,
+} from '@/components/ui';
 
 interface Contract {
   id: string;
@@ -42,6 +65,20 @@ interface Transaction {
 interface CollectForm { amount: string; paymentMethod: string; note: string; }
 interface ExtendForm { newDueDate: string; note: string; }
 interface SettleForm { paymentMethod: string; note: string; }
+
+function statusBadgeVariant(s: string): BadgeVariant {
+  const m: Record<string, BadgeVariant> = {
+    active: 'success',
+    near_due: 'warning',
+    overdue: 'destructive',
+    settled: 'info',
+    cancelled: 'default',
+    extended: 'warning',
+  };
+  return m[s] ?? 'default';
+}
+
+const PAYMENT_METHODS = ['cash', 'transfer', 'other'];
 
 export default function ContractDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const t = useTranslations('contracts');
@@ -116,8 +153,14 @@ export default function ContractDetailPage({ params }: { params: Promise<{ id: s
     finally { setSubmitting(false); }
   };
 
-  if (loading) return <p className="text-gray-500">...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+  if (error) return <Alert variant="destructive">{error}</Alert>;
   if (!contract) return null;
 
   const fmt = (n: number) => new Intl.NumberFormat('vi-VN').format(n);
@@ -128,197 +171,258 @@ export default function ContractDetailPage({ params }: { params: Promise<{ id: s
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-800 font-mono">{contract.contractCode}</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            {t('contractInfo.customer')}: <Link href={`/customers/${contract.customerId}`} className="text-blue-600 hover:underline">{contract.customerName}</Link>
+          <h1 className="text-xl font-bold text-neutral-900 font-mono">{contract.contractCode}</h1>
+          <p className="text-sm text-neutral-500 mt-1">
+            {t('contractInfo.customer')}:{' '}
+            <Link href={`/customers/${contract.customerId}`} className="text-primary-600 hover:underline">
+              {contract.customerName}
+            </Link>
           </p>
         </div>
-        <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor(contract.status)}`}>{contract.status}</span>
+        <Badge variant={statusBadgeVariant(contract.status)}>{contract.status}</Badge>
       </div>
 
       {/* Contract Info */}
-      <div className="bg-white rounded border border-gray-200 p-4 grid grid-cols-2 gap-3 text-sm">
-        <Row label={t('contractInfo.principal')} value={`${fmt(contract.principalAmount)} VND`} />
-        <Row label={t('contractInfo.interestRate')} value={`${contract.interestRate}% (${contract.interestType})`} />
-        <Row label={t('contractInfo.startDate')} value={new Date(contract.startDate).toLocaleDateString('vi-VN')} />
-        <Row label={t('contractInfo.dueDate')} value={new Date(contract.dueDate).toLocaleDateString('vi-VN')} />
-        <Row label={t('contractInfo.store')} value={contract.storeName ?? '—'} />
-        <Row label={t('contractInfo.created')} value={new Date(contract.createdAt).toLocaleDateString('vi-VN')} />
-        {contract.notes && <Row label={t('contractInfo.notes')} value={contract.notes} />}
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('contractInfo.customer')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <Row label={t('contractInfo.principal')} value={`${fmt(contract.principalAmount)} VND`} />
+            <Row label={t('contractInfo.interestRate')} value={`${contract.interestRate}% (${contract.interestType})`} />
+            <Row label={t('contractInfo.startDate')} value={new Date(contract.startDate).toLocaleDateString('vi-VN')} />
+            <Row label={t('contractInfo.dueDate')} value={new Date(contract.dueDate).toLocaleDateString('vi-VN')} />
+            <Row label={t('contractInfo.store')} value={contract.storeName ?? '—'} />
+            <Row label={t('contractInfo.created')} value={new Date(contract.createdAt).toLocaleDateString('vi-VN')} />
+            {contract.notes && <Row label={t('contractInfo.notes')} value={contract.notes} />}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Actions */}
       {canAct && (
         <div className="flex gap-3">
-          <button onClick={() => setModal('collect')} className="bg-green-600 text-white text-sm px-4 py-2 rounded hover:bg-green-700">{t('actions.collectInterest')}</button>
-          <button onClick={() => setModal('extend')} className="bg-yellow-500 text-white text-sm px-4 py-2 rounded hover:bg-yellow-600">{t('actions.extend')}</button>
-          <button onClick={() => setModal('settle')} className="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700">{t('actions.settle')}</button>
+          <Button
+            onClick={() => setModal('collect')}
+            className="bg-success-600 hover:bg-success-700 text-white shadow-sm"
+          >
+            {t('actions.collectInterest')}
+          </Button>
+          <Button
+            onClick={() => setModal('extend')}
+            className="bg-warning-500 hover:bg-warning-600 text-white shadow-sm"
+          >
+            {t('actions.extend')}
+          </Button>
+          <Button onClick={() => setModal('settle')}>
+            {t('actions.settle')}
+          </Button>
         </div>
       )}
 
       {/* Assets */}
-      <section>
-        <h2 className="font-semibold text-gray-700 mb-2">{t('pawnedAssets')}</h2>
-        <div className="bg-white rounded border border-gray-200 overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="text-left px-4 py-2 font-medium text-gray-600">{t('assetHeaders.name')}</th>
-                <th className="text-left px-4 py-2 font-medium text-gray-600">{t('assetHeaders.type')}</th>
-                <th className="text-left px-4 py-2 font-medium text-gray-600">{t('assetHeaders.brand')}</th>
-                <th className="text-left px-4 py-2 font-medium text-gray-600">{t('assetHeaders.status')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {assets.map((a) => (
-                <tr key={a.id}>
-                  <td className="px-4 py-2">{a.assetName}</td>
-                  <td className="px-4 py-2">{a.assetType}</td>
-                  <td className="px-4 py-2">{a.brand}</td>
-                  <td className="px-4 py-2">{a.status}</td>
-                </tr>
-              ))}
-              {assets.length === 0 && <tr><td colSpan={4} className="px-4 py-4 text-center text-gray-400">{t('noAssets')}</td></tr>}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('pawnedAssets')}</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <TableContainer>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t('assetHeaders.name')}</TableHead>
+                  <TableHead>{t('assetHeaders.type')}</TableHead>
+                  <TableHead>{t('assetHeaders.brand')}</TableHead>
+                  <TableHead>{t('assetHeaders.status')}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {assets.map((a) => (
+                  <TableRow key={a.id}>
+                    <TableCell>{a.assetName}</TableCell>
+                    <TableCell>{a.assetType}</TableCell>
+                    <TableCell>{a.brand}</TableCell>
+                    <TableCell>
+                      <Badge variant={a.status === 'pawned' ? 'warning' : a.status === 'redeemed' ? 'success' : 'default'}>
+                        {a.status}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {assets.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={4}>
+                      <EmptyState title={t('noAssets')} className="py-8" />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
+      </Card>
 
       {/* Transactions */}
-      <section>
-        <h2 className="font-semibold text-gray-700 mb-2">{t('transactionHistory')}</h2>
-        <div className="bg-white rounded border border-gray-200 overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="text-left px-4 py-2 font-medium text-gray-600">{t('txHeaders.type')}</th>
-                <th className="text-left px-4 py-2 font-medium text-gray-600">{t('txHeaders.amount')}</th>
-                <th className="text-left px-4 py-2 font-medium text-gray-600">{t('txHeaders.method')}</th>
-                <th className="text-left px-4 py-2 font-medium text-gray-600">{t('txHeaders.date')}</th>
-                <th className="text-left px-4 py-2 font-medium text-gray-600">{t('txHeaders.note')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {transactions.map((tx) => (
-                <tr key={tx.id}>
-                  <td className="px-4 py-2">{tx.transactionType}</td>
-                  <td className="px-4 py-2">{fmt(tx.amount)}</td>
-                  <td className="px-4 py-2">{tx.paymentMethod}</td>
-                  <td className="px-4 py-2">{new Date(tx.transactionDate).toLocaleDateString('vi-VN')}</td>
-                  <td className="px-4 py-2 text-gray-500">{tx.note}</td>
-                </tr>
-              ))}
-              {transactions.length === 0 && <tr><td colSpan={5} className="px-4 py-4 text-center text-gray-400">{t('noTransactions')}</td></tr>}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('transactionHistory')}</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <TableContainer>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t('txHeaders.type')}</TableHead>
+                  <TableHead>{t('txHeaders.amount')}</TableHead>
+                  <TableHead>{t('txHeaders.method')}</TableHead>
+                  <TableHead>{t('txHeaders.date')}</TableHead>
+                  <TableHead>{t('txHeaders.note')}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {transactions.map((tx) => (
+                  <TableRow key={tx.id}>
+                    <TableCell className="font-medium">{tx.transactionType}</TableCell>
+                    <TableCell>{fmt(tx.amount)}</TableCell>
+                    <TableCell>{tx.paymentMethod}</TableCell>
+                    <TableCell>{new Date(tx.transactionDate).toLocaleDateString('vi-VN')}</TableCell>
+                    <TableCell className="text-neutral-500">{tx.note}</TableCell>
+                  </TableRow>
+                ))}
+                {transactions.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={5}>
+                      <EmptyState title={t('noTransactions')} className="py-8" />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
+      </Card>
 
-      {/* Modals */}
-      {modal === 'collect' && (
-        <Modal title={t('modalTitles.collect')} onClose={() => setModal(null)}>
-          <form onSubmit={handleCollect} className="space-y-3">
-            {modalError && <p className="text-red-500 text-sm">{modalError}</p>}
-            <Field label={t('modalFields.amount')} type="number" value={collectForm.amount} onChange={(v) => setCollectForm((f) => ({ ...f, amount: v }))} required />
-            <SelectField label={t('modalFields.paymentMethod')} value={collectForm.paymentMethod} options={['cash', 'transfer', 'other']} onChange={(v) => setCollectForm((f) => ({ ...f, paymentMethod: v }))} />
-            <TextareaField label={t('modalFields.note')} value={collectForm.note} onChange={(v) => setCollectForm((f) => ({ ...f, note: v }))} />
-            <ModalActions submitting={submitting} onClose={() => setModal(null)} label={t('collect')} savingLabel={t('saving')} />
-          </form>
-        </Modal>
-      )}
+      {/* Collect Modal */}
+      <Modal
+        open={modal === 'collect'}
+        onClose={() => setModal(null)}
+        title={t('modalTitles.collect')}
+        footer={
+          <>
+            <Button variant="secondary" type="button" onClick={() => setModal(null)}>Cancel</Button>
+            <Button form="collect-form" type="submit" loading={submitting} disabled={submitting}>
+              {submitting ? t('saving') : t('collect')}
+            </Button>
+          </>
+        }
+      >
+        <form id="collect-form" onSubmit={handleCollect} className="space-y-3">
+          {modalError && <Alert variant="destructive">{modalError}</Alert>}
+          <Input
+            label={t('modalFields.amount')}
+            type="number"
+            value={collectForm.amount}
+            onChange={(e) => setCollectForm((f) => ({ ...f, amount: e.target.value }))}
+            required
+          />
+          <Select
+            label={t('modalFields.paymentMethod')}
+            value={collectForm.paymentMethod}
+            onChange={(e) => setCollectForm((f) => ({ ...f, paymentMethod: e.target.value }))}
+          >
+            {PAYMENT_METHODS.map((o) => <option key={o} value={o}>{o}</option>)}
+          </Select>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-neutral-700">{t('modalFields.note')}</label>
+            <textarea
+              value={collectForm.note}
+              onChange={(e) => setCollectForm((f) => ({ ...f, note: e.target.value }))}
+              rows={2}
+              className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500/25 focus:border-primary-500"
+            />
+          </div>
+        </form>
+      </Modal>
 
-      {modal === 'extend' && (
-        <Modal title={t('modalTitles.extend')} onClose={() => setModal(null)}>
-          <form onSubmit={handleExtend} className="space-y-3">
-            {modalError && <p className="text-red-500 text-sm">{modalError}</p>}
-            <Field label={t('modalFields.newDueDate')} type="date" value={extendForm.newDueDate} onChange={(v) => setExtendForm((f) => ({ ...f, newDueDate: v }))} required />
-            <TextareaField label={t('modalFields.note')} value={extendForm.note} onChange={(v) => setExtendForm((f) => ({ ...f, note: v }))} />
-            <ModalActions submitting={submitting} onClose={() => setModal(null)} label={t('extend')} savingLabel={t('saving')} />
-          </form>
-        </Modal>
-      )}
+      {/* Extend Modal */}
+      <Modal
+        open={modal === 'extend'}
+        onClose={() => setModal(null)}
+        title={t('modalTitles.extend')}
+        footer={
+          <>
+            <Button variant="secondary" type="button" onClick={() => setModal(null)}>Cancel</Button>
+            <Button form="extend-form" type="submit" loading={submitting} disabled={submitting}>
+              {submitting ? t('saving') : t('extend')}
+            </Button>
+          </>
+        }
+      >
+        <form id="extend-form" onSubmit={handleExtend} className="space-y-3">
+          {modalError && <Alert variant="destructive">{modalError}</Alert>}
+          <Input
+            label={t('modalFields.newDueDate')}
+            type="date"
+            value={extendForm.newDueDate}
+            onChange={(e) => setExtendForm((f) => ({ ...f, newDueDate: e.target.value }))}
+            required
+          />
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-neutral-700">{t('modalFields.note')}</label>
+            <textarea
+              value={extendForm.note}
+              onChange={(e) => setExtendForm((f) => ({ ...f, note: e.target.value }))}
+              rows={2}
+              className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500/25 focus:border-primary-500"
+            />
+          </div>
+        </form>
+      </Modal>
 
-      {modal === 'settle' && (
-        <Modal title={t('modalTitles.settle')} onClose={() => setModal(null)}>
-          <form onSubmit={handleSettle} className="space-y-3">
-            {modalError && <p className="text-red-500 text-sm">{modalError}</p>}
-            <SelectField label={t('modalFields.paymentMethod')} value={settleForm.paymentMethod} options={['cash', 'transfer', 'other']} onChange={(v) => setSettleForm((f) => ({ ...f, paymentMethod: v }))} />
-            <TextareaField label={t('modalFields.note')} value={settleForm.note} onChange={(v) => setSettleForm((f) => ({ ...f, note: v }))} />
-            <ModalActions submitting={submitting} onClose={() => setModal(null)} label={t('settle')} savingLabel={t('saving')} />
-          </form>
-        </Modal>
-      )}
+      {/* Settle Modal */}
+      <Modal
+        open={modal === 'settle'}
+        onClose={() => setModal(null)}
+        title={t('modalTitles.settle')}
+        footer={
+          <>
+            <Button variant="secondary" type="button" onClick={() => setModal(null)}>Cancel</Button>
+            <Button form="settle-form" type="submit" loading={submitting} disabled={submitting}>
+              {submitting ? t('saving') : t('settle')}
+            </Button>
+          </>
+        }
+      >
+        <form id="settle-form" onSubmit={handleSettle} className="space-y-3">
+          {modalError && <Alert variant="destructive">{modalError}</Alert>}
+          <Select
+            label={t('modalFields.paymentMethod')}
+            value={settleForm.paymentMethod}
+            onChange={(e) => setSettleForm((f) => ({ ...f, paymentMethod: e.target.value }))}
+          >
+            {PAYMENT_METHODS.map((o) => <option key={o} value={o}>{o}</option>)}
+          </Select>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-neutral-700">{t('modalFields.note')}</label>
+            <textarea
+              value={settleForm.note}
+              onChange={(e) => setSettleForm((f) => ({ ...f, note: e.target.value }))}
+              rows={2}
+              className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500/25 focus:border-primary-500"
+            />
+          </div>
+        </form>
+      </Modal>
     </div>
   );
-}
-
-function statusColor(s: string) {
-  const m: Record<string, string> = {
-    active: 'bg-green-100 text-green-700',
-    near_due: 'bg-yellow-100 text-yellow-700',
-    overdue: 'bg-red-100 text-red-700',
-    settled: 'bg-blue-100 text-blue-700',
-    cancelled: 'bg-gray-100 text-gray-500',
-  };
-  return m[s] ?? 'bg-gray-100 text-gray-600';
 }
 
 function Row({ label, value }: { label: string; value: string }) {
-  return <div><span className="text-gray-500">{label}: </span><span>{value}</span></div>;
-}
-
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-gray-800">{title}</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function Field({ label, type, value, onChange, required }: { label: string; type?: string; value: string; onChange: (v: string) => void; required?: boolean }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <input type={type ?? 'text'} value={value} onChange={(e) => onChange(e.target.value)} required={required}
-        className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
-  );
-}
-
-function SelectField({ label, value, options, onChange }: { label: string; value: string; options: string[]; onChange: (v: string) => void }) {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <select value={value} onChange={(e) => onChange(e.target.value)} className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none">
-        {options.map((o) => <option key={o} value={o}>{o}</option>)}
-      </select>
-    </div>
-  );
-}
-
-function TextareaField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={2}
-        className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none" />
-    </div>
-  );
-}
-
-function ModalActions({ submitting, onClose, label, savingLabel }: { submitting: boolean; onClose: () => void; label: string; savingLabel: string }) {
-  return (
-    <div className="flex gap-3 pt-2">
-      <button type="submit" disabled={submitting} className="bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
-        {submitting ? savingLabel : label}
-      </button>
-      <button type="button" onClick={onClose} className="border border-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-50">Cancel</button>
+      <span className="text-neutral-500">{label}: </span>
+      <span className="text-neutral-800">{value}</span>
     </div>
   );
 }

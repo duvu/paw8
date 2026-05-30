@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { PageIntro, StatePanel } from '@/components/page-states';
+import { PageIntro } from '@/components/page-states';
+import { Card, CardContent, EmptyState, Button } from '@/components/ui';
 
 export default function TransactionsPage() {
   const t = useTranslations('transactions');
@@ -10,19 +11,19 @@ export default function TransactionsPage() {
   return (
     <div className="space-y-6">
       <PageIntro title={t('pageTitle')} description={t('unavailableDescription')} />
-      <StatePanel
-        title={t('unavailableTitle')}
-        description={t('unavailableDescription')}
-        tone="warning"
-        action={
-          <Link
-            href="/contracts"
-            className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
-          >
-            {t('goToContracts')}
-          </Link>
-        }
-      />
+      <Card>
+        <CardContent>
+          <EmptyState
+            title={t('unavailableTitle')}
+            description={t('unavailableDescription')}
+            action={
+              <Link href="/contracts">
+                <Button>{t('goToContracts')}</Button>
+              </Link>
+            }
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 }

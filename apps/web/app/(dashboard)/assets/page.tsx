@@ -5,6 +5,23 @@ import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { useTranslations } from 'next-intl';
+import {
+  Button,
+  Input,
+  Select,
+  Badge,
+  TableContainer,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  SkeletonRow,
+  EmptyState,
+  Alert,
+} from '@/components/ui';
+import { cn } from '@/lib/cn';
 
 interface Asset {
   id: string;
@@ -25,6 +42,32 @@ interface PagedResult {
 
 const STATUSES = ['', 'pawned', 'redeemed', 'overdue', 'pending_liquidation', 'liquidated'];
 const TYPES = ['', 'motorbike', 'car', 'phone', 'laptop', 'watch', 'jewelry', 'electronics', 'other'];
+
+const assetStatusVariant = (status: string): 'success' | 'warning' | 'destructive' | 'info' | 'default' => {
+  const map: Record<string, 'success' | 'warning' | 'destructive' | 'info' | 'default'> = {
+    pawned: 'info',
+    redeemed: 'success',
+    overdue: 'destructive',
+    pending_liquidation: 'warning',
+    liquidated: 'default',
+  };
+  return map[status] ?? 'default';
+};
+
+const SearchIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="11" cy="11" r="8" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+  </svg>
+);
+
+const BoxIcon = () => (
+  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+    <line x1="12" y1="22.08" x2="12" y2="12" />
+  </svg>
+);
 
 export default function AssetsPage() {
   const t = useTranslations('assets');
@@ -67,79 +110,104 @@ export default function AssetsPage() {
   };
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold text-gray-800">{t('pageTitle')}</h1>
-        <Link href="/assets/new" className="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700">
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold text-neutral-900">{t('pageTitle')}</h1>
+        <Link
+          href="/assets/new"
+          className={cn(
+            'inline-flex items-center justify-center font-medium whitespace-nowrap h-9 px-4 text-sm rounded-lg',
+            'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-sm transition-all duration-150',
+          )}
+        >
           {t('addButton')}
         </Link>
       </div>
 
-      <form onSubmit={handleSearch} className="mb-4 flex flex-wrap gap-2">
-        <input
+      {/* Filter row */}
+      <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
+        <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t('searchPlaceholder')}
-          className="border border-gray-300 rounded px-3 py-2 text-sm flex-1 min-w-48 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          leftIcon={<SearchIcon />}
+          containerClassName="flex-1"
         />
-        <select
+        <Select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none"
+          className="sm:w-44"
         >
-          {STATUSES.map((s) => <option key={s} value={s}>{s || t('allStatus')}</option>)}
-        </select>
-        <select
+          {STATUSES.map((s) => (
+            <option key={s} value={s}>{s || t('allStatus')}</option>
+          ))}
+        </Select>
+        <Select
           value={type}
           onChange={(e) => setType(e.target.value)}
-          className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none"
+          className="sm:w-44"
         >
-          {TYPES.map((tp) => <option key={tp} value={tp}>{tp || t('allTypes')}</option>)}
-        </select>
-        <button type="submit" className="bg-gray-700 text-white px-4 py-2 text-sm rounded hover:bg-gray-800">
+          {TYPES.map((tp) => (
+            <option key={tp} value={tp}>{tp || t('allTypes')}</option>
+          ))}
+        </Select>
+        <Button type="submit" variant="secondary">
           {t('searchButton')}
-        </button>
+        </Button>
       </form>
 
-      {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-      {loading ? (
-        <p className="text-gray-500">...</p>
-      ) : (
-        <>
-          <p className="text-xs text-gray-500 mb-2">{t('total', { total })}</p>
-          <div className="bg-white rounded border border-gray-200 overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.name')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.type')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.brand')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.serialImeiPlate')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.valuation')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.status')}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {assets.map((a) => (
-                  <tr key={a.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3">{a.assetName}</td>
-                    <td className="px-4 py-3">{a.assetType}</td>
-                    <td className="px-4 py-3">{a.brand}</td>
-                    <td className="px-4 py-3 text-xs">{a.serialNumber || a.imei || a.licensePlate || '—'}</td>
-                    <td className="px-4 py-3">{new Intl.NumberFormat('vi-VN').format(a.valuationAmount)}</td>
-                    <td className="px-4 py-3">
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-600">{a.status}</span>
-                    </td>
-                  </tr>
-                ))}
-                {assets.length === 0 && (
-                  <tr><td colSpan={6} className="px-4 py-6 text-center text-gray-400">{t('noData')}</td></tr>
-                )}
-              </tbody>
-            </table>
+      {/* Error */}
+      {error && <Alert variant="destructive">{error}</Alert>}
+
+      {/* Table */}
+      <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
+        {!loading && (
+          <div className="px-4 py-2.5 border-b border-neutral-100">
+            <p className="text-xs text-neutral-500">{t('total', { total })}</p>
           </div>
-        </>
-      )}
+        )}
+        <TableContainer>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t('tableHeaders.name')}</TableHead>
+                <TableHead>{t('tableHeaders.type')}</TableHead>
+                <TableHead>{t('tableHeaders.brand')}</TableHead>
+                <TableHead>{t('tableHeaders.serialImeiPlate')}</TableHead>
+                <TableHead>{t('tableHeaders.valuation')}</TableHead>
+                <TableHead>{t('tableHeaders.status')}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {loading ? (
+                Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} cols={6} />)
+              ) : assets.length === 0 ? (
+                <tr>
+                  <td colSpan={6}>
+                    <EmptyState icon={<BoxIcon />} title={t('noData')} />
+                  </td>
+                </tr>
+              ) : (
+                assets.map((a) => (
+                  <TableRow key={a.id}>
+                    <TableCell className="font-medium text-neutral-900">{a.assetName}</TableCell>
+                    <TableCell>{a.assetType}</TableCell>
+                    <TableCell>{a.brand}</TableCell>
+                    <TableCell className="font-mono text-xs">
+                      {a.serialNumber || a.imei || a.licensePlate || '—'}
+                    </TableCell>
+                    <TableCell>{new Intl.NumberFormat('vi-VN').format(a.valuationAmount)}</TableCell>
+                    <TableCell>
+                      <Badge variant={assetStatusVariant(a.status)}>{a.status}</Badge>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
     </div>
   );
 }

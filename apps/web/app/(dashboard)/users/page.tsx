@@ -4,6 +4,20 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { useTranslations } from 'next-intl';
+import {
+  Button,
+  Badge,
+  TableContainer,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  Spinner,
+  EmptyState,
+  Alert,
+} from '@/components/ui';
 
 interface User {
   id: string;
@@ -18,6 +32,13 @@ interface User {
 interface PagedResult {
   data: User[];
   total: number;
+}
+
+function roleBadgeVariant(role: string) {
+  if (role === 'platform_admin') return 'destructive';
+  if (role === 'tenant_owner' || role === 'tenant_admin') return 'info';
+  if (role === 'store_manager') return 'warning';
+  return 'default';
 }
 
 export default function UsersPage() {
@@ -39,52 +60,65 @@ export default function UsersPage() {
   }, [t]);
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold text-gray-800">{t('pageTitle')}</h1>
-        <Link href="/users/new" className="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700">
-          {t('addButton')}
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-bold text-neutral-900">{t('pageTitle')}</h1>
+        <Link href="/users/new">
+          <Button>{t('addButton')}</Button>
         </Link>
       </div>
 
-      {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+      {error && <Alert variant="destructive">{error}</Alert>}
+
       {loading ? (
-        <p className="text-gray-500">...</p>
+        <div className="flex items-center justify-center py-20">
+          <Spinner size="lg" />
+        </div>
       ) : (
         <>
-          <p className="text-xs text-gray-500 mb-2">{t('total', { total })}</p>
-          <div className="bg-white rounded border border-gray-200 overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.name')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.email')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.phone')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.role')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.status')}</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">{t('tableHeaders.created')}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {users.map((u) => (
-                  <tr key={u.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3">{u.fullName}</td>
-                    <td className="px-4 py-3">{u.email}</td>
-                    <td className="px-4 py-3">{u.phone}</td>
-                    <td className="px-4 py-3">{u.role}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-0.5 rounded-full text-xs ${u.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
-                        {u.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">{new Date(u.createdAt).toLocaleDateString('vi-VN')}</td>
-                  </tr>
-                ))}
-                {users.length === 0 && (
-                  <tr><td colSpan={6} className="px-4 py-6 text-center text-gray-400">{t('noData')}</td></tr>
-                )}
-              </tbody>
-            </table>
+          <p className="text-xs text-neutral-500">{t('total', { total })}</p>
+          <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
+            <TableContainer>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('tableHeaders.name')}</TableHead>
+                    <TableHead>{t('tableHeaders.email')}</TableHead>
+                    <TableHead>{t('tableHeaders.phone')}</TableHead>
+                    <TableHead>{t('tableHeaders.role')}</TableHead>
+                    <TableHead>{t('tableHeaders.status')}</TableHead>
+                    <TableHead>{t('tableHeaders.created')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {users.map((u) => (
+                    <TableRow key={u.id}>
+                      <TableCell className="font-medium">{u.fullName}</TableCell>
+                      <TableCell>{u.email}</TableCell>
+                      <TableCell>{u.phone}</TableCell>
+                      <TableCell>
+                        <Badge variant={roleBadgeVariant(u.role) as 'default' | 'success' | 'warning' | 'destructive' | 'info' | 'outline'}>
+                          {u.role}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={u.status === 'active' ? 'success' : 'default'}>
+                          {u.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{new Date(u.createdAt).toLocaleDateString('vi-VN')}</TableCell>
+                    </TableRow>
+                  ))}
+                  {users.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={6}>
+                        <EmptyState title={t('noData')} className="py-12" />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
         </>
       )}
