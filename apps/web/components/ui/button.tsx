@@ -2,14 +2,16 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/cn';
+import { Spinner } from './spinner';
 
 export type ButtonVariant = 'default' | 'secondary' | 'destructive' | 'ghost' | 'link';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
+  fullWidth?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
 }
@@ -37,6 +39,7 @@ export function Button({
   variant = 'default',
   size = 'md',
   loading = false,
+  fullWidth = false,
   disabled,
   className,
   children,
@@ -56,21 +59,12 @@ export function Button({
         'disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
         variant !== 'link' && sizeStyles[size],
         variantStyles[variant],
+        fullWidth && 'w-full',
         className,
       )}
     >
       {loading ? (
-        <svg
-          className="animate-spin shrink-0"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-        >
-          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-        </svg>
+        <Spinner size="sm" className="shrink-0" />
       ) : leftIcon}
       {children}
       {!loading && rightIcon}

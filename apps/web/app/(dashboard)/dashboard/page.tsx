@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { useLocale, useTranslations } from 'next-intl';
-import { Alert, Card, CardContent, EmptyState, Skeleton, Spinner } from '@/components/ui';
+import { Alert, Card, CardContent, EmptyState, Skeleton, Spinner, PageHeader } from '@/components/ui';
 
 interface DashboardData {
   activeContracts: number;
@@ -71,10 +71,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="space-y-1">
-          <h1 className="text-xl font-semibold text-neutral-900">{t('title')}</h1>
-          <p className="text-sm text-neutral-500">{t('subtitle')}</p>
-        </div>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
         <div className="flex items-center justify-center py-8">
           <Spinner size="lg" />
         </div>
@@ -95,10 +92,7 @@ export default function DashboardPage() {
   if (error) {
     return (
       <div className="space-y-6">
-        <div className="space-y-1">
-          <h1 className="text-xl font-semibold text-neutral-900">{t('title')}</h1>
-          <p className="text-sm text-neutral-500">{t('subtitle')}</p>
-        </div>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
         <Alert variant="destructive">{error}</Alert>
       </div>
     );
@@ -107,10 +101,7 @@ export default function DashboardPage() {
   if (!data) {
     return (
       <div className="space-y-6">
-        <div className="space-y-1">
-          <h1 className="text-xl font-semibold text-neutral-900">{t('title')}</h1>
-          <p className="text-sm text-neutral-500">{t('subtitle')}</p>
-        </div>
+        <PageHeader title={t('title')} subtitle={t('subtitle')} />
         <EmptyState title={t('invalidData')} />
       </div>
     );

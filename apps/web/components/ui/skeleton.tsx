@@ -1,18 +1,28 @@
 import * as React from 'react';
 import { cn } from '@/lib/cn';
 
-interface SkeletonProps {
+export type SkeletonVariant = 'text' | 'rect' | 'circle';
+
+export interface SkeletonProps {
+  variant?: SkeletonVariant;
+  width?: string | number;
+  height?: string | number;
   className?: string;
   style?: React.CSSProperties;
 }
 
-export function Skeleton({ className, style }: SkeletonProps) {
+export function Skeleton({ variant = 'rect', width, height, className, style }: SkeletonProps) {
   return (
     <div
       aria-hidden="true"
-      style={style}
+      style={{
+        width: typeof width === 'number' ? `${width}px` : width,
+        height: typeof height === 'number' ? `${height}px` : height,
+        ...style,
+      }}
       className={cn(
-        'animate-pulse rounded-lg bg-neutral-200',
+        'animate-pulse bg-neutral-200',
+        variant === 'circle' ? 'rounded-full' : 'rounded-lg',
         className,
       )}
     />

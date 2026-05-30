@@ -17,6 +17,7 @@ import {
   Spinner,
   EmptyState,
   Alert,
+  PageHeader
 } from '@/components/ui';
 
 interface User {
@@ -61,12 +62,7 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-neutral-900">{t('pageTitle')}</h1>
-        <Link href="/users/new">
-          <Button>{t('addButton')}</Button>
-        </Link>
-      </div>
+      <PageHeader title={t('pageTitle')} actions={<Link href="/users/new"><Button size="sm">{t('addButton')}</Button></Link>} />
 
       {error && <Alert variant="destructive">{error}</Alert>}
 

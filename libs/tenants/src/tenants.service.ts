@@ -1,39 +1,27 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import {
   CreateTenantDto,
   UpdateTenantDto,
   TenantStatus,
   TenantResponseDto,
 } from './dto/tenant.dto';
+import { TenantsRepository } from './tenants.repository';
 
 @Injectable()
 export class TenantsService {
   constructor(
-    @InjectDataSource()
-    private readonly dataSource: DataSource,
+    private readonly tenantsRepository: TenantsRepository,
   ) {}
 
   async create(dto: CreateTenantDto): Promise<TenantResponseDto> {
-    const code = dto.code.toUpperCase();
-    const rows = await this.dataSource.query<TenantResponseDto[]>(
-      `INSERT INTO tenants (name, code, status, plan, max_stores, max_users, trial_end_date)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING id, name, code, status, plan,
-                 max_stores AS "maxStores", max_users AS "maxUsers",
-                 trial_end_date AS "trialEndDate", created_at AS "createdAt"`,
-      [
-        dto.name,
-        code,
-        TenantStatus.ACTIVE,
-        dto.plan ?? 'free',
-        dto.maxStores ?? 1,
-        dto.maxUsers ?? 5,
-        dto.trialEndDate ?? null,
-      ],
-    );
-    return rows[0];
+    return this.tenantsRepository.insert({
+      name: dto.name,
+      code: dto.code.toUpperCase(),
+      plan: dto.plan ?? 'free',
+      maxStores: dto.maxStores ?? 1,
+      maxUsers: dto.maxUsers ?? 5,
+      trialEndDate: dto.trialEndDate ?? null,
+    });
   }
 
   async findAll(
@@ -41,53 +29,23 @@ export class TenantsService {
     limit = 20,
   ): Promise<{ data: TenantResponseDto[]; total: number; page: number; limit: number }> {
     const offset = (page - 1) * limit;
-    const [rows, countRows] = await Promise.all([
-      this.dataSource.query<TenantResponseDto[]>(
-        `SELECT id, name, code, status, plan,
-                max_stores AS "maxStores", max_users AS "maxUsers",
-                trial_end_date AS "trialEndDate", created_at AS "createdAt"
-         FROM tenants
-         ORDER BY created_at DESC
-         LIMIT $1 OFFSET $2`,
-        [limit, offset],
-      ),
-      this.dataSource.query<[{ count: string }]>(
-        `SELECT COUNT(*) FROM tenants`,
-      ),
+    const [data, total] = await Promise.all([
+      this.tenantsRepository.findAll(limit, offset),
+      this.tenantsRepository.count(),
     ]);
-    return {
-      data: rows,
-      total: parseInt(countRows[0].count, 10),
-      page,
-      limit,
-    };
+    return { data, total, page, limit };
   }
 
   async findOne(id: string): Promise<TenantResponseDto> {
-    const rows = await this.dataSource.query<TenantResponseDto[]>(
-      `SELECT id, name, code, status, plan,
-              max_stores AS "maxStores", max_users AS "maxUsers",
-              trial_end_date AS "trialEndDate", created_at AS "createdAt"
-       FROM tenants
-       WHERE id = $1`,
-      [id],
-    );
-    if (!rows.length) {
+    const row = await this.tenantsRepository.findById(id);
+    if (!row) {
       throw new NotFoundException(`Tenant ${id} not found`);
     }
-    return rows[0];
+    return row;
   }
 
   async findByCode(code: string): Promise<TenantResponseDto | null> {
-    const rows = await this.dataSource.query<TenantResponseDto[]>(
-      `SELECT id, name, code, status, plan,
-              max_stores AS "maxStores", max_users AS "maxUsers",
-              trial_end_date AS "trialEndDate", created_at AS "createdAt"
-       FROM tenants
-       WHERE code = $1`,
-      [code.toUpperCase()],
-    );
-    return rows[0] ?? null;
+    return this.tenantsRepository.findByCode(code.toUpperCase());
   }
 
   async update(id: string, dto: UpdateTenantDto): Promise<TenantResponseDto> {
@@ -108,28 +66,13 @@ export class TenantsService {
       return this.findOne(id);
     }
 
+    // repo expects values = [...fieldValues, id]
     values.push(id);
-    const rows = await this.dataSource.query<TenantResponseDto[]>(
-      `UPDATE tenants SET ${fields.join(', ')}
-       WHERE id = $${idx}
-       RETURNING id, name, code, status, plan,
-                 max_stores AS "maxStores", max_users AS "maxUsers",
-                 trial_end_date AS "trialEndDate", created_at AS "createdAt"`,
-      values,
-    );
-    return rows[0];
+    return this.tenantsRepository.update(id, fields, values);
   }
 
   async setStatus(id: string, status: TenantStatus): Promise<TenantResponseDto> {
     await this.findOne(id);
-    const rows = await this.dataSource.query<TenantResponseDto[]>(
-      `UPDATE tenants SET status = $1
-       WHERE id = $2
-       RETURNING id, name, code, status, plan,
-                 max_stores AS "maxStores", max_users AS "maxUsers",
-                 trial_end_date AS "trialEndDate", created_at AS "createdAt"`,
-      [status, id],
-    );
-    return rows[0];
+    return this.tenantsRepository.setStatus(id, status);
   }
 }

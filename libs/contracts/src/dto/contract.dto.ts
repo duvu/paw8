@@ -12,11 +12,12 @@ import {
   Max,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export enum InterestType {
   DAILY = 'daily',
   MONTHLY = 'monthly',
-  TERM = 'term',
+  PER_PERIOD = 'per_period',
 }
 
 export enum ContractStatus {
@@ -33,89 +34,109 @@ export enum ContractStatus {
 
 export class CreateContractDto {
   @IsUUID()
+  @ApiProperty()
   storeId: string;
 
   @IsUUID()
+  @ApiProperty()
   customerId: string;
 
   @IsArray()
   @ArrayMinSize(1)
   @IsUUID('4', { each: true })
+  @ApiProperty()
   assetIds: string[];
 
   @IsNumber()
   @IsPositive()
+  @ApiProperty()
   principalAmount: number;
 
   @IsNumber()
   @IsPositive()
   @Max(100)
+  @ApiProperty()
   interestRate: number;
 
   @IsEnum(InterestType)
+  @ApiProperty()
   interestType: InterestType;
 
   @IsDateString()
+  @ApiProperty()
   startDate: Date;
 
   @IsDateString()
+  @ApiProperty()
   dueDate: Date;
 
   @IsOptional()
   @IsString()
+  @ApiPropertyOptional()
   notes?: string;
 }
 
 export class UpdateContractDto {
   @IsOptional()
   @IsString()
+  @ApiPropertyOptional()
   notes?: string;
 
   @IsOptional()
   @IsDateString()
+  @ApiPropertyOptional()
   dueDate?: Date;
 }
 
 export class UpdateContractStatusDto {
   @IsEnum(ContractStatus)
+  @ApiProperty()
   status: ContractStatus;
 }
 
 export class ContractSearchDto {
   @IsOptional()
   @IsString()
+  @ApiPropertyOptional()
   contractCode?: string;
 
   @IsOptional()
   @IsUUID()
+  @ApiPropertyOptional()
   customerId?: string;
 
   @IsOptional()
   @IsUUID()
+  @ApiPropertyOptional()
   storeId?: string;
 
   @IsOptional()
   @IsEnum(ContractStatus)
+  @ApiPropertyOptional()
   status?: ContractStatus;
 
   @IsOptional()
   @IsDateString()
+  @ApiPropertyOptional()
   dueDateFrom?: Date;
 
   @IsOptional()
   @IsDateString()
+  @ApiPropertyOptional()
   dueDateTo?: Date;
 
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(1)
+  @ApiPropertyOptional()
   page?: number = 1;
 
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(1)
+  @ApiPropertyOptional()
   limit?: number = 20;
 }
 

@@ -4,7 +4,9 @@ import {
   Injectable,
   ForbiddenException,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { CurrentUserData } from '../decorators/current-user.decorator';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 /**
  * Ensures tenantId in JWT matches route param :tenantId if present.
@@ -14,14 +16,26 @@ import { CurrentUserData } from '../decorators/current-user.decorator';
  */
 @Injectable()
 export class TenantGuard implements CanActivate {
+  constructor(private readonly reflector: Reflector) {}
+
   canActivate(context: ExecutionContext): boolean {
+    // Skip for public routes
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) return true;
+
     const request = context.switchToHttp().getRequest<{
-      user: CurrentUserData;
+      user: CurrentUserData | undefined;
       params: Record<string, string>;
     }>();
     const user = request.user;
 
-    // Platform admins have null tenantId — they can access management endpoints
+    // No user means JwtAuthGuard already allowed it (public) or will reject it
+    if (!user) return true;
+
+    // Platform admins have null/undefined tenantId — they can access management endpoints
     if (!user.tenantId) {
       return true;
     }

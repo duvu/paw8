@@ -11,7 +11,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard, CurrentUser } from '../../common/src';
+import { RolesGuard, CurrentUser, Audit } from '../../common/src';
 import type { CurrentUserData } from '../../common/src';
 import { CustomersService } from './customers.service';
 import {
@@ -19,13 +19,17 @@ import {
   UpdateCustomerDto,
   CustomerSearchDto,
 } from './dto/customer.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('customers')
+@ApiBearerAuth()
 @Controller('customers')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
   @Post()
+  @Audit({ action: 'CREATE_CUSTOMER', entityType: 'customer' })
   @HttpCode(HttpStatus.CREATED)
   create(@CurrentUser() user: CurrentUserData, @Body() dto: CreateCustomerDto) {
     const storeId = user.allowedStoreIds[0] ?? '';

@@ -3,9 +3,10 @@
 import * as React from 'react';
 import { cn } from '@/lib/cn';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  hint?: string;
   helperText?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
@@ -15,15 +16,18 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export function Input({
   label,
   error,
+  hint,
   helperText,
   leftIcon,
   rightIcon,
   containerClassName,
   className,
   id,
+  required,
   ...props
 }: InputProps) {
   const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-');
+  const hintText = hint ?? helperText;
 
   return (
     <div className={cn('flex flex-col gap-1.5', containerClassName)}>
@@ -33,6 +37,7 @@ export function Input({
           className="text-sm font-medium text-neutral-700"
         >
           {label}
+          {required && <span className="ml-0.5 text-destructive-500">*</span>}
         </label>
       )}
       <div className="relative flex items-center">
@@ -44,6 +49,7 @@ export function Input({
         <input
           {...props}
           id={inputId}
+          required={required}
           className={cn(
             'w-full h-9 rounded-lg border bg-white px-3 text-sm text-neutral-900',
             'placeholder:text-neutral-400',
@@ -67,8 +73,8 @@ export function Input({
       {error && (
         <p className="text-xs text-destructive-600">{error}</p>
       )}
-      {!error && helperText && (
-        <p className="text-xs text-neutral-500">{helperText}</p>
+      {!error && hintText && (
+        <p className="text-xs text-neutral-500">{hintText}</p>
       )}
     </div>
   );

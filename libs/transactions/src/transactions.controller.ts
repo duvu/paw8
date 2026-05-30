@@ -9,7 +9,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard, CurrentUser, Roles } from '../../common/src';
+import { RolesGuard, CurrentUser, Roles, Audit } from '../../common/src';
 import type { CurrentUserData } from '../../common/src';
 import { TransactionsService } from './transactions.service';
 import {
@@ -18,7 +18,10 @@ import {
   ExtendContractDto,
   VoidTransactionDto,
 } from './dto/transaction.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('transactions')
+@ApiBearerAuth()
 @Controller('transactions')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class TransactionsController {
@@ -26,6 +29,7 @@ export class TransactionsController {
 
   @Post()
   @Roles('staff', 'store_manager', 'tenant_admin', 'tenant_owner')
+  @Audit({ action: 'RECORD_TRANSACTION', entityType: 'transaction' })
   @HttpCode(HttpStatus.CREATED)
   recordTransaction(@CurrentUser() user: CurrentUserData, @Body() dto: RecordTransactionDto) {
     const storeId = user.allowedStoreIds[0] ?? '';
@@ -44,6 +48,7 @@ export class TransactionsController {
 
   @Post('extend')
   @Roles('staff', 'store_manager', 'tenant_admin', 'tenant_owner')
+  @Audit({ action: 'EXTEND_CONTRACT', entityType: 'contract' })
   @HttpCode(HttpStatus.CREATED)
   extendContract(@CurrentUser() user: CurrentUserData, @Body() dto: ExtendContractDto) {
     const storeId = user.allowedStoreIds[0] ?? '';
@@ -52,6 +57,7 @@ export class TransactionsController {
 
   @Post(':id/void')
   @Roles('store_manager', 'tenant_admin', 'tenant_owner')
+  @Audit({ action: 'VOID_TRANSACTION', entityType: 'transaction' })
   @HttpCode(HttpStatus.CREATED)
   voidTransaction(
     @CurrentUser() user: CurrentUserData,

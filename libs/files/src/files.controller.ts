@@ -10,11 +10,14 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard, CurrentUser, Roles } from '../../common/src';
+import { RolesGuard, CurrentUser, Roles, Audit } from '../../common/src';
 import type { CurrentUserData } from '../../common/src';
 import { FilesService } from './files.service';
 import { RequestUploadUrlDto, ConfirmUploadDto } from './dto/file.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('files')
+@ApiBearerAuth()
 @Controller('files')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class FilesController {
@@ -30,6 +33,7 @@ export class FilesController {
   }
 
   @Post('confirm')
+  @Audit({ action: 'UPLOAD_FILE', entityType: 'file' })
   @HttpCode(HttpStatus.CREATED)
   confirmUpload(
     @CurrentUser() user: CurrentUserData,

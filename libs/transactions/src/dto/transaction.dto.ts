@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export enum TransactionType {
   DISBURSEMENT = 'disbursement',
@@ -28,62 +29,78 @@ export enum PaymentMethod {
 
 export class RecordTransactionDto {
   @IsUUID()
+  @ApiProperty()
   contractId: string;
 
   @IsEnum(TransactionType)
+  @ApiProperty()
   transactionType: TransactionType;
 
   @IsNumber()
   @IsPositive()
+  @ApiProperty()
   amount: number;
 
   @IsEnum(PaymentMethod)
+  @ApiProperty()
   paymentMethod: PaymentMethod;
 
   @IsDateString()
+  @ApiProperty()
   transactionDate: Date;
 
   @IsOptional()
   @IsString()
+  @ApiPropertyOptional()
   note?: string;
 
   @IsOptional()
   @IsUUID()
+  @ApiPropertyOptional()
   referenceTransactionId?: string;
 }
 
 export class CalculateSettlementDto {
   @IsUUID()
+  @ApiProperty()
   contractId: string;
 
   @IsDateString()
+  @ApiProperty()
   settlementDate: Date;
 }
 
 export class ExtendContractDto {
   @IsUUID()
+  @ApiProperty()
   contractId: string;
 
   @IsDateString()
+  @ApiProperty()
   newDueDate: Date;
 
   @IsNumber()
   @IsPositive()
+  @ApiProperty()
   interestPaid: number;
 
   @IsOptional()
   @IsNumber()
+  @ApiPropertyOptional()
   feeAmount?: number;
 
   @IsEnum(PaymentMethod)
+  @ApiProperty()
   paymentMethod: PaymentMethod;
 
   @IsOptional()
   @IsString()
+  @ApiPropertyOptional()
   note?: string;
 }
 
 export class VoidTransactionDto {
   @IsString()
+  @ApiProperty()
   reason: string;
 }

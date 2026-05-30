@@ -20,7 +20,10 @@ import {
   UpdateAssetStatusDto,
   AssetSearchDto,
 } from './dto/asset.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('assets')
+@ApiBearerAuth()
 @Controller('assets')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AssetsController {

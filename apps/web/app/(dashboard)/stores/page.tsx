@@ -15,6 +15,7 @@ import {
   Spinner,
   EmptyState,
   Alert,
+  PageHeader
 } from '@/components/ui';
 
 interface Store {
@@ -51,7 +52,7 @@ export default function StoresPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold text-neutral-900">{t('pageTitle')}</h1>
+      <PageHeader title={t('pageTitle')} />
 
       {error && <Alert variant="destructive">{error}</Alert>}
 

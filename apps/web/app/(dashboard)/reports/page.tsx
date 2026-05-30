@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/cn';
-import { PageIntro, StatePanel, Surface } from '@/components/page-states';
+import { StatePanel, Surface } from '@/components/page-states';
 import { canAccessRole } from '@/lib/role-access';
 import { useAuth } from '@/contexts/auth';
 import {
@@ -21,6 +21,7 @@ import {
   Spinner,
   EmptyState,
   Alert,
+  PageHeader
 } from '@/components/ui';
 
 function formatColumnLabel(value: string): string {
@@ -122,7 +123,7 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-6">
-      <PageIntro title={t('pageTitle')} description={t('subtitle')} />
+      <PageHeader title={t('pageTitle')} subtitle={t('subtitle')} />
 
       {/* Tab pills */}
       <div className="overflow-x-auto flex gap-1 pb-1">

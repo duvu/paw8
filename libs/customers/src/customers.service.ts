@@ -3,20 +3,18 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import {
   CreateCustomerDto,
   UpdateCustomerDto,
   CustomerSearchDto,
   CustomerResponseDto,
 } from './dto/customer.dto';
+import { CustomersRepository } from './customers.repository';
 
 @Injectable()
 export class CustomersService {
   constructor(
-    @InjectDataSource()
-    private readonly dataSource: DataSource,
+    private readonly customersRepository: CustomersRepository,
   ) {}
 
   async create(
@@ -25,45 +23,30 @@ export class CustomersService {
     userId: string,
     dto: CreateCustomerDto,
   ): Promise<CustomerResponseDto> {
-    const dupIdentity = await this.dataSource.query(
-      `SELECT id FROM customers WHERE tenant_id = $1 AND identity_number = $2`,
-      [tenantId, dto.identityNumber],
-    );
+    const dupIdentity = await this.customersRepository.findByIdentityNumber(tenantId, dto.identityNumber);
     if (dupIdentity.length > 0) {
       throw new ConflictException('DUPLICATE_IDENTITY');
     }
 
-    const dupPhone = await this.dataSource.query(
-      `SELECT id FROM customers WHERE tenant_id = $1 AND phone = $2`,
-      [tenantId, dto.phone],
-    );
+    const dupPhone = await this.customersRepository.findByPhone(tenantId, dto.phone);
     if (dupPhone.length > 0) {
       throw new ConflictException('DUPLICATE_PHONE');
     }
 
-    const result = await this.dataSource.query(
-      `INSERT INTO customers (
-        tenant_id, full_name, phone, identity_number, date_of_birth,
-        permanent_address, current_address, occupation,
-        emergency_contact_name, emergency_contact_phone, notes, status, created_at, updated_at
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'active',NOW(),NOW())
-      RETURNING id, tenant_id, full_name, phone, identity_number, status, created_at`,
-      [
-        tenantId,
-        dto.fullName,
-        dto.phone,
-        dto.identityNumber,
-        dto.dateOfBirth ?? null,
-        dto.permanentAddress ?? null,
-        dto.currentAddress ?? null,
-        dto.occupation ?? null,
-        dto.emergencyContactName ?? null,
-        dto.emergencyContactPhone ?? null,
-        dto.notes ?? null,
-      ],
-    );
+    const row = await this.customersRepository.insert(tenantId, {
+      fullName: dto.fullName,
+      phone: dto.phone,
+      identityNumber: dto.identityNumber,
+      dateOfBirth: dto.dateOfBirth ?? null,
+      permanentAddress: dto.permanentAddress ?? null,
+      currentAddress: dto.currentAddress ?? null,
+      occupation: dto.occupation ?? null,
+      emergencyContactName: dto.emergencyContactName ?? null,
+      emergencyContactPhone: dto.emergencyContactPhone ?? null,
+      notes: dto.notes ?? null,
+    });
 
-    return this.mapToDto(result[0]);
+    return this.mapToDto(row);
   }
 
   async search(
@@ -75,34 +58,9 @@ export class CustomersService {
     const offset = (page - 1) * limit;
     const query = searchDto.query;
 
-    const whereClause = query
-      ? `AND (c.full_name ILIKE $2 OR c.phone ILIKE $2 OR c.identity_number ILIKE $2)`
-      : '';
-    const params: any[] = query
-      ? [tenantId, `%${query}%`, limit, offset]
-      : [tenantId, limit, offset];
-
-    const limitIdx = query ? 3 : 2;
-    const offsetIdx = query ? 4 : 3;
-
-    const countParams: any[] = query ? [tenantId, `%${query}%`] : [tenantId];
-
-    const [rows, countResult] = await Promise.all([
-      this.dataSource.query(
-        `SELECT c.id, c.tenant_id, c.full_name, c.phone, c.identity_number, c.status, c.created_at,
-                COUNT(pc.id) FILTER (WHERE pc.status NOT IN ('settled','cancelled','liquidated')) AS active_contracts
-         FROM customers c
-         LEFT JOIN pawn_contracts pc ON pc.customer_id = c.id AND pc.tenant_id = c.tenant_id
-         WHERE c.tenant_id = $1 ${whereClause}
-         GROUP BY c.id
-         ORDER BY c.created_at DESC
-         LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
-        params,
-      ),
-      this.dataSource.query(
-        `SELECT COUNT(*) AS total FROM customers c WHERE c.tenant_id = $1 ${whereClause}`,
-        countParams,
-      ),
+    const [rows, total] = await Promise.all([
+      this.customersRepository.search(tenantId, query, limit, offset),
+      this.customersRepository.count(tenantId, query),
     ]);
 
     return {
@@ -110,23 +68,16 @@ export class CustomersService {
         ...this.mapToDto(r),
         activeContracts: parseInt(r.active_contracts ?? '0', 10),
       })),
-      total: parseInt(countResult[0].total, 10),
+      total,
     };
   }
 
   async findOne(tenantId: string, id: string): Promise<CustomerResponseDto> {
-    const result = await this.dataSource.query(
-      `SELECT id, tenant_id, full_name, phone, identity_number, status, created_at
-       FROM customers
-       WHERE id = $1 AND tenant_id = $2`,
-      [id, tenantId],
-    );
-
-    if (result.length === 0) {
+    const row = await this.customersRepository.findById(tenantId, id);
+    if (!row) {
       throw new NotFoundException(`Customer ${id} not found`);
     }
-
-    return this.mapToDto(result[0]);
+    return this.mapToDto(row);
   }
 
   async update(
@@ -166,24 +117,13 @@ export class CustomersService {
     fields.push(`updated_at = NOW()`);
     values.push(id, tenantId);
 
-    await this.dataSource.query(
-      `UPDATE customers SET ${fields.join(', ')} WHERE id = $${idx++} AND tenant_id = $${idx++}`,
-      values,
-    );
-
+    await this.customersRepository.update(tenantId, id, fields, values);
     return this.findOne(tenantId, id);
   }
 
   async getContractHistory(tenantId: string, customerId: string): Promise<any[]> {
     await this.findOne(tenantId, customerId);
-
-    return this.dataSource.query(
-      `SELECT id, contract_code, status, principal_amount, start_date, due_date, created_at
-       FROM pawn_contracts
-       WHERE customer_id = $1 AND tenant_id = $2
-       ORDER BY created_at DESC`,
-      [customerId, tenantId],
-    );
+    return this.customersRepository.getContractHistory(tenantId, customerId);
   }
 
   private mapToDto(row: any): CustomerResponseDto {

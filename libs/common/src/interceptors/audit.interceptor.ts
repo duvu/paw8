@@ -9,6 +9,7 @@ import { Observable, tap } from 'rxjs';
 import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { CurrentUserData } from '../decorators/current-user.decorator';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 export const AUDIT_ACTION_KEY = 'audit_action';
 
@@ -19,7 +20,8 @@ export interface AuditMeta {
 
 /**
  * Automatically inserts audit_log rows for decorated endpoints.
- * Usage: @UseInterceptors(AuditInterceptor) @Audit({ action: 'CREATE_CONTRACT', entityType: 'contract' })
+ * Usage: @Audit({ action: 'CREATE_CONTRACT', entityType: 'contract' })
+ * (registered globally as APP_INTERCEPTOR — no @UseInterceptors needed)
  */
 @Injectable()
 export class AuditInterceptor implements NestInterceptor {
@@ -29,6 +31,13 @@ export class AuditInterceptor implements NestInterceptor {
   ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    // Skip for public routes
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) return next.handle();
+
     const auditMeta = this.reflector.getAllAndOverride<AuditMeta>(
       AUDIT_ACTION_KEY,
       [context.getHandler(), context.getClass()],
@@ -52,6 +61,8 @@ export class AuditInterceptor implements NestInterceptor {
       tap(async (responseBody: Record<string, unknown>) => {
         try {
           const entityId = responseBody?.id ??
+            responseBody?.contractId ??
+            responseBody?.customerId ??
             request.params?.id ??
             request.params?.contractId ?? null;
 

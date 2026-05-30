@@ -3,17 +3,27 @@
 import * as React from 'react';
 import { cn } from '@/lib/cn';
 
-interface ModalProps {
+type ModalSize = 'sm' | 'md' | 'lg' | 'xl';
+
+export interface ModalProps {
   open: boolean;
   onClose: () => void;
   title?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
+  size?: ModalSize;
+  closeOnBackdrop?: boolean;
   className?: string;
 }
 
-export function Modal({ open, onClose, title, children, footer, className }: ModalProps) {
-  // Lock body scroll when open
+const sizeStyles: Record<ModalSize, string> = {
+  sm: 'sm:max-w-sm',
+  md: 'sm:max-w-lg',
+  lg: 'sm:max-w-2xl',
+  xl: 'sm:max-w-4xl',
+};
+
+export function Modal({ open, onClose, title, children, footer, size = 'md', closeOnBackdrop = true, className }: ModalProps) {
   React.useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -26,27 +36,25 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-      {/* Backdrop */}
+    <div className="fixed inset-0 flex items-end sm:items-center justify-center" style={{ zIndex: 'var(--z-modal)' }}>
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
-        onClick={onClose}
+        onClick={closeOnBackdrop ? onClose : undefined}
         aria-hidden="true"
       />
-      {/* Panel */}
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? 'modal-title' : undefined}
         className={cn(
-          'relative z-10 w-full bg-white shadow-xl',
+          'relative w-full bg-white shadow-[var(--shadow-modal)]',
           'rounded-t-2xl sm:rounded-2xl',
           'max-h-[90dvh] overflow-y-auto',
-          'sm:max-w-lg sm:mx-4',
+          'sm:mx-4',
+          sizeStyles[size],
           className,
         )}
       >
-        {/* Header */}
         {title && (
           <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
             <h2 id="modal-title" className="text-base font-semibold text-neutral-900">
@@ -63,9 +71,7 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
             </button>
           </div>
         )}
-        {/* Content */}
         <div className="p-5">{children}</div>
-        {/* Footer */}
         {footer && (
           <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-neutral-100 bg-neutral-50/50">
             {footer}

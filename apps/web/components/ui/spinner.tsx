@@ -1,7 +1,13 @@
 import * as React from 'react';
 import { cn } from '@/lib/cn';
 
-type SpinnerSize = 'sm' | 'md' | 'lg';
+export type SpinnerSize = 'sm' | 'md' | 'lg';
+
+export interface SpinnerProps {
+  size?: SpinnerSize;
+  label?: string;
+  className?: string;
+}
 
 const sizes: Record<SpinnerSize, { dim: number; stroke: string }> = {
   sm: { dim: 16, stroke: '2.5' },
@@ -11,11 +17,9 @@ const sizes: Record<SpinnerSize, { dim: number; stroke: string }> = {
 
 export function Spinner({
   size = 'md',
+  label,
   className,
-}: {
-  size?: SpinnerSize;
-  className?: string;
-}) {
+}: SpinnerProps) {
   const { dim, stroke } = sizes[size];
   return (
     <svg
@@ -26,7 +30,9 @@ export function Spinner({
       stroke="currentColor"
       strokeWidth={stroke}
       className={cn('animate-spin text-primary-600', className)}
-      aria-hidden="true"
+      aria-hidden={!label}
+      aria-label={label}
+      role={label ? 'status' : undefined}
     >
       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
     </svg>

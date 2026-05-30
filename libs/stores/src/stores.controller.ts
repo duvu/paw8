@@ -21,8 +21,11 @@ import {
   SetStoreStatusDto,
   AssignManagerDto,
 } from './dto/store.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
+@ApiTags('stores')
+@ApiBearerAuth()
 @Controller('stores')
 export class StoresController {
   constructor(private readonly storesService: StoresService) {}

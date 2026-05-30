@@ -5,11 +5,12 @@ import { cn } from '@/lib/cn';
 
 export type AlertVariant = 'info' | 'success' | 'warning' | 'destructive';
 
-interface AlertProps {
+export interface AlertProps {
   variant?: AlertVariant;
   title?: string;
   children?: React.ReactNode;
   onDismiss?: () => void;
+  dismissible?: boolean;
   className?: string;
 }
 
@@ -61,9 +62,20 @@ export function Alert({
   title,
   children,
   onDismiss,
+  dismissible = false,
   className,
 }: AlertProps) {
+  const [dismissed, setDismissed] = React.useState(false);
   const styles = variantStyles[variant];
+
+  if (dismissed) return null;
+
+  const handleDismiss = () => {
+    setDismissed(true);
+    onDismiss?.();
+  };
+
+  const showDismiss = dismissible || !!onDismiss;
 
   return (
     <div
@@ -81,9 +93,9 @@ export function Alert({
         {title && <p className="font-semibold mb-0.5">{title}</p>}
         {children && <div className="opacity-90">{children}</div>}
       </div>
-      {onDismiss && (
+      {showDismiss && (
         <button
-          onClick={onDismiss}
+          onClick={handleDismiss}
           className="shrink-0 p-0.5 rounded opacity-60 hover:opacity-100 transition-opacity"
           aria-label="Dismiss"
         >

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { useLocale, useTranslations } from 'next-intl';
-import { PageIntro, Surface } from '@/components/page-states';
+import { Surface } from '@/components/page-states';
 import {
   Badge,
   TableContainer,
@@ -16,6 +16,7 @@ import {
   Spinner,
   EmptyState,
   Alert,
+  PageHeader
 } from '@/components/ui';
 
 interface AuditLog {
@@ -64,7 +65,7 @@ export default function AuditLogsPage() {
 
   return (
     <div className="space-y-6">
-      <PageIntro title={t('pageTitle')} description={t('subtitle')} />
+      <PageHeader title={t('pageTitle')} subtitle={t('subtitle')} />
 
       {error && <Alert variant="destructive">{error}</Alert>}
 

@@ -1,37 +1,26 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import {
   CreateStoreDto,
   UpdateStoreDto,
   StoreStatus,
   StoreResponseDto,
 } from './dto/store.dto';
+import { StoresRepository } from './stores.repository';
 
 @Injectable()
 export class StoresService {
   constructor(
-    @InjectDataSource()
-    private readonly dataSource: DataSource,
+    private readonly storesRepository: StoresRepository,
   ) {}
 
   async create(tenantId: string, dto: CreateStoreDto): Promise<StoreResponseDto> {
-    const rows = await this.dataSource.query<StoreResponseDto[]>(
-      `INSERT INTO stores (tenant_id, name, code, address, phone, manager_user_id, status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING id, tenant_id AS "tenantId", name, code, address, phone,
-                 manager_user_id AS "managerUserId", status, created_at AS "createdAt"`,
-      [
-        tenantId,
-        dto.name,
-        dto.code,
-        dto.address ?? null,
-        dto.phone ?? null,
-        dto.managerUserId ?? null,
-        StoreStatus.ACTIVE,
-      ],
-    );
-    return rows[0];
+    return this.storesRepository.insert(tenantId, {
+      name: dto.name,
+      code: dto.code,
+      address: dto.address ?? null,
+      phone: dto.phone ?? null,
+      managerUserId: dto.managerUserId ?? null,
+    });
   }
 
   async findAll(
@@ -40,41 +29,19 @@ export class StoresService {
     limit = 20,
   ): Promise<{ data: StoreResponseDto[]; total: number; page: number; limit: number }> {
     const offset = (page - 1) * limit;
-    const [rows, countRows] = await Promise.all([
-      this.dataSource.query<StoreResponseDto[]>(
-        `SELECT id, tenant_id AS "tenantId", name, code, address, phone,
-                manager_user_id AS "managerUserId", status, created_at AS "createdAt"
-         FROM stores
-         WHERE tenant_id = $1
-         ORDER BY created_at DESC
-         LIMIT $2 OFFSET $3`,
-        [tenantId, limit, offset],
-      ),
-      this.dataSource.query<[{ count: string }]>(
-        `SELECT COUNT(*) FROM stores WHERE tenant_id = $1`,
-        [tenantId],
-      ),
+    const [data, total] = await Promise.all([
+      this.storesRepository.findAll(tenantId, limit, offset),
+      this.storesRepository.count(tenantId),
     ]);
-    return {
-      data: rows,
-      total: parseInt(countRows[0].count, 10),
-      page,
-      limit,
-    };
+    return { data, total, page, limit };
   }
 
   async findOne(tenantId: string, id: string): Promise<StoreResponseDto> {
-    const rows = await this.dataSource.query<StoreResponseDto[]>(
-      `SELECT id, tenant_id AS "tenantId", name, code, address, phone,
-              manager_user_id AS "managerUserId", status, created_at AS "createdAt"
-       FROM stores
-       WHERE tenant_id = $1 AND id = $2`,
-      [tenantId, id],
-    );
-    if (!rows.length) {
+    const row = await this.storesRepository.findById(tenantId, id);
+    if (!row) {
       throw new NotFoundException(`Store ${id} not found`);
     }
-    return rows[0];
+    return row;
   }
 
   async update(
@@ -98,15 +65,9 @@ export class StoresService {
       return this.findOne(tenantId, id);
     }
 
+    // repo expects values = [...fieldValues, tenantId, id]
     values.push(tenantId, id);
-    const rows = await this.dataSource.query<StoreResponseDto[]>(
-      `UPDATE stores SET ${fields.join(', ')}
-       WHERE tenant_id = $${idx} AND id = $${idx + 1}
-       RETURNING id, tenant_id AS "tenantId", name, code, address, phone,
-                 manager_user_id AS "managerUserId", status, created_at AS "createdAt"`,
-      values,
-    );
-    return rows[0];
+    return this.storesRepository.update(tenantId, id, fields, values);
   }
 
   async setStatus(
@@ -115,14 +76,7 @@ export class StoresService {
     status: StoreStatus,
   ): Promise<StoreResponseDto> {
     await this.findOne(tenantId, id);
-    const rows = await this.dataSource.query<StoreResponseDto[]>(
-      `UPDATE stores SET status = $1
-       WHERE tenant_id = $2 AND id = $3
-       RETURNING id, tenant_id AS "tenantId", name, code, address, phone,
-                 manager_user_id AS "managerUserId", status, created_at AS "createdAt"`,
-      [status, tenantId, id],
-    );
-    return rows[0];
+    return this.storesRepository.setStatus(tenantId, id, status);
   }
 
   async assignManager(
@@ -131,13 +85,6 @@ export class StoresService {
     userId: string,
   ): Promise<StoreResponseDto> {
     await this.findOne(tenantId, id);
-    const rows = await this.dataSource.query<StoreResponseDto[]>(
-      `UPDATE stores SET manager_user_id = $1
-       WHERE tenant_id = $2 AND id = $3
-       RETURNING id, tenant_id AS "tenantId", name, code, address, phone,
-                 manager_user_id AS "managerUserId", status, created_at AS "createdAt"`,
-      [userId, tenantId, id],
-    );
-    return rows[0];
+    return this.storesRepository.setManager(tenantId, id, userId);
   }
 }

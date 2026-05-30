@@ -11,7 +11,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard, CurrentUser, Roles } from '../../common/src';
+import { RolesGuard, CurrentUser, Roles, Audit } from '../../common/src';
 import type { CurrentUserData } from '../../common/src';
 import { ContractsService } from './contracts.service';
 import {
@@ -20,7 +20,10 @@ import {
   UpdateContractStatusDto,
   ContractSearchDto,
 } from './dto/contract.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('contracts')
+@ApiBearerAuth()
 @Controller('contracts')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class ContractsController {
@@ -28,6 +31,7 @@ export class ContractsController {
 
   @Post()
   @Roles('staff', 'store_manager', 'tenant_admin', 'tenant_owner')
+  @Audit({ action: 'CREATE_CONTRACT', entityType: 'contract' })
   @HttpCode(HttpStatus.CREATED)
   create(@CurrentUser() user: CurrentUserData, @Body() dto: CreateContractDto) {
     return this.contractsService.create(user.tenantId!, user.sub, dto);
@@ -76,6 +80,7 @@ export class ContractsController {
 
   @Patch(':id/status')
   @Roles('store_manager', 'tenant_admin', 'tenant_owner')
+  @Audit({ action: 'UPDATE_CONTRACT_STATUS', entityType: 'contract' })
   updateStatus(
     @CurrentUser() user: CurrentUserData,
     @Param('id') id: string,

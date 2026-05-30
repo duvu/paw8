@@ -19,8 +19,11 @@ import {
   UpdateTenantDto,
   SetTenantStatusDto,
 } from './dto/tenant.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
+@ApiTags('tenants')
+@ApiBearerAuth()
 @Controller('tenants')
 export class TenantsController {
   constructor(private readonly tenantsService: TenantsService) {}

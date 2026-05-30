@@ -20,6 +20,7 @@ import {
   SkeletonRow,
   EmptyState,
   Alert,
+  PageHeader
 } from '@/components/ui';
 import { cn } from '@/lib/cn';
 
@@ -111,19 +112,7 @@ export default function AssetsPage() {
 
   return (
     <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-neutral-900">{t('pageTitle')}</h1>
-        <Link
-          href="/assets/new"
-          className={cn(
-            'inline-flex items-center justify-center font-medium whitespace-nowrap h-9 px-4 text-sm rounded-lg',
-            'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-sm transition-all duration-150',
-          )}
-        >
-          {t('addButton')}
-        </Link>
-      </div>
+      <PageHeader title={t('pageTitle')} actions={<Link href="/assets/new"><Button size="sm">{t('addButton')}</Button></Link>} />
 
       {/* Filter row */}
       <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">

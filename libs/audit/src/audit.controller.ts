@@ -4,7 +4,10 @@ import { RolesGuard, CurrentUser, Roles } from '../../common/src';
 import type { CurrentUserData } from '../../common/src';
 import { AuditService } from './audit.service';
 import { AuditQueryDto } from './dto/audit.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('audit')
+@ApiBearerAuth()
 @Controller('audit')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class AuditController {

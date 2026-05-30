@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { I18nModule, AcceptLanguageResolver } from 'nestjs-i18n';
@@ -14,6 +15,14 @@ import { TransactionsModule } from '../../../libs/transactions/src/transactions.
 import { FilesModule } from '../../../libs/files/src/files.module';
 import { ReportsModule } from '../../../libs/reports/src/reports.module';
 import { AuditModule } from '../../../libs/audit/src/audit.module';
+import {
+  JwtAuthGuard,
+  TenantGuard,
+  RolesGuard,
+  StoreScopeGuard,
+  AuditInterceptor,
+  HealthController,
+} from '../../../libs/common/src';
 
 @Module({
   imports: [
@@ -53,6 +62,16 @@ import { AuditModule } from '../../../libs/audit/src/audit.module';
     FilesModule,
     ReportsModule,
     AuditModule,
+  ],
+  controllers: [HealthController],
+  providers: [
+    // Global guard order: JWT → Tenant → Roles → StoreScope
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: TenantGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_GUARD, useClass: StoreScopeGuard },
+    // Global audit interceptor
+    { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
   ],
 })
 export class AppModule {}

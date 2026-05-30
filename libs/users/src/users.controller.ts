@@ -22,7 +22,10 @@ import {
   SetStatusDto,
   AssignStoreDto,
 } from './dto/user.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('users')
+@ApiBearerAuth()
 @Controller('users')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class UsersController {

@@ -4,7 +4,10 @@ import { RolesGuard, CurrentUser, Roles } from '../../common/src';
 import type { CurrentUserData } from '../../common/src';
 import { ReportsService } from './reports.service';
 import { DashboardQueryDto, ReportQueryDto } from './dto/report.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('reports')
+@ApiBearerAuth()
 @Controller('reports')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class ReportsController {
