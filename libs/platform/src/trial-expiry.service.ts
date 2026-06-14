@@ -31,7 +31,7 @@ export class TrialExpiryService {
 
     for (const { id } of expired) {
       try {
-        await this.tenantsRepository.setStatus(id, TenantStatus.SUSPENDED);
+        await this.tenantsRepository.setStatus(id, TenantStatus.EXPIRED);
 
         await this.auditService.log({
           tenantId: id,
@@ -39,16 +39,16 @@ export class TrialExpiryService {
           action: 'trial_expired',
           entityType: 'tenant',
           entityId: id,
-          newValue: { status: TenantStatus.SUSPENDED },
+          newValue: { status: TenantStatus.EXPIRED },
         });
 
-        this.logger.log(`Suspended tenant ${id} due to trial expiry.`);
+        this.logger.log(`Expired tenant ${id} due to trial expiry.`);
       } catch (err: unknown) {
         const e = err as Error;
-        this.logger.error(`Failed to suspend tenant ${id}: ${e?.message}`, e?.stack);
+        this.logger.error(`Failed to expire tenant ${id}: ${e?.message}`, e?.stack);
       }
     }
 
-    this.logger.log(`Trial expiry check complete. Suspended ${expired.length} tenant(s).`);
+    this.logger.log(`Trial expiry check complete. Expired ${expired.length} tenant(s).`);
   }
 }

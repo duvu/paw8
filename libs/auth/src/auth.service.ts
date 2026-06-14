@@ -60,10 +60,7 @@ export class AuthService {
     if (user.tenant_id) {
       const tenant = await this.authRepository.findTenantStatus(user.tenant_id);
       if (tenant?.status === 'locked') {
-        throw new ForbiddenException('Tenant account is locked');
-      }
-      if (tenant?.status === 'suspended') {
-        throw new ForbiddenException('Tenant account is suspended. Please contact support.');
+        throw new ForbiddenException('Tenant account is locked. Please contact support.');
       }
     }
 

@@ -85,7 +85,7 @@ export class TenantsRepository {
 
   async countStores(tenantId: string): Promise<number> {
     const rows = await this.dataSource.query<[{ count: string }]>(
-      `SELECT COUNT(*) FROM stores WHERE tenant_id = $1 AND status != 'inactive'`,
+      `SELECT COUNT(*) FROM stores WHERE tenant_id = $1 AND status != 'locked'`,
       [tenantId],
     );
     return parseInt(rows[0].count, 10);

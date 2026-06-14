@@ -28,4 +28,4 @@ export interface IUpdateTenantPayload {
   trialEndDate?: string;
 }
 
-export type TenantStatus = 'active' | 'suspended' | 'inactive';
+export type TenantStatus = 'active' | 'locked' | 'trial' | 'expired';

@@ -7,22 +7,22 @@ export class PlatformRepository {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
   async getStats(): Promise<{
-    tenants: { total: number; active: number; suspended: number; trial: number };
+    tenants: { total: number; active: number; locked: number; trial: number };
     stores: { total: number };
     contracts: { active: number; totalPrincipal: number };
     expiringSoon: { count: number; tenants: { id: string; name: string; trialEndDate: string }[] };
   }> {
     const [tenantStats, storeStats, contractStats, expiringSoon] = await Promise.all([
-      this.dataSource.query<{ total: string; active: string; suspended: string; trial: string }[]>(
+      this.dataSource.query<{ total: string; active: string; locked: string; trial: string }[]>(
         `SELECT
            COUNT(*) AS total,
            COUNT(*) FILTER (WHERE status = 'active') AS active,
-           COUNT(*) FILTER (WHERE status = 'suspended') AS suspended,
+           COUNT(*) FILTER (WHERE status = 'locked') AS locked,
            COUNT(*) FILTER (WHERE status = 'trial') AS trial
          FROM tenants`,
       ),
       this.dataSource.query<{ total: string }[]>(
-        `SELECT COUNT(*) AS total FROM stores WHERE status != 'inactive'`,
+        `SELECT COUNT(*) AS total FROM stores WHERE status != 'locked'`,
       ),
       this.dataSource.query<{ active: string; total_principal: string }[]>(
         `SELECT
@@ -49,7 +49,7 @@ export class PlatformRepository {
       tenants: {
         total: parseInt(t.total, 10),
         active: parseInt(t.active, 10),
-        suspended: parseInt(t.suspended, 10),
+        locked: parseInt(t.locked, 10),
         trial: parseInt(t.trial, 10),
       },
       stores: { total: parseInt(s.total, 10) },

@@ -9,7 +9,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export enum StoreStatus {
   ACTIVE = 'active',
-  INACTIVE = 'inactive',
+  LOCKED = 'locked',
 }
 
 export class CreateStoreDto {

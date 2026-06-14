@@ -21,7 +21,7 @@ export enum TenantPlan {
 
 export enum TenantStatus {
   ACTIVE = 'active',
-  SUSPENDED = 'suspended',
+  LOCKED = 'locked',
   TRIAL = 'trial',
   EXPIRED = 'expired',
 }
