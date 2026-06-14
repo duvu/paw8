@@ -34,6 +34,8 @@ interface Asset {
   licensePlate: string;
   status: string;
   valuationAmount: number;
+  contractId?: string;
+  contract_code?: string;
 }
 
 interface PagedResult {
@@ -41,12 +43,12 @@ interface PagedResult {
   total: number;
 }
 
-const STATUSES = ['', 'pawned', 'redeemed', 'overdue', 'pending_liquidation', 'liquidated'];
+const STATUSES = ['', 'holding', 'redeemed', 'overdue', 'pending_liquidation', 'liquidated'];
 const TYPES = ['', 'motorbike', 'car', 'phone', 'laptop', 'watch', 'jewelry', 'electronics', 'other'];
 
 const assetStatusVariant = (status: string): 'success' | 'warning' | 'destructive' | 'info' | 'default' => {
   const map: Record<string, 'success' | 'warning' | 'destructive' | 'info' | 'default'> = {
-    pawned: 'info',
+    holding: 'info',
     redeemed: 'success',
     overdue: 'destructive',
     pending_liquidation: 'warning',
@@ -166,14 +168,16 @@ export default function AssetsPage() {
                 <TableHead>{t('tableHeaders.serialImeiPlate')}</TableHead>
                 <TableHead>{t('tableHeaders.valuation')}</TableHead>
                 <TableHead>{t('tableHeaders.status')}</TableHead>
+                <TableHead>{t('tableHeaders.contract')}</TableHead>
+                <TableHead />
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
-                Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} cols={6} />)
+                Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} cols={8} />)
               ) : assets.length === 0 ? (
                 <tr>
-                  <td colSpan={6}>
+                  <td colSpan={8}>
                     <EmptyState icon={<BoxIcon />} title={t('noData')} />
                   </td>
                 </tr>
@@ -189,6 +193,18 @@ export default function AssetsPage() {
                     <TableCell>{new Intl.NumberFormat('vi-VN').format(a.valuationAmount)}</TableCell>
                     <TableCell>
                       <Badge variant={assetStatusVariant(a.status)}>{a.status}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      {a.contractId ? (
+                        <Link href={`/contracts/${a.contractId}`} className="text-primary-600 hover:underline font-mono text-xs">
+                          {a.contract_code ?? a.contractId.slice(0, 8)}
+                        </Link>
+                      ) : '—'}
+                    </TableCell>
+                    <TableCell>
+                      <Link href={`/assets/${a.id}`} className="text-primary-600 hover:underline text-xs font-medium">
+                        {t('viewButton')}
+                      </Link>
                     </TableCell>
                   </TableRow>
                 ))

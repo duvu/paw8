@@ -120,6 +120,13 @@
     },
     "noContracts": "No contracts.",
     "noDocuments": "No documents.",
+    "assets": "Assets",
+    "noAssets": "No assets.",
+    "assetHeaders": {
+      "name": "Name",
+      "type": "Type",
+      "status": "Status"
+    },
     "detailLoadError": "Failed to load customer.",
     "fieldLabels": {
       "phone": "Phone",
@@ -141,16 +148,38 @@
     "allTypes": "All Types",
     "searchButton": "Search",
     "total": "Total: {total}",
+    "viewButton": "View",
     "tableHeaders": {
       "name": "Name",
       "type": "Type",
       "brand": "Brand",
       "serialImeiPlate": "Serial/IMEI/Plate",
       "valuation": "Valuation",
-      "status": "Status"
+      "status": "Status",
+      "contract": "Contract"
     },
     "noData": "No assets found.",
     "loadError": "Failed to load assets.",
+    "detailLoadError": "Failed to load asset.",
+    "detailTitle": "Asset Detail",
+    "fieldLabels": {
+      "assetType": "Asset Type",
+      "brand": "Brand",
+      "model": "Model",
+      "serialNumber": "Serial Number",
+      "imei": "IMEI",
+      "licensePlate": "License Plate",
+      "chassisNumber": "Chassis Number",
+      "engineNumber": "Engine Number",
+      "conditionDescription": "Condition",
+      "valuationAmount": "Valuation",
+      "proposedLoanAmount": "Proposed Loan",
+      "status": "Status",
+      "created": "Created"
+    },
+    "linkedContract": "Linked Contract",
+    "noLinkedContract": "Not linked to a contract.",
+    "customer": "Customer",
     "newTitle": "New Asset",
     "form": {
       "assetType": "Asset Type",

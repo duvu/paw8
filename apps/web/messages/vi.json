@@ -120,6 +120,13 @@
     },
     "noContracts": "Không có hợp đồng.",
     "noDocuments": "Không có tài liệu.",
+    "assets": "Tài sản",
+    "noAssets": "Không có tài sản.",
+    "assetHeaders": {
+      "name": "Tên tài sản",
+      "type": "Loại",
+      "status": "Trạng thái"
+    },
     "detailLoadError": "Không thể tải thông tin khách hàng.",
     "fieldLabels": {
       "phone": "SĐT",
@@ -141,16 +148,38 @@
     "allTypes": "Tất cả loại",
     "searchButton": "Tìm kiếm",
     "total": "Tổng: {total}",
+    "viewButton": "Xem",
     "tableHeaders": {
       "name": "Tên tài sản",
       "type": "Loại",
       "brand": "Nhãn hiệu",
       "serialImeiPlate": "Serial/IMEI/Biển số",
       "valuation": "Định giá",
-      "status": "Trạng thái"
+      "status": "Trạng thái",
+      "contract": "Hợp đồng"
     },
     "noData": "Không tìm thấy tài sản.",
     "loadError": "Không thể tải danh sách tài sản.",
+    "detailLoadError": "Không thể tải thông tin tài sản.",
+    "detailTitle": "Chi tiết tài sản",
+    "fieldLabels": {
+      "assetType": "Loại tài sản",
+      "brand": "Nhãn hiệu",
+      "model": "Model",
+      "serialNumber": "Số seri",
+      "imei": "IMEI",
+      "licensePlate": "Biển số xe",
+      "chassisNumber": "Số khung",
+      "engineNumber": "Số máy",
+      "conditionDescription": "Tình trạng",
+      "valuationAmount": "Định giá",
+      "proposedLoanAmount": "Đề xuất vay",
+      "status": "Trạng thái",
+      "created": "Ngày tạo"
+    },
+    "linkedContract": "Hợp đồng liên kết",
+    "noLinkedContract": "Chưa liên kết hợp đồng.",
+    "customer": "Khách hàng",
     "newTitle": "Thêm tài sản mới",
     "form": {
       "assetType": "Loại tài sản",

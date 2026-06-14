@@ -41,11 +41,31 @@ interface Customer {
 
 interface Contract {
   id: string;
-  contractCode: string;
+  contractCode?: string;
+  contract_code?: string;
   status: string;
-  principalAmount: number;
-  startDate: string;
-  dueDate: string;
+  principalAmount?: number;
+  principal_amount?: string | number;
+  startDate?: string;
+  start_date?: string;
+  dueDate?: string;
+  due_date?: string;
+}
+
+interface ContractDetail extends Contract {
+  assets?: Asset[];
+}
+
+interface Asset {
+  id: string;
+  assetName: string;
+  assetType: string;
+  brand: string;
+  serialNumber: string;
+  imei: string;
+  licensePlate: string;
+  status: string;
+  contractId?: string | null;
 }
 
 interface Document {
@@ -61,6 +81,17 @@ const contractStatusVariant = (status: string): 'success' | 'warning' | 'destruc
     near_due: 'warning',
     overdue: 'destructive',
     settled: 'info',
+  };
+  return map[status] ?? 'default';
+};
+
+const assetStatusVariant = (status: string): 'success' | 'warning' | 'destructive' | 'info' | 'default' => {
+  const map: Record<string, 'success' | 'warning' | 'destructive' | 'info' | 'default'> = {
+    holding: 'info',
+    redeemed: 'success',
+    overdue: 'destructive',
+    pending_liquidation: 'warning',
+    liquidated: 'default',
   };
   return map[status] ?? 'default';
 };
@@ -84,6 +115,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
   const [id, setId] = useState('');
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [contracts, setContracts] = useState<Contract[]>([]);
+  const [assets, setAssets] = useState<Asset[]>([]);
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -97,12 +129,27 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
     Promise.all([
       api.get<Customer>(`/customers/${id}`),
       api.get<{ data: Contract[] }>(`/contracts?customerId=${id}&limit=50`),
-      api.get<{ data: Document[] }>(`/files?entityType=customer&entityId=${id}`),
+      api.get<{ data: Document[] }>(`/files?entityType=customer&entityId=${id}`).catch(() => ({ data: { data: [] } })),
     ])
-      .then(([c, ct, d]) => {
+      .then(async ([c, ct, d]) => {
         setCustomer(c.data);
-        setContracts(ct.data.data ?? []);
+        const contractList = ct.data.data ?? [];
+        setContracts(contractList);
         setDocuments(d.data.data ?? []);
+        // Assets are embedded in contract detail responses (API doesn't support customerId filter)
+        const detailFetches = contractList.map((contract) =>
+          api
+            .get<ContractDetail>(`/contracts/${contract.id}`)
+            .then((r) => (r.data.assets ?? []).map((a) => ({ ...a, contractId: contract.id })))
+            .catch(() => [] as Asset[])
+        );
+        const assetGroups = await Promise.all(detailFetches);
+        const uniqueAssets = Object.values(
+          assetGroups
+            .flat()
+            .reduce<Record<string, Asset>>((acc, a) => ({ ...acc, [a.id]: a }), {})
+        );
+        setAssets(uniqueAssets);
       })
       .catch(() => setError(t('detailLoadError')))
       .finally(() => setLoading(false));
@@ -190,12 +237,22 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                 ) : (
                   contracts.map((c) => (
                     <TableRow key={c.id}>
-                      <TableCell className="font-mono text-xs">{c.contractCode}</TableCell>
+                      <TableCell className="font-mono text-xs">
+                        <Link href={`/contracts/${c.id}`} className="text-primary-600 hover:underline">
+                          {c.contractCode ?? c.contract_code}
+                        </Link>
+                      </TableCell>
                       <TableCell>
                         <Badge variant={contractStatusVariant(c.status)}>{c.status}</Badge>
                       </TableCell>
-                      <TableCell>{new Intl.NumberFormat('vi-VN').format(c.principalAmount)}</TableCell>
-                      <TableCell>{new Date(c.dueDate).toLocaleDateString('vi-VN')}</TableCell>
+                      <TableCell>
+                        {new Intl.NumberFormat('vi-VN').format(
+                          Number(c.principalAmount ?? c.principal_amount ?? 0)
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {new Date((c.dueDate ?? c.due_date) as string).toLocaleDateString('vi-VN')}
+                      </TableCell>
                       <TableCell>
                         <Link
                           href={`/contracts/${c.id}`}
@@ -203,6 +260,56 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         >
                           {t('viewButton')}
                         </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
+      </Card>
+
+      {/* Assets */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('assets')}</CardTitle>
+        </CardHeader>
+        <CardContent className="px-0 pb-0">
+          <TableContainer>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t('assetHeaders.name')}</TableHead>
+                  <TableHead>{t('assetHeaders.type')}</TableHead>
+                  <TableHead>{t('assetHeaders.status')}</TableHead>
+                  <TableHead />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {assets.length === 0 ? (
+                  <tr>
+                    <td colSpan={4}>
+                      <EmptyState icon={<ContractIcon />} title={t('noAssets')} />
+                    </td>
+                  </tr>
+                ) : (
+                  assets.map((a) => (
+                    <TableRow key={a.id}>
+                      <TableCell className="font-medium text-neutral-900">{a.assetName}</TableCell>
+                      <TableCell>{a.assetType}</TableCell>
+                      <TableCell>
+                        <Badge variant={assetStatusVariant(a.status)}>{a.status}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        {a.contractId ? (
+                          <Link
+                            href={`/assets/${a.id}`}
+                            className="text-primary-600 hover:underline text-xs font-medium"
+                          >
+                            {t('viewButton')}
+                          </Link>
+                        ) : null}
                       </TableCell>
                     </TableRow>
                   ))

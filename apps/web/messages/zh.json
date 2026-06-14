@@ -120,6 +120,13 @@
     },
     "noContracts": "暂无合同。",
     "noDocuments": "暂无文件。",
+    "assets": "资产",
+    "noAssets": "暂无资产。",
+    "assetHeaders": {
+      "name": "名称",
+      "type": "类型",
+      "status": "状态"
+    },
     "detailLoadError": "客户信息加载失败。",
     "fieldLabels": {
       "phone": "电话",
@@ -141,16 +148,38 @@
     "allTypes": "全部类型",
     "searchButton": "搜索",
     "total": "共：{total}",
+    "viewButton": "查看",
     "tableHeaders": {
       "name": "名称",
       "type": "类型",
       "brand": "品牌",
       "serialImeiPlate": "序列/IMEI/车牌",
       "valuation": "估价",
-      "status": "状态"
+      "status": "状态",
+      "contract": "合同"
     },
     "noData": "未找到资产。",
     "loadError": "资产列表加载失败。",
+    "detailLoadError": "资产信息加载失败。",
+    "detailTitle": "资产详情",
+    "fieldLabels": {
+      "assetType": "资产类型",
+      "brand": "品牌",
+      "model": "型号",
+      "serialNumber": "序列号",
+      "imei": "IMEI",
+      "licensePlate": "车牌",
+      "chassisNumber": "车架号",
+      "engineNumber": "发动机号",
+      "conditionDescription": "状况",
+      "valuationAmount": "估值",
+      "proposedLoanAmount": "建议贷款",
+      "status": "状态",
+      "created": "创建时间"
+    },
+    "linkedContract": "关联合同",
+    "noLinkedContract": "未关联合同。",
+    "customer": "客户",
     "newTitle": "新建资产",
     "form": {
       "assetType": "资产类型",
