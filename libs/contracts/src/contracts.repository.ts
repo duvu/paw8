@@ -37,6 +37,19 @@ export class ContractsRepository {
     );
   }
 
+  async findAssetsInActiveContracts(assetIds: string[], tenantId: string, manager?: any): Promise<any[]> {
+    const ds = manager ?? this.dataSource;
+    return ds.query(
+      `SELECT ca.asset_id
+       FROM contract_assets ca
+       JOIN pawn_contracts pc ON pc.id = ca.contract_id
+       WHERE ca.asset_id = ANY($1)
+         AND pc.tenant_id = $2
+         AND pc.status NOT IN ('settled', 'cancelled', 'liquidated')`,
+      [assetIds, tenantId],
+    );
+  }
+
   async insertContract(fields: {
     tenantId: string;
     storeId: string;
@@ -45,18 +58,19 @@ export class ContractsRepository {
     principalAmount: number;
     interestRate: number;
     interestType: string;
-    startDate: string;
-    dueDate: string;
+    startDate: Date | string;
+    dueDate: Date | string;
     notes: string | null;
     createdBy: string;
+    policyId?: string | null;
   }, manager?: any): Promise<any> {
     const ds = manager ?? this.dataSource;
     const [contract] = await ds.query(
       `INSERT INTO pawn_contracts (
         tenant_id, store_id, customer_id, contract_code,
         principal_amount, interest_rate, interest_type,
-        start_date, due_date, status, notes, created_by, created_at, updated_at, updated_by
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'active',$10,$11,NOW(),NOW(),$11)
+        start_date, due_date, status, notes, policy_id, created_by, created_at, updated_at, updated_by
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'active',$10,$11,$12,NOW(),NOW(),$12)
       RETURNING *`,
       [
         fields.tenantId,
@@ -69,6 +83,7 @@ export class ContractsRepository {
         fields.startDate,
         fields.dueDate,
         fields.notes,
+        fields.policyId ?? null,
         fields.createdBy,
       ],
     );
@@ -131,8 +146,9 @@ export class ContractsRepository {
     return parseInt(row.count, 10);
   }
 
-  async findById(tenantId: string, id: string): Promise<any | null> {
-    const [contract] = await this.dataSource.query(
+  async findById(tenantId: string, id: string, manager?: any): Promise<any | null> {
+    const ds = manager ?? this.dataSource;
+    const [contract] = await ds.query(
       `SELECT pc.*,
         c.full_name as customer_full_name, c.phone as customer_phone, c.identity_number as customer_identity_number
        FROM pawn_contracts pc
@@ -143,8 +159,9 @@ export class ContractsRepository {
     return contract ?? null;
   }
 
-  async findContractAssets(contractId: string, tenantId: string): Promise<any[]> {
-    return this.dataSource.query(
+  async findContractAssets(contractId: string, tenantId: string, manager?: any): Promise<any[]> {
+    const ds = manager ?? this.dataSource;
+    return ds.query(
       `SELECT a.id, a.asset_type, a.asset_name, a.brand, a.model, a.status
        FROM contract_assets ca
        JOIN assets a ON a.id = ca.asset_id
@@ -208,7 +225,60 @@ export class ContractsRepository {
     return this.dataSource.query(query, params);
   }
 
+  async findOverdueContracts(tenantId?: string): Promise<{ id: string; tenant_id: string; status: string }[]> {
+    const params: any[] = [];
+    let where = `pc.due_date < NOW()::date AND pc.status IN ('active','near_due','extended')`;
+    if (tenantId) {
+      params.push(tenantId);
+      where += ` AND pc.tenant_id = $1`;
+    }
+    return this.dataSource.query(
+      `SELECT pc.id, pc.tenant_id, pc.status FROM pawn_contracts pc WHERE ${where}`,
+      params,
+    );
+  }
+
+  async findNearDueContracts(days = 7, tenantId?: string): Promise<{ id: string; tenant_id: string; status: string }[]> {
+    const params: any[] = [days];
+    let where = `pc.due_date BETWEEN NOW()::date AND NOW()::date + ($1::int * interval '1 day')
+      AND pc.status IN ('active','extended')`;
+    if (tenantId) {
+      params.push(tenantId);
+      where += ` AND pc.tenant_id = $2`;
+    }
+    return this.dataSource.query(
+      `SELECT pc.id, pc.tenant_id, pc.status FROM pawn_contracts pc WHERE ${where}`,
+      params,
+    );
+  }
+
+  async batchUpdateStatus(ids: string[], newStatus: ContractStatus, changedBy: string): Promise<void> {
+    if (!ids.length) return;
+    await this.dataSource.transaction(async (manager) => {
+      await manager.query(
+        `UPDATE pawn_contracts SET status = $1, updated_at = NOW() WHERE id = ANY($2)`,
+        [newStatus, ids],
+      );
+      const values = ids
+        .map((_, i) => `($${i * 3 + 1}, $${i * 3 + 2}, $${i * 3 + 3}, NOW())`)
+        .join(', ');
+      const params: any[] = ids.flatMap((id) => [id, newStatus, changedBy]);
+      await manager.query(
+        `INSERT INTO contract_status_history (contract_id, to_status, changed_by, created_at) VALUES ${values}`,
+        params,
+      );
+    });
+  }
+
   async transaction<T>(work: (manager: any) => Promise<T>): Promise<T> {
     return this.dataSource.transaction(work);
+  }
+
+  async findLatestExtension(tenantId: string, contractId: string): Promise<any | null> {
+    const [row] = await this.dataSource.query(
+      `SELECT * FROM contract_extensions WHERE tenant_id = $1 AND contract_id = $2 ORDER BY created_at DESC LIMIT 1`,
+      [tenantId, contractId],
+    );
+    return row ?? null;
   }
 }

@@ -8,7 +8,8 @@
     "reports": "Báo cáo",
     "users": "Người dùng",
     "stores": "Cửa hàng",
-    "auditLogs": "Nhật ký hệ thống"
+    "auditLogs": "Nhật ký hệ thống",
+    "marketplace": "Sàn giao dịch"
   },
   "landing": {
     "eyebrow": "Vận hành an toàn theo tenant",

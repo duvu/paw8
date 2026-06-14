@@ -49,7 +49,15 @@ export class FilesRepository {
     await this.dataSource.query(`DELETE FROM files WHERE id = $1`, [id]);
   }
 
-  async verifyEntityBelongsToTenant(tenantId: string, table: string, entityId: string): Promise<boolean> {
+  async verifyEntityBelongsToTenant(tenantId: string, entityType: string, entityId: string): Promise<boolean> {
+    const tableMap: Record<string, string> = {
+      customer: 'customers',
+      asset: 'assets',
+      contract: 'pawn_contracts',
+      receipt: 'payment_receipts',
+    };
+    const table = tableMap[entityType];
+    if (!table) return false;
     const rows = await this.dataSource.query(
       `SELECT id FROM ${table} WHERE id = $1 AND tenant_id = $2`,
       [entityId, tenantId],

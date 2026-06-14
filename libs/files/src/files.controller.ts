@@ -24,6 +24,7 @@ export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
   @Post('upload-url')
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff')
   @HttpCode(HttpStatus.OK)
   requestUploadUrl(
     @CurrentUser() user: CurrentUserData,
@@ -33,6 +34,7 @@ export class FilesController {
   }
 
   @Post('confirm')
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff')
   @Audit({ action: 'UPLOAD_FILE', entityType: 'file' })
   @HttpCode(HttpStatus.CREATED)
   confirmUpload(
@@ -43,6 +45,7 @@ export class FilesController {
   }
 
   @Get(':id/download-url')
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff', 'accountant')
   getDownloadUrl(
     @CurrentUser() user: CurrentUserData,
     @Param('id') fileId: string,
@@ -51,6 +54,7 @@ export class FilesController {
   }
 
   @Get('entity/:entityType/:entityId')
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff', 'accountant')
   listByEntity(
     @CurrentUser() user: CurrentUserData,
     @Param('entityType') entityType: string,

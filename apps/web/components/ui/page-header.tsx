@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn';
 
 export interface PageHeaderProps {
   title: string;
-  subtitle?: string;
+  subtitle?: React.ReactNode;
   actions?: React.ReactNode;
   breadcrumb?: Array<{ label: string; href?: string }>;
   className?: string;

@@ -2,6 +2,8 @@ import {
   Injectable,
   UnauthorizedException,
   ForbiddenException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -10,6 +12,10 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { LoginDto, ChangePasswordDto } from './dto/auth.dto';
 import { AuthRepository } from './auth.repository';
+
+const LOGIN_MAX_FAILURES = parseInt(process.env.LOGIN_MAX_FAILURES ?? '5', 10);
+const LOGIN_LOCKOUT_WINDOW_MS =
+  parseInt(process.env.LOGIN_LOCKOUT_WINDOW_MIN ?? '15', 10) * 60 * 1000;
 
 @Injectable()
 export class AuthService {
@@ -26,14 +32,28 @@ export class AuthService {
   }
 
   async login(dto: LoginDto, ip?: string, userAgent?: string) {
+    // Group 4: check lockout before touching the DB for user lookup
+    const recentFailures = await this.authRepository.countRecentFailures(
+      dto.email,
+      LOGIN_LOCKOUT_WINDOW_MS,
+    );
+    if (recentFailures >= LOGIN_MAX_FAILURES) {
+      throw new HttpException(
+        'Too many failed login attempts. Please try again later.',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+
     const user = await this.authRepository.findUserWithRoleByEmail(dto.email);
 
     if (!user) {
+      await this.authRepository.insertLoginAttempt(dto.email, ip, null, false);
       await this.logAudit(null, null, 'LOGIN_FAILED', null, null, ip, userAgent);
       throw new UnauthorizedException('Invalid credentials');
     }
 
     if (user.status === 'locked') {
+      await this.authRepository.insertLoginAttempt(dto.email, ip, user.tenant_id, false);
       throw new ForbiddenException('Account is locked');
     }
 
@@ -42,13 +62,20 @@ export class AuthService {
       if (tenant?.status === 'locked') {
         throw new ForbiddenException('Tenant account is locked');
       }
+      if (tenant?.status === 'suspended') {
+        throw new ForbiddenException('Tenant account is suspended. Please contact support.');
+      }
     }
 
     const isPasswordValid = await bcrypt.compare(dto.password, user.password_hash);
     if (!isPasswordValid) {
+      await this.authRepository.insertLoginAttempt(dto.email, ip, user.tenant_id, false);
       await this.logAudit(user.tenant_id, user.id, 'LOGIN_FAILED', 'user', user.id, ip, userAgent);
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    // Group 4: record successful login attempt
+    await this.authRepository.insertLoginAttempt(dto.email, ip, user.tenant_id, true);
 
     const role = user.roles?.split(',')[0] ?? 'staff';
     const allowedStoreIds = user.store_ids?.filter(Boolean) ?? [];
@@ -66,16 +93,23 @@ export class AuthService {
       expiresIn: (process.env.JWT_ACCESS_TOKEN_EXPIRES_IN ?? '15m') as any,
     });
 
+    // Group 5: issue refresh token with family ID
     const refreshTokenPlain = crypto.randomBytes(40).toString('hex');
     const refreshTokenHash = crypto
       .createHash('sha256')
       .update(refreshTokenPlain)
       .digest('hex');
+    const familyId = crypto.randomUUID();
 
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
 
-    await this.authRepository.insertRefreshToken(user.id, refreshTokenHash, expiresAt);
+    await this.authRepository.insertRefreshTokenWithFamily(
+      user.id,
+      refreshTokenHash,
+      familyId,
+      expiresAt,
+    );
     await this.logAudit(user.tenant_id, user.id, 'LOGIN', 'user', user.id, ip, userAgent);
 
     return { accessToken, refreshToken: refreshTokenPlain, expiresIn: 900 };
@@ -87,10 +121,20 @@ export class AuthService {
       .update(refreshToken)
       .digest('hex');
 
+    // Group 5: fetch token row including revoked_at and replaced_by_hash
     const stored = await this.authRepository.findRefreshTokenWithUser(tokenHash);
 
     if (!stored) {
       throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+
+    // Group 5: reuse detection — token already revoked
+    if (stored.revoked_at) {
+      // If it has a family_id, revoke entire family (token theft scenario)
+      if (stored.family_id) {
+        await this.authRepository.revokeTokenFamily(stored.family_id);
+      }
+      throw new UnauthorizedException('Refresh token reuse detected. Please log in again.');
     }
 
     if (stored.status === 'locked') {
@@ -107,7 +151,28 @@ export class AuthService {
       expiresIn: (process.env.JWT_ACCESS_TOKEN_EXPIRES_IN ?? '15m') as any,
     });
 
-    return { accessToken, expiresIn: 900 };
+    // Group 5: issue new refresh token with same family, revoke old one
+    const newRefreshTokenPlain = crypto.randomBytes(40).toString('hex');
+    const newRefreshTokenHash = crypto
+      .createHash('sha256')
+      .update(newRefreshTokenPlain)
+      .digest('hex');
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    // Revoke current token, mark replaced_by_hash for audit trail
+    await this.authRepository.revokeSpecificToken(tokenHash, newRefreshTokenHash);
+
+    // Insert new token in same family
+    await this.authRepository.insertRefreshTokenWithFamily(
+      stored.user_id,
+      newRefreshTokenHash,
+      stored.family_id ?? crypto.randomUUID(),
+      expiresAt,
+    );
+
+    return { accessToken, refreshToken: newRefreshTokenPlain, expiresIn: 900 };
   }
 
   async logout(userId: string) {

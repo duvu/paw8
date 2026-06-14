@@ -2,12 +2,14 @@
 export * from './decorators/current-user.decorator';
 export * from './decorators/roles.decorator';
 export * from './decorators/public.decorator';
+export * from './decorators/is-strong-password.decorator';
 
 // Guards
 export * from './guards/jwt-auth.guard';
 export * from './guards/tenant.guard';
 export * from './guards/roles.guard';
 export * from './guards/store-scope.guard';
+export * from './guards/plan-limit.guard';
 
 // Interceptors
 export * from './interceptors/audit.interceptor';

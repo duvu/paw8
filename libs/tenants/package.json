@@ -15,7 +15,8 @@
     "class-validator": "^0.14.1",
     "class-transformer": "^0.5.1",
     "typeorm": "^1.0.0",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "@nestjs/swagger": "^11.0.0"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

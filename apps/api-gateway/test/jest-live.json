@@ -1,0 +1,27 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": "e2e/.*\\.e2e\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "globals": {
+    "ts-jest": {
+      "diagnostics": false,
+      "tsconfig": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "esModuleInterop": false,
+        "allowSyntheticDefaultImports": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "skipLibCheck": true,
+        "typeRoots": ["../node_modules/@types"],
+        "types": ["jest", "node"]
+      }
+    }
+  },
+  "testTimeout": 60000,
+  "setupFiles": ["./setup.ts"]
+}

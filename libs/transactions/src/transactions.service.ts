@@ -8,13 +8,16 @@ import {
   ExtendContractDto,
   TransactionType,
 } from './dto/transaction.dto';
-import { InterestType } from '../../contracts/src/dto/contract.dto';
+import { ContractStatus, InterestType } from '../../contracts/src/dto/contract.dto';
+import { validateTransition } from '../../contracts/src/contract-state-machine';
 import { TransactionsRepository } from './transactions.repository';
+import { PdfService } from '../../pdf/src/pdf.service';
 
 @Injectable()
 export class TransactionsService {
   constructor(
     private readonly transactionsRepository: TransactionsRepository,
+    private readonly pdfService: PdfService,
   ) {}
 
   async recordTransaction(
@@ -47,7 +50,7 @@ export class TransactionsService {
         transactionType: dto.transactionType,
         amount: dto.amount,
         paymentMethod: dto.paymentMethod,
-        transactionDate: dto.transactionDate,
+        transactionDate: dto.transactionDate ?? new Date().toISOString(),
         note: dto.note ?? null,
         referenceTransactionId: dto.referenceTransactionId ?? null,
         createdBy: userId,
@@ -56,6 +59,7 @@ export class TransactionsService {
       let contractStatus = contract.status;
 
       if (dto.transactionType === TransactionType.SETTLEMENT) {
+        validateTransition(contract.status as ContractStatus, ContractStatus.SETTLED);
         await this.transactionsRepository.updateContractStatus(tenantId, dto.contractId, 'settled', userId, manager);
         await this.transactionsRepository.insertStatusHistory(tenantId, dto.contractId, 'settled', userId, manager);
         await this.transactionsRepository.updateAssetStatus(tenantId, dto.contractId, 'redeemed', manager);
@@ -70,15 +74,32 @@ export class TransactionsService {
   async calculateSettlement(
     tenantId: string,
     contractId: string,
-    toDate: Date,
-  ): Promise<any> {
+    toDate: Date | string = new Date(),
+  ): Promise<{
+    principalAmount: number;
+    interestDue: number;
+    lateFee: number;
+    storageFee: number;
+    extensionFee: number;
+    totalFee: number;
+    feeDue: number;
+    totalDue: number;
+    alreadyPaid: number;
+    remaining: number;
+  }> {
     const contract = await this.transactionsRepository.findContractByTenant(tenantId, contractId);
     if (!contract) throw new NotFoundException('Contract not found');
 
-    const alreadyPaid = await this.transactionsRepository.sumPaidTransactions(tenantId, contractId);
+    const [alreadyPaid] = await Promise.all([
+      this.transactionsRepository.sumPaidTransactions(tenantId, contractId),
+    ]);
 
     const msPerDay = 1000 * 60 * 60 * 24;
-    const days = Math.max(0, Math.ceil((new Date(toDate).getTime() - new Date(contract.start_date).getTime()) / msPerDay));
+    const settlementDate = new Date(toDate);
+    const startDate = new Date(contract.start_date);
+    const dueDate = new Date(contract.due_date);
+
+    const days = Math.max(0, Math.ceil((settlementDate.getTime() - startDate.getTime()) / msPerDay));
     let interestDue = 0;
 
     switch (contract.interest_type as InterestType) {
@@ -95,13 +116,42 @@ export class TransactionsService {
         break;
     }
 
-    const remaining = Math.max(0, contract.principal_amount + interestDue - alreadyPaid);
+    let lateFee = 0;
+    let storageFee = 0;
+    const extensionFee = 0;
+
+    const policyId = contract.policy_id;
+    if (policyId) {
+      const policy = await this.transactionsRepository.findPolicyById(policyId);
+      if (policy) {
+        const overdueDays = Math.max(0, Math.ceil((settlementDate.getTime() - dueDate.getTime()) / msPerDay));
+        const gracePeriod = policy.grace_period_days ?? 0;
+        const chargeableLateFeeDays = Math.max(0, overdueDays - gracePeriod);
+
+        if (chargeableLateFeeDays > 0 && policy.late_fee_rate > 0) {
+          lateFee = contract.principal_amount * (policy.late_fee_rate / 100) * chargeableLateFeeDays;
+        }
+
+        if (overdueDays > 0 && policy.storage_fee_daily > 0) {
+          storageFee = policy.storage_fee_daily * overdueDays;
+        }
+      }
+    }
+
+    const totalFee = lateFee + storageFee + extensionFee;
+    const feeDue = totalFee;
+    const totalDue = contract.principal_amount + interestDue + totalFee;
+    const remaining = Math.max(0, totalDue - alreadyPaid);
 
     return {
       principalAmount: contract.principal_amount,
       interestDue,
-      feeDue: 0,
-      totalDue: contract.principal_amount + interestDue,
+      lateFee,
+      storageFee,
+      extensionFee,
+      totalFee,
+      feeDue,
+      totalDue,
       alreadyPaid,
       remaining,
     };
@@ -120,6 +170,7 @@ export class TransactionsService {
       if (!['active', 'near_due', 'overdue'].includes(contract.status)) {
         throw new BadRequestException('Contract cannot be extended in its current status');
       }
+      validateTransition(contract.status as ContractStatus, ContractStatus.EXTENDED);
 
       const tx = await this.transactionsRepository.insertTransaction(tenantId, storeId, {
         contractId: dto.contractId,
@@ -166,5 +217,26 @@ export class TransactionsService {
 
   async getByContract(tenantId: string, contractId: string): Promise<any[]> {
     return this.transactionsRepository.getByContract(tenantId, contractId);
+  }
+
+  async generateReceiptPdf(tenantId: string, transactionId: string): Promise<Buffer> {
+    const tx = await this.transactionsRepository.findTransactionById(tenantId, transactionId);
+    if (!tx) throw new NotFoundException('Transaction not found');
+    if ([TransactionType.VOID, TransactionType.REVERSAL].includes(tx.transaction_type)) {
+      throw new BadRequestException('Cannot generate receipt for void/reversal transaction');
+    }
+    const contract = await this.transactionsRepository.findContractByTenant(tenantId, tx.contract_id);
+    const settlement = await this.calculateSettlement(tenantId, tx.contract_id, new Date());
+    return this.pdfService.render('receipt', { transaction: tx, contract, settlement });
+  }
+
+  async generateSettlementPdf(tenantId: string, contractId: string): Promise<Buffer> {
+    const contract = await this.transactionsRepository.findContractByTenant(tenantId, contractId);
+    if (!contract) throw new NotFoundException('Contract not found');
+    if (contract.status !== 'settled') {
+      throw new BadRequestException('Contract must be in settled status to generate settlement slip');
+    }
+    const settlement = await this.calculateSettlement(tenantId, contractId, new Date(contract.updated_at));
+    return this.pdfService.render('settlement', { contract, settlement });
   }
 }

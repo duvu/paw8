@@ -8,6 +8,7 @@ import {
   IsUUID,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsStrongPassword } from '../../../common/src/decorators/is-strong-password.decorator';
 
 export enum UserRole {
   TENANT_OWNER = 'tenant_owner',
@@ -38,7 +39,7 @@ export class CreateUserDto {
   phone?: string;
 
   @IsString()
-  @MinLength(8)
+  @IsStrongPassword()
   @ApiProperty()
   password: string;
 

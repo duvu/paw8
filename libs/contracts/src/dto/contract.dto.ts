@@ -64,11 +64,16 @@ export class CreateContractDto {
 
   @IsDateString()
   @ApiProperty()
-  startDate: Date;
+  startDate: string;
 
   @IsDateString()
   @ApiProperty()
-  dueDate: Date;
+  dueDate: string;
+
+  @IsOptional()
+  @IsUUID()
+  @ApiPropertyOptional()
+  policyId?: string;
 
   @IsOptional()
   @IsString()
@@ -85,7 +90,7 @@ export class UpdateContractDto {
   @IsOptional()
   @IsDateString()
   @ApiPropertyOptional()
-  dueDate?: Date;
+  dueDate?: string;
 }
 
 export class UpdateContractStatusDto {
@@ -118,12 +123,12 @@ export class ContractSearchDto {
   @IsOptional()
   @IsDateString()
   @ApiPropertyOptional()
-  dueDateFrom?: Date;
+  dueDateFrom?: string;
 
   @IsOptional()
   @IsDateString()
   @ApiPropertyOptional()
-  dueDateTo?: Date;
+  dueDateTo?: string;
 
   @IsOptional()
   @Type(() => Number)

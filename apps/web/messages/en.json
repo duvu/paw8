@@ -8,7 +8,8 @@
     "reports": "Reports",
     "users": "Users",
     "stores": "Stores",
-    "auditLogs": "Audit Logs"
+    "auditLogs": "Audit Logs",
+    "marketplace": "Marketplace"
   },
   "landing": {
     "eyebrow": "Secure tenant-aware operations",

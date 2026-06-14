@@ -4,7 +4,7 @@ import * as React from 'react';
 import { cn } from '@/lib/cn';
 import { Spinner } from './spinner';
 
-export type ButtonVariant = 'default' | 'secondary' | 'destructive' | 'ghost' | 'link';
+export type ButtonVariant = 'default' | 'secondary' | 'destructive' | 'ghost' | 'link' | 'outline';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -27,6 +27,8 @@ const variantStyles: Record<ButtonVariant, string> = {
     'text-neutral-600 hover:bg-neutral-100 active:bg-neutral-200',
   link:
     'text-primary-600 underline-offset-4 hover:underline p-0 h-auto',
+  outline:
+    'bg-transparent text-neutral-700 border border-neutral-200 hover:bg-neutral-50 active:bg-neutral-100 shadow-sm',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {

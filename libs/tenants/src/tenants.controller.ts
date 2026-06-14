@@ -18,6 +18,8 @@ import {
   CreateTenantDto,
   UpdateTenantDto,
   SetTenantStatusDto,
+  OnboardTenantDto,
+  SetTenantOwnerDto,
 } from './dto/tenant.dto';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
@@ -34,6 +36,12 @@ export class TenantsController {
     return this.tenantsService.create(dto);
   }
 
+  @Post('onboard')
+  @Roles('platform_admin')
+  onboard(@Body() dto: OnboardTenantDto) {
+    return this.tenantsService.onboard(dto);
+  }
+
   @Get()
   @Roles('platform_admin')
   findAll(
@@ -47,6 +55,12 @@ export class TenantsController {
   @Roles('platform_admin')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.tenantsService.findOne(id);
+  }
+
+  @Get(':id/usage')
+  @Roles('platform_admin')
+  getUsage(@Param('id', ParseUUIDPipe) id: string) {
+    return this.tenantsService.getUsage(id);
   }
 
   @Patch(':id')
@@ -65,5 +79,14 @@ export class TenantsController {
     @Body() dto: SetTenantStatusDto,
   ) {
     return this.tenantsService.setStatus(id, dto.status);
+  }
+
+  @Post(':id/owner')
+  @Roles('platform_admin')
+  setOwner(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: SetTenantOwnerDto,
+  ) {
+    return this.tenantsService.setOwner(id, dto);
   }
 }

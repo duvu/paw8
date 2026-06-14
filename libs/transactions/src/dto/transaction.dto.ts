@@ -19,6 +19,7 @@ export enum TransactionType {
   ADJUSTMENT = 'adjustment',
   VOID = 'void',
   REVERSAL = 'reversal',
+  LIQUIDATION_SALE = 'liquidation_sale',
 }
 
 export enum PaymentMethod {
@@ -45,9 +46,10 @@ export class RecordTransactionDto {
   @ApiProperty()
   paymentMethod: PaymentMethod;
 
+  @IsOptional()
   @IsDateString()
-  @ApiProperty()
-  transactionDate: Date;
+  @ApiPropertyOptional()
+  transactionDate?: string;
 
   @IsOptional()
   @IsString()
@@ -65,9 +67,10 @@ export class CalculateSettlementDto {
   @ApiProperty()
   contractId: string;
 
+  @IsOptional()
   @IsDateString()
-  @ApiProperty()
-  settlementDate: Date;
+  @ApiPropertyOptional()
+  settlementDate?: string;
 }
 
 export class ExtendContractDto {
@@ -77,7 +80,7 @@ export class ExtendContractDto {
 
   @IsDateString()
   @ApiProperty()
-  newDueDate: Date;
+  newDueDate: string;
 
   @IsNumber()
   @IsPositive()

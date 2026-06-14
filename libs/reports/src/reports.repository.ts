@@ -91,7 +91,7 @@ export class ReportsRepository {
         baseParams.slice(),
       ),
       this.dataSource.query(
-        `SELECT COUNT(*) AS cnt FROM assets WHERE tenant_id = $1 AND status = 'pawned'${storeClause}`,
+        `SELECT COUNT(*) AS cnt FROM assets WHERE tenant_id = $1 AND status = 'holding'${storeClause}`,
         baseParams.slice(),
       ),
     ]);

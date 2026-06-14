@@ -45,6 +45,19 @@ describe('Auth (e2e)', () => {
       refreshToken = res.body.refreshToken;
     });
 
+    it('should still login when login-attempt migration table is missing', async () => {
+      const dataSource = app.get('DataSource');
+      await dataSource.query('DROP TABLE IF EXISTS user_login_attempts');
+
+      const res = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({ email: 'staff@demo.paw8.dev', password: 'Password@123' })
+        .expect(200);
+
+      expect(res.body).toHaveProperty('accessToken');
+      expect(res.body).toHaveProperty('refreshToken');
+    });
+
     it('should return 401 with invalid password', async () => {
       await request(app.getHttpServer())
         .post('/api/v1/auth/login')

@@ -52,10 +52,16 @@ export class AuditInterceptor implements NestInterceptor {
       ip: string;
       headers: Record<string, string>;
       params: Record<string, string>;
+      body: Record<string, unknown>;
     }>();
     const user: CurrentUserData = request.user;
     const ip = request.ip;
     const userAgent = request.headers['user-agent'];
+
+    const storeId: string | null =
+      request.params?.storeId ??
+      (request.body?.storeId as string | undefined) ??
+      null;
 
     return next.handle().pipe(
       tap(async (responseBody: Record<string, unknown>) => {
@@ -68,11 +74,12 @@ export class AuditInterceptor implements NestInterceptor {
 
           await this.dataSource.query(
             `INSERT INTO audit_logs
-              (id, tenant_id, user_id, action, entity_type, entity_id, new_value, ip_address, user_agent)
+              (id, tenant_id, store_id, user_id, action, entity_type, entity_id, new_value, ip_address, user_agent)
              VALUES
-              (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7::inet, $8)`,
+              (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8::inet, $9)`,
             [
               user?.tenantId ?? null,
+              storeId,
               user?.sub ?? null,
               auditMeta.action,
               auditMeta.entityType ?? null,

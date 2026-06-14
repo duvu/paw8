@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { I18nModule, AcceptLanguageResolver } from 'nestjs-i18n';
 import { join } from 'path';
 import { AuthModule } from '../../../libs/auth/src/auth.module';
@@ -15,6 +17,9 @@ import { TransactionsModule } from '../../../libs/transactions/src/transactions.
 import { FilesModule } from '../../../libs/files/src/files.module';
 import { ReportsModule } from '../../../libs/reports/src/reports.module';
 import { AuditModule } from '../../../libs/audit/src/audit.module';
+import { PdfModule } from '../../../libs/pdf/src/pdf.module';
+import { PlatformModule } from '../../../libs/platform/src/platform.module';
+import { MarketplaceModule } from '../../../libs/marketplace/src/marketplace.module';
 import {
   JwtAuthGuard,
   TenantGuard,
@@ -29,6 +34,18 @@ import {
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: join(__dirname, '../../../../.env'),
+    }),
+    ScheduleModule.forRoot(),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => [
+        {
+          // Global default: 60 requests per 60 seconds
+          ttl: parseInt(config.get<string>('THROTTLER_TTL_MS', '60000'), 10),
+          limit: parseInt(config.get<string>('THROTTLER_LIMIT', '60'), 10),
+        },
+      ],
+      inject: [ConfigService],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -62,15 +79,18 @@ import {
     FilesModule,
     ReportsModule,
     AuditModule,
+    PdfModule,
+    PlatformModule,
+    MarketplaceModule,
   ],
   controllers: [HealthController],
   providers: [
-    // Global guard order: JWT → Tenant → Roles → StoreScope
+    // ThrottlerGuard must be first — rejects before auth/tenant checks
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: TenantGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
     { provide: APP_GUARD, useClass: StoreScopeGuard },
-    // Global audit interceptor
     { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
   ],
 })

@@ -12,7 +12,7 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard, Roles, CurrentUser } from '../../common/src';
+import { RolesGuard, Roles, CurrentUser, PlanLimitGuard, PlanLimitResource } from '../../common/src';
 import type { CurrentUserData } from '../../common/src';
 import { StoresService } from './stores.service';
 import {
@@ -32,6 +32,8 @@ export class StoresController {
 
   @Post()
   @Roles('tenant_owner', 'tenant_admin')
+  @UseGuards(PlanLimitGuard)
+  @PlanLimitResource('stores')
   create(
     @CurrentUser() user: CurrentUserData,
     @Body() dto: CreateStoreDto,
@@ -50,6 +52,7 @@ export class StoresController {
   }
 
   @Get(':id')
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff', 'accountant')
   findOne(
     @CurrentUser() user: CurrentUserData,
     @Param('id', ParseUUIDPipe) id: string,

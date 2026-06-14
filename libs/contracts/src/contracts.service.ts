@@ -12,10 +12,17 @@ import {
   InterestType,
 } from './dto/contract.dto';
 import { ContractsRepository } from './contracts.repository';
+import { InterestPoliciesRepository } from './interest-policies.repository';
+import { validateTransition, getAllowedTransitions } from './contract-state-machine';
+import { PdfService } from '../../pdf/src/pdf.service';
 
 @Injectable()
 export class ContractsService {
-  constructor(private readonly contractsRepository: ContractsRepository) {}
+  constructor(
+    private readonly contractsRepository: ContractsRepository,
+    private readonly interestPoliciesRepository: InterestPoliciesRepository,
+    private readonly pdfService: PdfService,
+  ) {}
 
   private async _generateContractCode(
     manager: any,
@@ -75,10 +82,16 @@ export class ContractsService {
         if (assets.length !== dto.assetIds.length) {
           throw new BadRequestException('Some assets not found or do not belong to tenant/store');
         }
-        const pawned = assets.filter((a: any) => a.status === 'holding');
-        if (pawned.length > 0) {
-          throw new BadRequestException('Some assets are already holding (pawned)');
+        const alreadyPawned = await this.contractsRepository.findAssetsInActiveContracts(dto.assetIds, tenantId, manager);
+        if (alreadyPawned.length > 0) {
+          throw new BadRequestException('Some assets are already linked to an active contract');
         }
+      }
+
+      let resolvedPolicyId: string | null = dto.policyId ?? null;
+      if (!resolvedPolicyId) {
+        const defaultPolicy = await this.interestPoliciesRepository.findDefaultByTenant(tenantId);
+        resolvedPolicyId = defaultPolicy?.id ?? null;
       }
 
       const contractCode = await this._generateContractCode(manager, tenantId, dto.storeId, store.code);
@@ -95,6 +108,7 @@ export class ContractsService {
         dueDate: dto.dueDate,
         notes: dto.notes ?? null,
         createdBy: userId,
+        policyId: resolvedPolicyId,
       }, manager);
 
       if (dto.assetIds.length > 0) {
@@ -107,7 +121,25 @@ export class ContractsService {
 
       await this.contractsRepository.insertStatusHistory(tenantId, contract.id, 'active', userId, manager);
 
-      return this.findOne(tenantId, contract.id);
+      const savedContract = await this.contractsRepository.findById(tenantId, contract.id, manager);
+      const assets = await this.contractsRepository.findContractAssets(contract.id, tenantId, manager);
+      return {
+        ...savedContract,
+        assets: assets.map((a: any) => ({
+          id: a.id,
+          assetType: a.asset_type,
+          assetName: a.asset_name,
+          brand: a.brand,
+          model: a.model,
+          status: a.status,
+        })),
+        customer: {
+          id: savedContract.customer_id,
+          fullName: savedContract.customer_full_name,
+          phone: savedContract.customer_phone,
+          identityNumber: savedContract.customer_identity_number,
+        },
+      } as any;
     });
   }
 
@@ -178,14 +210,33 @@ export class ContractsService {
     return this.findOne(tenantId, id);
   }
 
-  async updateStatus(tenantId: string, id: string, status: ContractStatus, userId: string): Promise<ContractResponseDto> {
+  async updateStatus(
+    tenantId: string,
+    id: string,
+    status: ContractStatus,
+    userId: string,
+    force = false,
+  ): Promise<ContractResponseDto> {
     const existing = await this.contractsRepository.findById(tenantId, id);
     if (!existing) throw new NotFoundException('Contract not found');
+
+    validateTransition(existing.status as ContractStatus, status, force);
 
     await this.contractsRepository.updateStatus(tenantId, id, status);
     await this.contractsRepository.insertStatusHistory(tenantId, id, status, userId);
 
     return this.findOne(tenantId, id);
+  }
+
+  getAllowedTransitions(status: ContractStatus): ContractStatus[] {
+    return getAllowedTransitions(status);
+  }
+
+  async getAllowedTransitionsForContract(tenantId: string, id: string): Promise<{ currentStatus: ContractStatus; allowed: ContractStatus[] }> {
+    const contract = await this.contractsRepository.findById(tenantId, id);
+    if (!contract) throw new NotFoundException('Contract not found');
+    const currentStatus = contract.status as ContractStatus;
+    return { currentStatus, allowed: getAllowedTransitions(currentStatus) };
   }
 
   async getUpcomingDue(tenantId: string, storeIds?: string[], days: number = 7): Promise<any[]> {
@@ -194,6 +245,35 @@ export class ContractsService {
 
   async getOverdue(tenantId: string, storeIds?: string[]): Promise<any[]> {
     return this.contractsRepository.findOverdue(tenantId, storeIds);
+  }
+
+  async generateContractPdf(tenantId: string, id: string): Promise<Buffer> {
+    const contract = await this.findOne(tenantId, id);
+    const assets = await this.contractsRepository.findContractAssets(id, tenantId);
+    const storeRows = await this.contractsRepository.findStoreByIdAndTenant(
+      (contract as any).store_id ?? (contract as any).storeId,
+      tenantId,
+    );
+    return this.pdfService.render('contract', {
+      contract,
+      assets,
+      store: storeRows,
+    });
+  }
+
+  async generateExtensionPdf(tenantId: string, contractId: string): Promise<Buffer> {
+    const contract = await this.findOne(tenantId, contractId);
+    const extension = await this.contractsRepository.findLatestExtension(tenantId, contractId);
+    if (!extension) throw new NotFoundException('No extension found for this contract');
+    const storeRows = await this.contractsRepository.findStoreByIdAndTenant(
+      (contract as any).store_id ?? (contract as any).storeId,
+      tenantId,
+    );
+    return this.pdfService.render('extension', {
+      contract,
+      extension,
+      store: storeRows,
+    });
   }
 
   calculateInterest(

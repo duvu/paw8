@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Phiếu gia hạn hợp đồng {{contract.contract_code}}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Times New Roman', serif; font-size: 13px; color: #111; line-height: 1.7; }
+    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 18px; }
+    .header h1 { font-size: 20px; font-weight: bold; text-transform: uppercase; }
+    .store-info { text-align: center; font-size: 12px; color: #444; margin-bottom: 6px; }
+    .contract-code { font-size: 15px; font-weight: bold; text-align: center; margin: 10px 0; border: 1px dashed #333; padding: 5px; }
+    table.info { width: 100%; border-collapse: collapse; }
+    table.info td { padding: 5px 8px; vertical-align: top; }
+    table.info td:first-child { width: 42%; font-weight: 600; }
+    .highlight { font-weight: bold; font-size: 14px; }
+    .new-due { background: #fff3cd; border: 1px solid #ffc107; padding: 10px 14px; margin: 12px 0; border-radius: 3px; text-align: center; }
+    .new-due .label { font-weight: bold; color: #856404; font-size: 12px; }
+    .new-due .date { font-size: 18px; font-weight: bold; color: #533f03; }
+    .terms { background: #f9f9f9; border: 1px solid #ddd; padding: 10px 14px; font-size: 12px; line-height: 1.8; margin-top: 14px; }
+    .signatures { display: flex; justify-content: space-between; margin-top: 36px; }
+    .sig-block { text-align: center; width: 45%; }
+    .sig-block .sig-title { font-weight: bold; margin-bottom: 55px; }
+    .sig-block .sig-name { border-top: 1px solid #555; padding-top: 4px; font-size: 12px; }
+    .footer { margin-top: 16px; font-size: 11px; color: #666; text-align: center; border-top: 1px solid #ccc; padding-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="store-info">{{store.name}} — {{store.address}} — ĐT: {{store.phone}}</div>
+    <h1>Phiếu gia hạn hợp đồng</h1>
+  </div>
+
+  <div class="contract-code">Mã hợp đồng: {{contract.contract_code}}</div>
+
+  <table class="info">
+    <tr><td>Khách hàng:</td><td class="highlight">{{customer.full_name}}</td></tr>
+    <tr><td>CCCD/CMND:</td><td>{{customer.identity_number}}</td></tr>
+    <tr><td>Số điện thoại:</td><td>{{customer.phone}}</td></tr>
+    <tr><td>Ngày gia hạn:</td><td class="highlight">{{vndDate extension.created_at}}</td></tr>
+    <tr><td>Ngày đến hạn cũ:</td><td>{{vndDate extension.old_due_date}}</td></tr>
+    <tr><td>Lãi đã thu tại gia hạn:</td><td>{{vnd extension.interest_paid_amount}}</td></tr>
+    {{#if extension.fee_amount}}<tr><td>Phí gia hạn:</td><td>{{vnd extension.fee_amount}}</td></tr>{{/if}}
+  </table>
+
+  <div class="new-due">
+    <div class="label">NGÀY ĐẾN HẠN MỚI</div>
+    <div class="date">{{vndDate extension.new_due_date}}</div>
+  </div>
+
+  <table class="info" style="margin-top:10px;">
+    <tr><td>Gốc vay:</td><td>{{vnd contract.principal_amount}}</td></tr>
+    <tr><td>Lãi suất:</td><td>{{contract.interest_rate}}% / {{interestTypeLabel contract.interest_type}}</td></tr>
+  </table>
+
+  <div class="terms">
+    <strong>Lưu ý:</strong><br>
+    1. Sau ngày gia hạn mới {{vndDate extension.new_due_date}}, khách hàng cần thanh toán đầy đủ gốc và lãi.<br>
+    2. Nếu tiếp tục quá hạn, sẽ tính phí phạt và lãi quá hạn theo quy định.<br>
+    3. Hai bên đã đồng ý với thông tin gia hạn nêu trên.
+  </div>
+
+  <div class="signatures">
+    <div class="sig-block">
+      <div class="sig-title">KHÁCH HÀNG<br>(Ký và ghi rõ họ tên)</div>
+      <div class="sig-name">{{customer.full_name}}</div>
+    </div>
+    <div class="sig-block">
+      <div class="sig-title">ĐẠI DIỆN CỬA HÀNG<br>(Ký và ghi rõ họ tên)</div>
+      <div class="sig-name">{{store.name}}</div>
+    </div>
+  </div>
+
+  <div class="footer">In ngày: {{printDate}} — Hệ thống quản lý cầm đồ Paw8</div>
+</body>
+</html>

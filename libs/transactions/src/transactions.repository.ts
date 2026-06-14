@@ -19,7 +19,7 @@ export class TransactionsRepository {
     transactionType: string;
     amount: number;
     paymentMethod: string;
-    transactionDate: string;
+    transactionDate: Date | string;
     note?: string | null;
     referenceTransactionId?: string | null;
     createdBy: string;
@@ -65,8 +65,8 @@ export class TransactionsRepository {
 
   async insertExtension(tenantId: string, data: {
     contractId: string;
-    oldDueDate: string;
-    newDueDate: string;
+    oldDueDate: Date | string;
+    newDueDate: Date | string;
     interestPaid: number;
     feeAmount: number;
     createdBy: string;
@@ -80,7 +80,7 @@ export class TransactionsRepository {
     );
   }
 
-  async updateContractDueDate(tenantId: string, contractId: string, newDueDate: string, updatedBy: string, manager: EntityManager): Promise<void> {
+  async updateContractDueDate(tenantId: string, contractId: string, newDueDate: Date | string, updatedBy: string, manager: EntityManager): Promise<void> {
     await manager.query(
       `UPDATE pawn_contracts SET due_date = $1, status = 'extended', updated_at = NOW(), updated_by = $2
        WHERE id = $3 AND tenant_id = $4`,
@@ -143,6 +143,22 @@ export class TransactionsRepository {
       [contractId, tenantId],
     );
     return parseFloat(result[0].total_paid);
+  }
+
+  async findPolicyById(policyId: string): Promise<any | null> {
+    const rows = await this.dataSource.query(
+      `SELECT * FROM interest_policies WHERE id = $1 AND status = 'active'`,
+      [policyId],
+    );
+    return rows[0] ?? null;
+  }
+
+  async findDefaultPolicyByTenant(tenantId: string): Promise<any | null> {
+    const rows = await this.dataSource.query(
+      `SELECT * FROM interest_policies WHERE tenant_id = $1 AND is_default = true AND status = 'active' LIMIT 1`,
+      [tenantId],
+    );
+    return rows[0] ?? null;
   }
 
   transaction<T>(fn: (manager: EntityManager) => Promise<T>): Promise<T> {

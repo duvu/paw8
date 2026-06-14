@@ -13,7 +13,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard, CurrentUser, Roles } from '../../common/src';
+import { RolesGuard, CurrentUser, Roles, PlanLimitGuard, PlanLimitResource } from '../../common/src';
 import type { CurrentUserData } from '../../common/src';
 import { UsersService } from './users.service';
 import {
@@ -33,6 +33,8 @@ export class UsersController {
 
   @Post()
   @Roles('tenant_owner', 'tenant_admin')
+  @UseGuards(PlanLimitGuard)
+  @PlanLimitResource('users')
   @HttpCode(HttpStatus.CREATED)
   create(@CurrentUser() user: CurrentUserData, @Body() dto: CreateUserDto) {
     return this.usersService.create(user.tenantId!, dto);
@@ -49,6 +51,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager')
   findOne(@CurrentUser() user: CurrentUserData, @Param('id') id: string) {
     return this.usersService.findOne(user.tenantId!, id);
   }

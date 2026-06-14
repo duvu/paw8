@@ -183,7 +183,7 @@ export class ReportsService {
     query: ReportQueryDto,
   ) {
     const params: any[] = [tenantId];
-    const conditions: string[] = ["a.tenant_id = $1", "a.status = 'pawned'"];
+    const conditions: string[] = ["a.tenant_id = $1", "a.status = 'holding'"];
     this.reportsRepository.applyStoreFilter(conditions, params, query.storeId, allowedStoreIds);
     if (query.assetType) { params.push(query.assetType); conditions.push(`a.asset_type = $${params.length}`); }
 

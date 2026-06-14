@@ -11,7 +11,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard, CurrentUser, Audit } from '../../common/src';
+import { RolesGuard, CurrentUser, Roles, Audit } from '../../common/src';
 import type { CurrentUserData } from '../../common/src';
 import { CustomersService } from './customers.service';
 import {
@@ -29,6 +29,7 @@ export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
   @Post()
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff')
   @Audit({ action: 'CREATE_CUSTOMER', entityType: 'customer' })
   @HttpCode(HttpStatus.CREATED)
   create(@CurrentUser() user: CurrentUserData, @Body() dto: CreateCustomerDto) {
@@ -37,6 +38,7 @@ export class CustomersController {
   }
 
   @Get()
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff', 'accountant')
   search(
     @CurrentUser() user: CurrentUserData,
     @Query() searchDto: CustomerSearchDto,
@@ -45,11 +47,13 @@ export class CustomersController {
   }
 
   @Get(':id')
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff', 'accountant')
   findOne(@CurrentUser() user: CurrentUserData, @Param('id') id: string) {
     return this.customersService.findOne(user.tenantId!, id);
   }
 
   @Get(':id/contracts')
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff', 'accountant')
   getContractHistory(
     @CurrentUser() user: CurrentUserData,
     @Param('id') id: string,
@@ -58,6 +62,7 @@ export class CustomersController {
   }
 
   @Patch(':id')
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff')
   update(
     @CurrentUser() user: CurrentUserData,
     @Param('id') id: string,

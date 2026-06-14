@@ -3,17 +3,19 @@ import {
   IsNotEmpty,
   IsOptional,
   IsEnum,
+  IsEmail,
   IsNumber,
   IsDateString,
   Min,
+  MinLength,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export enum TenantPlan {
-  FREE = 'free',
-  STARTER = 'starter',
-  PROFESSIONAL = 'professional',
+  TRIAL = 'trial',
+  BASIC = 'basic',
+  PRO = 'pro',
   ENTERPRISE = 'enterprise',
 }
 
@@ -38,7 +40,7 @@ export class CreateTenantDto {
   @IsOptional()
   @IsEnum(TenantPlan)
   @ApiPropertyOptional()
-  plan?: TenantPlan = TenantPlan.FREE;
+  plan?: TenantPlan = TenantPlan.TRIAL;
 
   @IsOptional()
   @IsNumber()
@@ -128,4 +130,88 @@ export class TenantResponseDto {
   trialEndDate: string | null;
   @ApiProperty()
   createdAt: Date;
+}
+
+export class OnboardTenantDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  code: string;
+
+  @IsOptional()
+  @IsEnum(TenantPlan)
+  @ApiPropertyOptional()
+  plan?: TenantPlan = TenantPlan.TRIAL;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Type(() => Number)
+  @ApiPropertyOptional()
+  maxStores?: number = 1;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Type(() => Number)
+  @ApiPropertyOptional()
+  maxUsers?: number = 5;
+
+  @IsOptional()
+  @IsDateString()
+  @ApiPropertyOptional()
+  trialEndDate?: string;
+
+  @IsEmail()
+  @ApiProperty()
+  ownerEmail: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  ownerFullName: string;
+
+  @IsString()
+  @MinLength(8)
+  @ApiProperty()
+  ownerPassword: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiPropertyOptional()
+  ownerPhone?: string;
+}
+
+export class SetTenantOwnerDto {
+  @IsEmail()
+  @ApiProperty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  fullName: string;
+
+  @IsString()
+  @MinLength(8)
+  @ApiProperty()
+  password: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiPropertyOptional()
+  phone?: string;
+}
+
+export class TenantUsageDto {
+  @ApiProperty()
+  stores: { current: number; max: number };
+
+  @ApiProperty()
+  users: { current: number; max: number };
 }

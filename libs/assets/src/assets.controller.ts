@@ -30,6 +30,7 @@ export class AssetsController {
   constructor(private readonly assetsService: AssetsService) {}
 
   @Get('inventory')
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff', 'accountant')
   getInventory(
     @CurrentUser() user: CurrentUserData,
     @Query('storeId') storeId?: string,
@@ -46,6 +47,7 @@ export class AssetsController {
   }
 
   @Get()
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff', 'accountant')
   findAll(
     @CurrentUser() user: CurrentUserData,
     @Query() searchDto: AssetSearchDto,
@@ -54,6 +56,7 @@ export class AssetsController {
   }
 
   @Get(':id')
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff', 'accountant')
   findOne(@CurrentUser() user: CurrentUserData, @Param('id') id: string) {
     return this.assetsService.findOne(user.tenantId!, id);
   }

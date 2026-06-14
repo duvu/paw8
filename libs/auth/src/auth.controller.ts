@@ -8,6 +8,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { LoginDto, ChangePasswordDto, RefreshTokenDto } from './dto/auth.dto';
 import { CurrentUser, CurrentUserData } from '../../common/src/decorators/current-user.decorator';
@@ -23,6 +24,7 @@ export class AuthController {
   @Post('login')
   @Public()
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { ttl: 60000, limit: 200 } })
   async login(@Body() dto: LoginDto, @Req() req: Request) {
     return this.authService.login(dto, req.ip, req.headers['user-agent']);
   }
@@ -30,6 +32,7 @@ export class AuthController {
   @Post('refresh')
   @Public()
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { ttl: 60000, limit: 200 } })
   async refresh(@Body() dto: RefreshTokenDto) {
     return this.authService.refresh(dto.refreshToken);
   }

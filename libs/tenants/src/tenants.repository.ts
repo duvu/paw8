@@ -72,4 +72,40 @@ export class TenantsRepository {
     );
     return rows[0];
   }
+
+  async findExpiredTrials(nowMs: number): Promise<{ id: string }[]> {
+    return this.dataSource.query<{ id: string }[]>(
+      `SELECT id FROM tenants
+       WHERE status = 'trial'
+         AND trial_end_date IS NOT NULL
+         AND (trial_end_date + COALESCE(grace_period_days, 3) * INTERVAL '1 day') < to_timestamp($1 / 1000.0)`,
+      [nowMs],
+    );
+  }
+
+  async countStores(tenantId: string): Promise<number> {
+    const rows = await this.dataSource.query<[{ count: string }]>(
+      `SELECT COUNT(*) FROM stores WHERE tenant_id = $1 AND status != 'inactive'`,
+      [tenantId],
+    );
+    return parseInt(rows[0].count, 10);
+  }
+
+  async countUsers(tenantId: string): Promise<number> {
+    const rows = await this.dataSource.query<[{ count: string }]>(
+      `SELECT COUNT(*) FROM users WHERE tenant_id = $1 AND status != 'locked'`,
+      [tenantId],
+    );
+    return parseInt(rows[0].count, 10);
+  }
+
+  async hasOwner(tenantId: string): Promise<boolean> {
+    const rows = await this.dataSource.query<[{ count: string }]>(
+      `SELECT COUNT(*) FROM user_roles ur
+       JOIN roles r ON r.id = ur.role_id
+       WHERE ur.tenant_id = $1 AND r.name = 'tenant_owner'`,
+      [tenantId],
+    );
+    return parseInt(rows[0].count, 10) > 0;
+  }
 }
