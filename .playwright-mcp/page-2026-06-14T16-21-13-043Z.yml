@@ -1,0 +1,112 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e8]:
+      - banner [ref=e9]:
+        - generic [ref=e10]:
+          - img [ref=e12]
+          - generic [ref=e14]: Paw8 Operations
+        - generic [ref=e15]:
+          - combobox "Chọn ngôn ngữ" [ref=e16]:
+            - option "Tiếng Việt" [selected]
+            - option "English"
+            - option "中文"
+          - button "Đăng xuất" [ref=e17]:
+            - img [ref=e18]
+      - main [ref=e20]:
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - heading "Contract Customer MQDZA711" [level=1] [ref=e23]
+            - generic [ref=e24]: active
+          - generic [ref=e25]:
+            - heading "customers.fieldLabels.info" [level=3] [ref=e27]
+            - generic [ref=e29]:
+              - generic [ref=e30]:
+                - term [ref=e31]: SĐT
+                - definition [ref=e32]: "09153273365"
+              - generic [ref=e33]:
+                - term [ref=e34]: Số giấy tờ
+                - definition [ref=e35]: CID453273365
+              - generic [ref=e36]:
+                - term [ref=e37]: Ngày sinh
+                - definition [ref=e38]: —
+              - generic [ref=e39]:
+                - term [ref=e40]: Nghề nghiệp
+                - definition [ref=e41]: —
+              - generic [ref=e42]:
+                - term [ref=e43]: Người liên hệ khẩn cấp
+                - definition [ref=e44]: undefined — undefined
+              - generic [ref=e45]:
+                - term [ref=e46]: Địa chỉ thường trú
+                - definition [ref=e47]: —
+              - generic [ref=e48]:
+                - term [ref=e49]: Địa chỉ hiện tại
+                - definition [ref=e50]: —
+              - generic [ref=e51]:
+                - term [ref=e52]: Ngày tạo
+                - definition [ref=e53]: 14/6/2026
+          - generic [ref=e54]:
+            - generic [ref=e56]:
+              - heading "Hợp đồng" [level=3] [ref=e57]
+              - link "+ Hợp đồng mới" [ref=e58] [cursor=pointer]:
+                - /url: /contracts/new?customerId=38aabf55-dd7b-453a-a3c7-803181e6a103
+            - table [ref=e61]:
+              - rowgroup [ref=e62]:
+                - row "Mã HĐ Trạng thái Gốc Ngày hết hạn" [ref=e63]:
+                  - columnheader "Mã HĐ" [ref=e64]
+                  - columnheader "Trạng thái" [ref=e65]
+                  - columnheader "Gốc" [ref=e66]
+                  - columnheader "Ngày hết hạn" [ref=e67]
+                  - columnheader [ref=e68]
+              - rowgroup [ref=e69]:
+                - row "active NaN Invalid Date Xem" [ref=e70]:
+                  - cell [ref=e71]:
+                    - link:
+                      - /url: /contracts/efc980fb-fa6f-49e5-bba0-d887befb9307
+                  - cell "active" [ref=e72]:
+                    - generic [ref=e73]: active
+                  - cell "NaN" [ref=e74]
+                  - cell "Invalid Date" [ref=e75]
+                  - cell "Xem" [ref=e76]:
+                    - link "Xem" [ref=e77] [cursor=pointer]:
+                      - /url: /contracts/efc980fb-fa6f-49e5-bba0-d887befb9307
+          - generic [ref=e78]:
+            - heading "Tài sản" [level=3] [ref=e80]
+            - table [ref=e83]:
+              - rowgroup [ref=e84]:
+                - row "Tên tài sản Loại Trạng thái" [ref=e85]:
+                  - columnheader "Tên tài sản" [ref=e86]
+                  - columnheader "Loại" [ref=e87]
+                  - columnheader "Trạng thái" [ref=e88]
+                  - columnheader [ref=e89]
+              - rowgroup [ref=e90]:
+                - row "Honda Wave MQDZA71B motorcycle holding Xem" [ref=e91]:
+                  - cell "Honda Wave MQDZA71B" [ref=e92]
+                  - cell "motorcycle" [ref=e93]
+                  - cell "holding" [ref=e94]:
+                    - generic [ref=e95]: holding
+                  - cell "Xem" [ref=e96]:
+                    - link "Xem" [ref=e97] [cursor=pointer]:
+                      - /url: /assets/1e5bd10a-1d17-4b5e-99ac-ea9b37f071a3
+          - generic [ref=e98]:
+            - heading "Tài liệu" [level=3] [ref=e100]
+            - generic [ref=e102]:
+              - img [ref=e104]
+              - paragraph [ref=e107]: Không có tài liệu.
+    - navigation [ref=e108]:
+      - link "Khách hàng" [ref=e109] [cursor=pointer]:
+        - /url: /customers
+        - img [ref=e111]
+        - generic [ref=e113]: Khách hàng
+      - link "Tài sản" [ref=e114] [cursor=pointer]:
+        - /url: /assets
+        - img [ref=e116]
+        - generic [ref=e118]: Tài sản
+      - link "Hợp đồng" [ref=e119] [cursor=pointer]:
+        - /url: /contracts
+        - img [ref=e121]
+        - generic [ref=e123]: Hợp đồng
+      - link "Sàn giao dịch" [ref=e124] [cursor=pointer]:
+        - /url: /marketplace
+        - img [ref=e126]
+        - generic [ref=e128]: Sàn giao dịch
+  - alert [ref=e7]

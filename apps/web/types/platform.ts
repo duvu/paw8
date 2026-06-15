@@ -4,7 +4,7 @@ export interface TenantStats {
   tenants: {
     total: number;
     active: number;
-    suspended: number;
+    locked: number;
     trial: number;
   };
   stores: {
@@ -40,8 +40,8 @@ export interface PlatformTenant {
   id: string;
   name: string;
   code: string;
-  status: 'active' | 'suspended' | 'trial' | 'expired';
-  plan: 'free' | 'starter' | 'professional' | 'enterprise';
+  status: 'active' | 'locked' | 'trial' | 'expired';
+  plan: 'trial' | 'basic' | 'pro' | 'enterprise';
   maxStores: number;
   maxUsers: number;
   trialEndDate: string | null;

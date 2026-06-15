@@ -13,11 +13,11 @@ const inputCls = cn(
   'placeholder:text-neutral-500 focus:outline-none focus:border-rose-500 transition-colors',
 );
 
-type StatusAction = 'active' | 'suspended' | 'trial' | 'expired';
+type StatusAction = 'active' | 'locked' | 'trial' | 'expired';
 
 const STATUS_ACTIONS: Array<{ label: string; value: StatusAction; variant: string }> = [
   { label: 'Activate', value: 'active', variant: 'success' },
-  { label: 'Suspend', value: 'suspended', variant: 'destructive' },
+  { label: 'Lock', value: 'locked', variant: 'destructive' },
   { label: 'Set Trial', value: 'trial', variant: 'warning' },
 ];
 
@@ -25,7 +25,7 @@ function statusVariant(
   status: string,
 ): 'success' | 'destructive' | 'warning' | 'default' {
   if (status === 'active') return 'success';
-  if (status === 'suspended') return 'destructive';
+  if (status === 'locked') return 'destructive';
   if (status === 'trial') return 'warning';
   return 'default';
 }
@@ -253,7 +253,7 @@ export default function TenantDetailPage() {
                 'px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors disabled:opacity-50',
                 action.value === 'active' &&
                   'border-emerald-700 text-emerald-400 hover:bg-emerald-900/30',
-                action.value === 'suspended' &&
+                action.value === 'locked' &&
                   'border-rose-700 text-rose-400 hover:bg-rose-900/30',
                 action.value === 'trial' &&
                   'border-amber-700 text-amber-400 hover:bg-amber-900/30',

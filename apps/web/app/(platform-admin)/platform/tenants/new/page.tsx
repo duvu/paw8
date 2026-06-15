@@ -14,9 +14,9 @@ const inputCls = cn(
 );
 
 const PLAN_OPTIONS: Array<{ value: PlatformTenant['plan']; label: string }> = [
-  { value: 'free', label: 'Free' },
-  { value: 'starter', label: 'Starter' },
-  { value: 'professional', label: 'Professional' },
+  { value: 'trial', label: 'Trial' },
+  { value: 'basic', label: 'Basic' },
+  { value: 'pro', label: 'Pro' },
   { value: 'enterprise', label: 'Enterprise' },
 ];
 
@@ -28,7 +28,7 @@ export default function NewTenantPage() {
   const [form, setForm] = useState<CreateTenantDto>({
     name: '',
     code: '',
-    plan: 'free',
+    plan: 'trial',
     maxStores: 1,
     maxUsers: 5,
     trialEndDate: '',

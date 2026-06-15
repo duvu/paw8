@@ -31,14 +31,10 @@ export class ReportsRepository {
   ): void {
     if (storeId) {
       params.push(storeId);
-      conditions.push(
-        `(pc.store_id = $${params.length} OR a.store_id = $${params.length} OR s.id = $${params.length} OR ct.store_id = $${params.length})`,
-      );
+      conditions.push(`pc.store_id = $${params.length}`);
     } else if (allowedStoreIds && allowedStoreIds.length > 0) {
       params.push(allowedStoreIds);
-      conditions.push(
-        `(pc.store_id = ANY($${params.length}) OR a.store_id = ANY($${params.length}) OR ct.store_id = ANY($${params.length}))`,
-      );
+      conditions.push(`pc.store_id = ANY($${params.length})`);
     }
   }
 

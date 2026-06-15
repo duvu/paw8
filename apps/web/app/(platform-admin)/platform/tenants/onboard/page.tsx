@@ -9,7 +9,7 @@ import type { OnboardTenantDto, PlatformTenant } from '@/types/platform';
 
 const STEPS = ['Tenant Info', 'Plan & Limits', 'Owner Account'] as const;
 
-const PLAN_OPTIONS: PlatformTenant['plan'][] = ['free', 'starter', 'professional', 'enterprise'];
+const PLAN_OPTIONS: PlatformTenant['plan'][] = ['trial', 'basic', 'pro', 'enterprise'];
 
 function StepIndicator({ current, total }: { current: number; total: number }) {
   return (
@@ -86,7 +86,7 @@ export default function OnboardTenantPage() {
   const [form, setForm] = useState<OnboardTenantDto>({
     name: '',
     code: '',
-    plan: 'starter',
+    plan: 'trial',
     maxStores: 3,
     maxUsers: 10,
     trialEndDate: '',

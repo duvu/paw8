@@ -1,0 +1,36 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e8]:
+      - banner [ref=e9]:
+        - generic [ref=e10]:
+          - img [ref=e12]
+          - generic [ref=e14]: Paw8 Operations
+        - generic [ref=e15]:
+          - combobox "Chọn ngôn ngữ" [ref=e16]:
+            - option "Tiếng Việt" [selected]
+            - option "English"
+            - option "中文"
+          - button "Đăng xuất" [ref=e17]:
+            - img [ref=e18]
+      - main [ref=e20]:
+        - alert [ref=e21]:
+          - img [ref=e23]
+          - generic [ref=e28]: Không thể tải thông tin hợp đồng.
+    - navigation [ref=e29]:
+      - link "Khách hàng" [ref=e30] [cursor=pointer]:
+        - /url: /customers
+        - img [ref=e32]
+        - generic [ref=e34]: Khách hàng
+      - link "Tài sản" [ref=e35] [cursor=pointer]:
+        - /url: /assets
+        - img [ref=e37]
+        - generic [ref=e39]: Tài sản
+      - link "Hợp đồng" [ref=e40] [cursor=pointer]:
+        - /url: /contracts
+        - img [ref=e42]
+        - generic [ref=e44]: Hợp đồng
+      - link "Sàn giao dịch" [ref=e45] [cursor=pointer]:
+        - /url: /marketplace
+        - img [ref=e47]
+        - generic [ref=e49]: Sàn giao dịch
+  - alert [ref=e7]

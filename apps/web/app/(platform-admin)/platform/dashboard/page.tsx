@@ -21,7 +21,7 @@ function StatCard({ label, value, sub }: { label: string; value: number | string
 
 function statusVariant(status: string): 'success' | 'destructive' | 'warning' | 'default' {
   if (status === 'active') return 'success';
-  if (status === 'suspended') return 'destructive';
+  if (status === 'locked') return 'destructive';
   if (status === 'trial') return 'warning';
   return 'default';
 }
@@ -92,7 +92,7 @@ export default function PlatformDashboardPage() {
               <StatCard label="Total Tenants" value={fmt(stats.tenants.total)} />
               <StatCard label="Active" value={fmt(stats.tenants.active)} />
               <StatCard label="Trial" value={fmt(stats.tenants.trial)} />
-              <StatCard label="Suspended" value={fmt(stats.tenants.suspended)} />
+              <StatCard label="Locked" value={fmt(stats.tenants.locked)} />
             </div>
           </section>
 

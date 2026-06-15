@@ -39,6 +39,15 @@ export class TransactionsController {
     return this.transactionsService.recordTransaction(user.tenantId!, storeId, user.sub, dto);
   }
 
+  @Get()
+  @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff', 'accountant')
+  listTransactions(
+    @CurrentUser() user: CurrentUserData,
+    @Query('contractId') contractId: string,
+  ) {
+    return this.transactionsService.getByContract(user.tenantId!, contractId);
+  }
+
   @Get('contract/:contractId')
   @Roles('tenant_owner', 'tenant_admin', 'store_manager', 'staff', 'accountant')
   getByContract(@CurrentUser() user: CurrentUserData, @Param('contractId') contractId: string) {

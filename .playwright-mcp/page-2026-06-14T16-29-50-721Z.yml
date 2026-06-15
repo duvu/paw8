@@ -1,0 +1,64 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e8]:
+      - banner [ref=e9]:
+        - generic [ref=e10]:
+          - img [ref=e12]
+          - generic [ref=e14]: Paw8 Operations
+        - generic [ref=e15]:
+          - combobox "Chọn ngôn ngữ" [ref=e16]:
+            - option "Tiếng Việt" [selected]
+            - option "English"
+            - option "中文"
+          - button "Đăng xuất" [ref=e17]:
+            - img [ref=e18]
+      - main [ref=e20]:
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - generic [ref=e23]:
+              - link "← Tài sản" [ref=e24] [cursor=pointer]:
+                - /url: /assets
+              - heading "Honda Wave MQDZA71B" [level=1] [ref=e25]
+            - generic [ref=e26]: holding
+          - generic [ref=e27]:
+            - heading "Chi tiết tài sản" [level=3] [ref=e29]
+            - generic [ref=e31]:
+              - generic [ref=e32]:
+                - term [ref=e33]: Loại tài sản
+                - definition [ref=e34]: motorcycle
+              - generic [ref=e35]:
+                - term [ref=e36]: Nhãn hiệu
+                - definition [ref=e37]: —
+              - generic [ref=e38]:
+                - term [ref=e39]: Model
+                - definition [ref=e40]: —
+              - generic [ref=e41]:
+                - term [ref=e42]: Định giá
+                - definition [ref=e43]: 10.000.000 ₫
+              - generic [ref=e44]:
+                - term [ref=e45]: Đề xuất vay
+                - definition [ref=e46]: 7.000.000 ₫
+              - generic [ref=e47]:
+                - term [ref=e48]: Ngày tạo
+                - definition [ref=e49]: 14/6/2026
+          - generic [ref=e50]:
+            - heading "Hợp đồng liên kết" [level=3] [ref=e52]
+            - paragraph [ref=e54]: efc980fb-fa6f-49e5-bba0-d887befb9307
+    - navigation [ref=e55]:
+      - link "Khách hàng" [ref=e56] [cursor=pointer]:
+        - /url: /customers
+        - img [ref=e58]
+        - generic [ref=e60]: Khách hàng
+      - link "Tài sản" [ref=e61] [cursor=pointer]:
+        - /url: /assets
+        - img [ref=e63]
+        - generic [ref=e65]: Tài sản
+      - link "Hợp đồng" [ref=e66] [cursor=pointer]:
+        - /url: /contracts
+        - img [ref=e68]
+        - generic [ref=e70]: Hợp đồng
+      - link "Sàn giao dịch" [ref=e71] [cursor=pointer]:
+        - /url: /marketplace
+        - img [ref=e73]
+        - generic [ref=e75]: Sàn giao dịch
+  - alert [ref=e7]

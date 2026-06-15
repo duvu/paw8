@@ -1,0 +1,434 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - banner [ref=e4]:
+        - generic [ref=e5]:
+          - img [ref=e7]
+          - generic [ref=e9]: Paw8 Operations
+        - generic [ref=e10]:
+          - combobox "Chọn ngôn ngữ" [ref=e11]:
+            - option "Tiếng Việt" [selected]
+            - option "English"
+            - option "中文"
+          - button "Đăng xuất" [ref=e12]:
+            - img [ref=e13]
+      - main [ref=e15]:
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - heading "Khách hàng" [level=1] [ref=e19]
+            - link "+ Thêm khách hàng" [ref=e21] [cursor=pointer]:
+              - /url: /customers/new
+              - button "+ Thêm khách hàng" [ref=e22]
+          - generic [ref=e23]:
+            - generic [ref=e25]:
+              - generic:
+                - img
+              - textbox "Tìm theo tên, SĐT, CCCD..." [ref=e26]
+            - button "Tìm kiếm" [ref=e27] [cursor=pointer]
+          - generic [ref=e28]:
+            - paragraph [ref=e30]: "Tổng: 42"
+            - table [ref=e32]:
+              - rowgroup [ref=e33]:
+                - row "Họ tên SĐT Số giấy tờ Trạng thái" [ref=e34]:
+                  - columnheader "Họ tên" [ref=e35]
+                  - columnheader "SĐT" [ref=e36]
+                  - columnheader "Số giấy tờ" [ref=e37]
+                  - columnheader "Trạng thái" [ref=e38]
+                  - columnheader [ref=e39]
+              - rowgroup [ref=e40]:
+                - row "Test Customer MQDZA82D 09053274709 ID1453274709 active Xem" [ref=e41]:
+                  - cell "Test Customer MQDZA82D" [ref=e42]
+                  - cell "09053274709" [ref=e43]
+                  - cell "ID1453274709" [ref=e44]
+                  - cell "active" [ref=e45]:
+                    - generic [ref=e46]: active
+                  - cell "Xem" [ref=e47]:
+                    - link "Xem" [ref=e48] [cursor=pointer]:
+                      - /url: /customers/58f8211c-2c26-46b8-b0dd-097d742e83d5
+                - row "File Customer MQDZA7DG 09353273812 FID453273812 active Xem" [ref=e49]:
+                  - cell "File Customer MQDZA7DG" [ref=e50]
+                  - cell "09353273812" [ref=e51]
+                  - cell "FID453273812" [ref=e52]
+                  - cell "active" [ref=e53]:
+                    - generic [ref=e54]: active
+                  - cell "Xem" [ref=e55]:
+                    - link "Xem" [ref=e56] [cursor=pointer]:
+                      - /url: /customers/b2870722-72d1-45b5-a655-2e2e8b213d2f
+                - row "Contract Customer MQDZA711 09153273365 CID453273365 active Xem" [ref=e57]:
+                  - cell "Contract Customer MQDZA711" [ref=e58]
+                  - cell "09153273365" [ref=e59]
+                  - cell "CID453273365" [ref=e60]
+                  - cell "active" [ref=e61]:
+                    - generic [ref=e62]: active
+                  - cell "Xem" [ref=e63]:
+                    - link "Xem" [ref=e64] [cursor=pointer]:
+                      - /url: /customers/38aabf55-dd7b-453a-a3c7-803181e6a103
+                - row "Txn Customer MQDZA4F1 09253269981 TID453269981 active Xem" [ref=e65]:
+                  - cell "Txn Customer MQDZA4F1" [ref=e66]
+                  - cell "09253269981" [ref=e67]
+                  - cell "TID453269981" [ref=e68]
+                  - cell "active" [ref=e69]:
+                    - generic [ref=e70]: active
+                  - cell "Xem" [ref=e71]:
+                    - link "Xem" [ref=e72] [cursor=pointer]:
+                      - /url: /customers/72546540-3efc-4db9-8bdc-7b2972346767
+                - row "File Customer MQDY1NMA 09351195346 FID451195346 active Xem" [ref=e73]:
+                  - cell "File Customer MQDY1NMA" [ref=e74]
+                  - cell "09351195346" [ref=e75]
+                  - cell "FID451195346" [ref=e76]
+                  - cell "active" [ref=e77]:
+                    - generic [ref=e78]: active
+                  - cell "Xem" [ref=e79]:
+                    - link "Xem" [ref=e80] [cursor=pointer]:
+                      - /url: /customers/a4d880db-1b61-44f6-b043-ddeeaed3cc65
+                - row "Test Customer MQDY1NA2 09051194906 ID1451194906 active Xem" [ref=e81]:
+                  - cell "Test Customer MQDY1NA2" [ref=e82]
+                  - cell "09051194906" [ref=e83]
+                  - cell "ID1451194906" [ref=e84]
+                  - cell "active" [ref=e85]:
+                    - generic [ref=e86]: active
+                  - cell "Xem" [ref=e87]:
+                    - link "Xem" [ref=e88] [cursor=pointer]:
+                      - /url: /customers/594fe96e-d048-479a-8aae-60918295dae2
+                - row "Contract Customer MQDY1MJZ 09151193967 CID451193967 active Xem" [ref=e89]:
+                  - cell "Contract Customer MQDY1MJZ" [ref=e90]
+                  - cell "09151193967" [ref=e91]
+                  - cell "CID451193967" [ref=e92]
+                  - cell "active" [ref=e93]:
+                    - generic [ref=e94]: active
+                  - cell "Xem" [ref=e95]:
+                    - link "Xem" [ref=e96] [cursor=pointer]:
+                      - /url: /customers/e364b153-a9e7-4b2b-9597-96b8dbfe7511
+                - row "Txn Customer MQDY1JXE 09251190562 TID451190562 active Xem" [ref=e97]:
+                  - cell "Txn Customer MQDY1JXE" [ref=e98]
+                  - cell "09251190562" [ref=e99]
+                  - cell "TID451190562" [ref=e100]
+                  - cell "active" [ref=e101]:
+                    - generic [ref=e102]: active
+                  - cell "Xem" [ref=e103]:
+                    - link "Xem" [ref=e104] [cursor=pointer]:
+                      - /url: /customers/871d45af-62f3-4f16-a22f-ab217b265219
+                - row "Test Customer MQDVK41I 09047017590 ID1447017590 active Xem" [ref=e105]:
+                  - cell "Test Customer MQDVK41I" [ref=e106]
+                  - cell "09047017590" [ref=e107]
+                  - cell "ID1447017590" [ref=e108]
+                  - cell "active" [ref=e109]:
+                    - generic [ref=e110]: active
+                  - cell "Xem" [ref=e111]:
+                    - link "Xem" [ref=e112] [cursor=pointer]:
+                      - /url: /customers/40a5a473-f9c4-4ff9-b1df-db7fe2adc83e
+                - row "File Customer MQDVK314 09347016281 FID447016281 active Xem" [ref=e113]:
+                  - cell "File Customer MQDVK314" [ref=e114]
+                  - cell "09347016281" [ref=e115]
+                  - cell "FID447016281" [ref=e116]
+                  - cell "active" [ref=e117]:
+                    - generic [ref=e118]: active
+                  - cell "Xem" [ref=e119]:
+                    - link "Xem" [ref=e120] [cursor=pointer]:
+                      - /url: /customers/1ee99658-6dec-4873-9ed5-afbc7b8c47fc
+                - row "Contract Customer MQDVK0H2 09147012967 CID447012967 active Xem" [ref=e121]:
+                  - cell "Contract Customer MQDVK0H2" [ref=e122]
+                  - cell "09147012967" [ref=e123]
+                  - cell "CID447012967" [ref=e124]
+                  - cell "active" [ref=e125]:
+                    - generic [ref=e126]: active
+                  - cell "Xem" [ref=e127]:
+                    - link "Xem" [ref=e128] [cursor=pointer]:
+                      - /url: /customers/5392a922-5e26-476c-80c9-bfb5a2b00d9d
+                - row "Txn Customer MQDVK026 09247012430 TID447012430 active Xem" [ref=e129]:
+                  - cell "Txn Customer MQDVK026" [ref=e130]
+                  - cell "09247012430" [ref=e131]
+                  - cell "TID447012430" [ref=e132]
+                  - cell "active" [ref=e133]:
+                    - generic [ref=e134]: active
+                  - cell "Xem" [ref=e135]:
+                    - link "Xem" [ref=e136] [cursor=pointer]:
+                      - /url: /customers/0978fe87-dbe2-470e-857a-8ab6d6106e4b
+                - row "Test Customer MQDVIRKC 09046954764 ID1446954764 active Xem" [ref=e137]:
+                  - cell "Test Customer MQDVIRKC" [ref=e138]
+                  - cell "09046954764" [ref=e139]
+                  - cell "ID1446954764" [ref=e140]
+                  - cell "active" [ref=e141]:
+                    - generic [ref=e142]: active
+                  - cell "Xem" [ref=e143]:
+                    - link "Xem" [ref=e144] [cursor=pointer]:
+                      - /url: /customers/a3ed7a76-40c7-41b1-b203-37040c9a0777
+                - row "Txn Customer MQDVINWZ 09246950035 TID446950035 active Xem" [ref=e145]:
+                  - cell "Txn Customer MQDVINWZ" [ref=e146]
+                  - cell "09246950035" [ref=e147]
+                  - cell "TID446950035" [ref=e148]
+                  - cell "active" [ref=e149]:
+                    - generic [ref=e150]: active
+                  - cell "Xem" [ref=e151]:
+                    - link "Xem" [ref=e152] [cursor=pointer]:
+                      - /url: /customers/2503cb90-04dd-4aee-a078-64f7faa53883
+                - row "File Customer MQDVINJX 09346949565 FID446949565 active Xem" [ref=e153]:
+                  - cell "File Customer MQDVINJX" [ref=e154]
+                  - cell "09346949565" [ref=e155]
+                  - cell "FID446949565" [ref=e156]
+                  - cell "active" [ref=e157]:
+                    - generic [ref=e158]: active
+                  - cell "Xem" [ref=e159]:
+                    - link "Xem" [ref=e160] [cursor=pointer]:
+                      - /url: /customers/c523716f-0573-4cf2-9113-f55879886e10
+                - row "Contract Customer MQDVIN54 09146949033 CID446949033 active Xem" [ref=e161]:
+                  - cell "Contract Customer MQDVIN54" [ref=e162]
+                  - cell "09146949033" [ref=e163]
+                  - cell "CID446949033" [ref=e164]
+                  - cell "active" [ref=e165]:
+                    - generic [ref=e166]: active
+                  - cell "Xem" [ref=e167]:
+                    - link "Xem" [ref=e168] [cursor=pointer]:
+                      - /url: /customers/2d120f34-4feb-4ae9-ba36-44fc499077fa
+                - row "File test 0999887766 F12345678 active Xem" [ref=e169]:
+                  - cell "File test" [ref=e170]
+                  - cell "0999887766" [ref=e171]
+                  - cell "F12345678" [ref=e172]
+                  - cell "active" [ref=e173]:
+                    - generic [ref=e174]: active
+                  - cell "Xem" [ref=e175]:
+                    - link "Xem" [ref=e176] [cursor=pointer]:
+                      - /url: /customers/b776a14c-a23d-46a4-b21f-43d3b440d380
+                - row "Txn Customer MQDV1O27 09246157072 TID446157072 active Xem" [ref=e177]:
+                  - cell "Txn Customer MQDV1O27" [ref=e178]
+                  - cell "09246157072" [ref=e179]
+                  - cell "TID446157072" [ref=e180]
+                  - cell "active" [ref=e181]:
+                    - generic [ref=e182]: active
+                  - cell "Xem" [ref=e183]:
+                    - link "Xem" [ref=e184] [cursor=pointer]:
+                      - /url: /customers/b5e08f71-44fe-4705-9016-21bac09fb1c4
+                - row "Test Customer MQDV1NQ8 09046156640 ID1446156640 active Xem" [ref=e185]:
+                  - cell "Test Customer MQDV1NQ8" [ref=e186]
+                  - cell "09046156640" [ref=e187]
+                  - cell "ID1446156640" [ref=e188]
+                  - cell "active" [ref=e189]:
+                    - generic [ref=e190]: active
+                  - cell "Xem" [ref=e191]:
+                    - link "Xem" [ref=e192] [cursor=pointer]:
+                      - /url: /customers/5ef62b75-403b-4228-a0ed-3b268fee38e6
+                - row "Contract Customer MQDV1LO8 09146153976 CID446153976 active Xem" [ref=e193]:
+                  - cell "Contract Customer MQDV1LO8" [ref=e194]
+                  - cell "09146153976" [ref=e195]
+                  - cell "CID446153976" [ref=e196]
+                  - cell "active" [ref=e197]:
+                    - generic [ref=e198]: active
+                  - cell "Xem" [ref=e199]:
+                    - link "Xem" [ref=e200] [cursor=pointer]:
+                      - /url: /customers/b4ccb17b-6550-4786-a59d-bbd7a8494e47
+                - row "File Customer MQDV1KKV 09346152560 FID446152560 active Xem" [ref=e201]:
+                  - cell "File Customer MQDV1KKV" [ref=e202]
+                  - cell "09346152560" [ref=e203]
+                  - cell "FID446152560" [ref=e204]
+                  - cell "active" [ref=e205]:
+                    - generic [ref=e206]: active
+                  - cell "Xem" [ref=e207]:
+                    - link "Xem" [ref=e208] [cursor=pointer]:
+                      - /url: /customers/96b61f64-c8d1-4801-afe2-c280d80c1e03
+                - row "Contract Test 0987654321 CT001 active Xem" [ref=e209]:
+                  - cell "Contract Test" [ref=e210]
+                  - cell "0987654321" [ref=e211]
+                  - cell "CT001" [ref=e212]
+                  - cell "active" [ref=e213]:
+                    - generic [ref=e214]: active
+                  - cell "Xem" [ref=e215]:
+                    - link "Xem" [ref=e216] [cursor=pointer]:
+                      - /url: /customers/6d32e9a7-dad7-4967-8174-c545479c332a
+                - row "File Test Cust 0912345678 FTEST001 active Xem" [ref=e217]:
+                  - cell "File Test Cust" [ref=e218]
+                  - cell "0912345678" [ref=e219]
+                  - cell "FTEST001" [ref=e220]
+                  - cell "active" [ref=e221]:
+                    - generic [ref=e222]: active
+                  - cell "Xem" [ref=e223]:
+                    - link "Xem" [ref=e224] [cursor=pointer]:
+                      - /url: /customers/5ffb6b6e-43c9-42fb-b6ac-55626f751a54
+                - row "TestD3 0931113333 999777555333 active Xem" [ref=e225]:
+                  - cell "TestD3" [ref=e226]
+                  - cell "0931113333" [ref=e227]
+                  - cell "999777555333" [ref=e228]
+                  - cell "active" [ref=e229]:
+                    - generic [ref=e230]: active
+                  - cell "Xem" [ref=e231]:
+                    - link "Xem" [ref=e232] [cursor=pointer]:
+                      - /url: /customers/4d6603ac-eb5b-4c4e-8f6c-0a460ee1ef27
+                - row "Test Format 0921112222 999888777666 active Xem" [ref=e233]:
+                  - cell "Test Format" [ref=e234]
+                  - cell "0921112222" [ref=e235]
+                  - cell "999888777666" [ref=e236]
+                  - cell "active" [ref=e237]:
+                    - generic [ref=e238]: active
+                  - cell "Xem" [ref=e239]:
+                    - link "Xem" [ref=e240] [cursor=pointer]:
+                      - /url: /customers/b67c0b2d-1066-4ca2-a45f-a31b155581ff
+                - row "Test Loan 0911111222 111222333444 active Xem" [ref=e241]:
+                  - cell "Test Loan" [ref=e242]
+                  - cell "0911111222" [ref=e243]
+                  - cell "111222333444" [ref=e244]
+                  - cell "active" [ref=e245]:
+                    - generic [ref=e246]: active
+                  - cell "Xem" [ref=e247]:
+                    - link "Xem" [ref=e248] [cursor=pointer]:
+                      - /url: /customers/c865afed-852f-4838-a18e-b7687e718ab3
+                - row "Test User 0901234999 123456789999 active Xem" [ref=e249]:
+                  - cell "Test User" [ref=e250]
+                  - cell "0901234999" [ref=e251]
+                  - cell "123456789999" [ref=e252]
+                  - cell "active" [ref=e253]:
+                    - generic [ref=e254]: active
+                  - cell "Xem" [ref=e255]:
+                    - link "Xem" [ref=e256] [cursor=pointer]:
+                      - /url: /customers/9e895b65-22f8-48af-9331-a2f4a6dc326c
+                - row "File Customer MQDUIES5 09345258581 FID445258581 active Xem" [ref=e257]:
+                  - cell "File Customer MQDUIES5" [ref=e258]
+                  - cell "09345258581" [ref=e259]
+                  - cell "FID445258581" [ref=e260]
+                  - cell "active" [ref=e261]:
+                    - generic [ref=e262]: active
+                  - cell "Xem" [ref=e263]:
+                    - link "Xem" [ref=e264] [cursor=pointer]:
+                      - /url: /customers/e0a95393-077f-41e7-a2be-42ed6ad19491
+                - row "Test Customer MQDUIELK 09045258344 ID1445258344 active Xem" [ref=e265]:
+                  - cell "Test Customer MQDUIELK" [ref=e266]
+                  - cell "09045258344" [ref=e267]
+                  - cell "ID1445258344" [ref=e268]
+                  - cell "active" [ref=e269]:
+                    - generic [ref=e270]: active
+                  - cell "Xem" [ref=e271]:
+                    - link "Xem" [ref=e272] [cursor=pointer]:
+                      - /url: /customers/7133796a-55c4-4723-b5ea-cc9965bf2d15
+                - row "Txn Customer MQDUIEJY 09245258286 TID445258286 active Xem" [ref=e273]:
+                  - cell "Txn Customer MQDUIEJY" [ref=e274]
+                  - cell "09245258286" [ref=e275]
+                  - cell "TID445258286" [ref=e276]
+                  - cell "active" [ref=e277]:
+                    - generic [ref=e278]: active
+                  - cell "Xem" [ref=e279]:
+                    - link "Xem" [ref=e280] [cursor=pointer]:
+                      - /url: /customers/0558cccd-5a68-4ee6-b373-b2e0fbd9db68
+                - row "Contract Customer MQDUIEJU 09145258283 CID445258283 active Xem" [ref=e281]:
+                  - cell "Contract Customer MQDUIEJU" [ref=e282]
+                  - cell "09145258283" [ref=e283]
+                  - cell "CID445258283" [ref=e284]
+                  - cell "active" [ref=e285]:
+                    - generic [ref=e286]: active
+                  - cell "Xem" [ref=e287]:
+                    - link "Xem" [ref=e288] [cursor=pointer]:
+                      - /url: /customers/9ef3bf83-8a69-4f80-b410-09fbe9ab77b5
+                - row "Contract Customer MQDUI3FN 09145243875 CID445243875 active Xem" [ref=e289]:
+                  - cell "Contract Customer MQDUI3FN" [ref=e290]
+                  - cell "09145243875" [ref=e291]
+                  - cell "CID445243875" [ref=e292]
+                  - cell "active" [ref=e293]:
+                    - generic [ref=e294]: active
+                  - cell "Xem" [ref=e295]:
+                    - link "Xem" [ref=e296] [cursor=pointer]:
+                      - /url: /customers/7706a2f0-95d7-4eb4-a916-ee236f80a327
+                - row "File Customer MQDUI3F6 09345243859 FID445243859 active Xem" [ref=e297]:
+                  - cell "File Customer MQDUI3F6" [ref=e298]
+                  - cell "09345243859" [ref=e299]
+                  - cell "FID445243859" [ref=e300]
+                  - cell "active" [ref=e301]:
+                    - generic [ref=e302]: active
+                  - cell "Xem" [ref=e303]:
+                    - link "Xem" [ref=e304] [cursor=pointer]:
+                      - /url: /customers/c3fade74-0828-4513-8b2b-316968bf3ac4
+                - row "Test Customer MQDUI2Y1 09045243241 ID1445243241 active Xem" [ref=e305]:
+                  - cell "Test Customer MQDUI2Y1" [ref=e306]
+                  - cell "09045243241" [ref=e307]
+                  - cell "ID1445243241" [ref=e308]
+                  - cell "active" [ref=e309]:
+                    - generic [ref=e310]: active
+                  - cell "Xem" [ref=e311]:
+                    - link "Xem" [ref=e312] [cursor=pointer]:
+                      - /url: /customers/7c22e563-b3a5-45aa-95a4-eda2701113d1
+                - row "Txn Customer MQDUI2QQ 09245242979 TID445242979 active Xem" [ref=e313]:
+                  - cell "Txn Customer MQDUI2QQ" [ref=e314]
+                  - cell "09245242979" [ref=e315]
+                  - cell "TID445242979" [ref=e316]
+                  - cell "active" [ref=e317]:
+                    - generic [ref=e318]: active
+                  - cell "Xem" [ref=e319]:
+                    - link "Xem" [ref=e320] [cursor=pointer]:
+                      - /url: /customers/4cdd7cca-7c0d-45c9-b9dd-c31081f58e36
+                - row "Contract Customer MQDU7P42 09144758754 CID444758754 active Xem" [ref=e321]:
+                  - cell "Contract Customer MQDU7P42" [ref=e322]
+                  - cell "09144758754" [ref=e323]
+                  - cell "CID444758754" [ref=e324]
+                  - cell "active" [ref=e325]:
+                    - generic [ref=e326]: active
+                  - cell "Xem" [ref=e327]:
+                    - link "Xem" [ref=e328] [cursor=pointer]:
+                      - /url: /customers/5b1e871c-e9cf-423a-bbac-01d098c4a13a
+                - row "Test Customer MQDU4NLH 09044616821 ID1444616821 active Xem" [ref=e329]:
+                  - cell "Test Customer MQDU4NLH" [ref=e330]
+                  - cell "09044616821" [ref=e331]
+                  - cell "ID1444616821" [ref=e332]
+                  - cell "active" [ref=e333]:
+                    - generic [ref=e334]: active
+                  - cell "Xem" [ref=e335]:
+                    - link "Xem" [ref=e336] [cursor=pointer]:
+                      - /url: /customers/95b9a1dc-12f2-46bd-ab15-613353ef724e
+                - row "Txn Customer MQDU4ND7 09244616523 TID444616523 active Xem" [ref=e337]:
+                  - cell "Txn Customer MQDU4ND7" [ref=e338]
+                  - cell "09244616523" [ref=e339]
+                  - cell "TID444616523" [ref=e340]
+                  - cell "active" [ref=e341]:
+                    - generic [ref=e342]: active
+                  - cell "Xem" [ref=e343]:
+                    - link "Xem" [ref=e344] [cursor=pointer]:
+                      - /url: /customers/7fd98676-f163-46a1-9377-c9b13aeca54e
+                - row "Contract Customer MQDU4NCR 09144616507 CID444616507 active Xem" [ref=e345]:
+                  - cell "Contract Customer MQDU4NCR" [ref=e346]
+                  - cell "09144616507" [ref=e347]
+                  - cell "CID444616507" [ref=e348]
+                  - cell "active" [ref=e349]:
+                    - generic [ref=e350]: active
+                  - cell "Xem" [ref=e351]:
+                    - link "Xem" [ref=e352] [cursor=pointer]:
+                      - /url: /customers/8173d0ee-3d00-4d27-9316-6a3e8cf19d2c
+                - row "File Customer MQDU4NBT 09344616473 FID444616473 active Xem" [ref=e353]:
+                  - cell "File Customer MQDU4NBT" [ref=e354]
+                  - cell "09344616473" [ref=e355]
+                  - cell "FID444616473" [ref=e356]
+                  - cell "active" [ref=e357]:
+                    - generic [ref=e358]: active
+                  - cell "Xem" [ref=e359]:
+                    - link "Xem" [ref=e360] [cursor=pointer]:
+                      - /url: /customers/85703f90-5540-4664-815b-5c33b08058ae
+                - row "E2E Test 0911111111 111111111111 active Xem" [ref=e361]:
+                  - cell "E2E Test" [ref=e362]
+                  - cell "0911111111" [ref=e363]
+                  - cell "111111111111" [ref=e364]
+                  - cell "active" [ref=e365]:
+                    - generic [ref=e366]: active
+                  - cell "Xem" [ref=e367]:
+                    - link "Xem" [ref=e368] [cursor=pointer]:
+                      - /url: /customers/8a2a2725-2227-41cd-ac87-a0af7d07f338
+                - row "Test Customer 0901234501 012345678901 active Xem" [ref=e369]:
+                  - cell "Test Customer" [ref=e370]
+                  - cell "0901234501" [ref=e371]
+                  - cell "012345678901" [ref=e372]
+                  - cell "active" [ref=e373]:
+                    - generic [ref=e374]: active
+                  - cell "Xem" [ref=e375]:
+                    - link "Xem" [ref=e376] [cursor=pointer]:
+                      - /url: /customers/893a6453-f5fa-43b7-9070-9f5df9949406
+    - navigation [ref=e377]:
+      - link "Khách hàng" [ref=e378] [cursor=pointer]:
+        - /url: /customers
+        - img [ref=e380]
+        - generic [ref=e382]: Khách hàng
+      - link "Tài sản" [ref=e383] [cursor=pointer]:
+        - /url: /assets
+        - img [ref=e385]
+        - generic [ref=e387]: Tài sản
+      - link "Hợp đồng" [ref=e388] [cursor=pointer]:
+        - /url: /contracts
+        - img [ref=e390]
+        - generic [ref=e392]: Hợp đồng
+      - link "Sàn giao dịch" [ref=e393] [cursor=pointer]:
+        - /url: /marketplace
+        - img [ref=e395]
+        - generic [ref=e397]: Sàn giao dịch
+  - alert [ref=e398]

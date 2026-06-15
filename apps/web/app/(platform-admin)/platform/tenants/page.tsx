@@ -28,20 +28,20 @@ interface PagedResult {
 
 function statusVariant(status: string): 'success' | 'destructive' | 'warning' | 'default' {
   if (status === 'active') return 'success';
-  if (status === 'suspended') return 'destructive';
+  if (status === 'locked') return 'destructive';
   if (status === 'trial') return 'warning';
   return 'default';
 }
 
 const PLAN_LABELS: Record<string, string> = {
-  free: 'Free',
-  starter: 'Starter',
-  professional: 'Professional',
+  trial: 'Trial',
+  basic: 'Basic',
+  pro: 'Pro',
   enterprise: 'Enterprise',
 };
 
 export default function PlatformTenantsPage() {
-  const [tenants, setTenants] = useState<PlatformTenant[]>([]);
+  const [allTenants, setAllTenants] = useState<PlatformTenant[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -53,19 +53,26 @@ export default function PlatformTenantsPage() {
     api
       .get<PagedResult>('/tenants', {
         params: {
-          limit: 100,
-          ...(search ? { search } : {}),
+          limit: 500,
           ...(statusFilter ? { status: statusFilter } : {}),
         },
       })
       .then((r) => {
         const rows = r.data.data ?? (r.data as unknown as PlatformTenant[]);
-        setTenants(rows);
+        setAllTenants(rows);
         setTotal(r.data.total ?? rows.length);
       })
       .catch(() => setError('Failed to load tenants'))
       .finally(() => setLoading(false));
-  }, [search, statusFilter]);
+  }, [statusFilter]);
+
+  const tenants = search
+    ? allTenants.filter(
+        (t) =>
+          t.name.toLowerCase().includes(search.toLowerCase()) ||
+          t.code.toLowerCase().includes(search.toLowerCase()),
+      )
+    : allTenants;
 
   return (
     <div className="space-y-4">
@@ -108,7 +115,7 @@ export default function PlatformTenantsPage() {
           <option value="">All Statuses</option>
           <option value="active">Active</option>
           <option value="trial">Trial</option>
-          <option value="suspended">Suspended</option>
+          <option value="locked">Locked</option>
           <option value="expired">Expired</option>
         </select>
       </div>

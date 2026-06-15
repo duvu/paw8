@@ -1,0 +1,26 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - paragraph [ref=e5]: Paw8
+      - heading "Đăng nhập an toàn" [level=1] [ref=e6]
+      - paragraph [ref=e7]: Nhập thông tin tài khoản để mở không gian làm việc an toàn.
+    - generic [ref=e9]:
+      - alert [ref=e10]:
+        - img [ref=e12]
+        - generic [ref=e15]: Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại để tiếp tục.
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: Email*
+          - textbox "Email*" [ref=e20]:
+            - /placeholder: ten@congty.com
+            - text: staff@demo.paw8.dev
+        - generic [ref=e21]:
+          - generic [ref=e22]: Mật khẩu*
+          - textbox "Mật khẩu*" [ref=e24]:
+            - /placeholder: Nhập mật khẩu
+            - text: Password@123
+        - button "Đăng nhập" [ref=e25] [cursor=pointer]
+    - paragraph [ref=e26]:
+      - link "Quay về tổng quan" [ref=e27] [cursor=pointer]:
+        - /url: /
+  - alert [ref=e28]

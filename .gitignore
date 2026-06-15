@@ -50,3 +50,4 @@ apps/mobile/lib/l10n/app_localizations*.dart
 # Coverage
 coverage/
 .nyc_output/
+credential.txt

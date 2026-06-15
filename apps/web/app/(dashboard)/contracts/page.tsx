@@ -96,7 +96,19 @@ export default function ContractsPage() {
     api
       .get<PagedResult>('/contracts', { params })
       .then((r) => {
-        setContracts(r.data.data ?? (r.data as unknown as Contract[]));
+        const raw = r.data.data ?? (r.data as unknown as Contract[]);
+        const normalized = (raw as unknown as Array<Record<string, unknown>>).map((c) => ({
+          id: c.id as string,
+          contractCode: (c.contract_code ?? c.contractCode) as string,
+          customerName: (c.customer_full_name ?? c.customerName) as string,
+          status: c.status as string,
+          principalAmount: parseFloat(String(c.principal_amount ?? c.principalAmount ?? 0)),
+          interestRate: parseFloat(String(c.interest_rate ?? c.interestRate ?? 0)),
+          startDate: (c.start_date ?? c.startDate) as string,
+          dueDate: (c.due_date ?? c.dueDate) as string,
+          storeName: (c.store_name ?? c.storeName) as string,
+        }));
+        setContracts(normalized);
         setTotal(r.data.total ?? 0);
       })
       .catch(() => setError(t('loadError')))

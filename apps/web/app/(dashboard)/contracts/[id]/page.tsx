@@ -103,14 +103,44 @@ export default function ContractDetailPage({ params }: { params: Promise<{ id: s
 
   const fetchData = (cid: string) => {
     Promise.all([
-      api.get<Contract>(`/contracts/${cid}`),
-      api.get<{ data: Asset[] }>(`/assets?contractId=${cid}`),
-      api.get<{ data: Transaction[] }>(`/transactions?contractId=${cid}&limit=100`),
+      api.get<Contract & Record<string, unknown>>(`/contracts/${cid}`),
+      api.get<Transaction[] | { data: Transaction[] }>(`/transactions?contractId=${cid}&limit=100`),
     ])
-      .then(([c, a, tx]) => {
-        setContract(c.data);
-        setAssets(a.data.data ?? []);
-        setTransactions(tx.data.data ?? []);
+      .then(([c, tx]) => {
+        const raw = c.data as Contract & Record<string, unknown>;
+        setContract({
+          id: raw.id as string,
+          contractCode: ((raw.contract_code ?? raw.contractCode) as string) ?? '',
+          status: raw.status as string,
+          principalAmount: parseFloat(String(raw.principal_amount ?? raw.principalAmount ?? 0)),
+          interestRate: parseFloat(String(raw.interest_rate ?? raw.interestRate ?? 0)),
+          interestType: ((raw.interest_type ?? raw.interestType) as string) ?? '',
+          startDate: ((raw.start_date ?? raw.startDate) as string) ?? '',
+          dueDate: ((raw.due_date ?? raw.dueDate) as string) ?? '',
+          notes: (raw.notes as string) ?? '',
+          customerName: ((raw.customer_name ?? raw.customer_full_name ?? raw.customerName) as string) ?? '',
+          customerId: ((raw.customer_id ?? raw.customerId) as string) ?? '',
+          storeName: ((raw.store_name ?? raw.storeName) as string) ?? '',
+          createdAt: ((raw.createdAt ?? raw.created_at) as string) ?? '',
+        });
+        const embeddedAssets = (raw.assets as Array<Asset & Record<string, unknown>>) ?? [];
+        setAssets(embeddedAssets.map((a) => ({
+          id: a.id as string,
+          assetName: ((a.asset_name ?? a.assetName) as string) ?? '',
+          assetType: ((a.asset_type ?? a.assetType) as string) ?? '',
+          brand: (a.brand as string) ?? '',
+          status: a.status as string,
+        })));
+        const rawTx = Array.isArray(tx.data) ? tx.data : (tx.data as { data: Transaction[] }).data ?? [];
+        setTransactions((rawTx as Array<Transaction & Record<string, unknown>>).map((txItem) => ({
+          id: txItem.id as string,
+          transactionType: ((txItem.transaction_type ?? txItem.transactionType) as string) ?? '',
+          amount: parseFloat(String(txItem.amount ?? 0)),
+          paymentMethod: ((txItem.payment_method ?? txItem.paymentMethod) as string) ?? '',
+          transactionDate: ((txItem.transaction_date ?? txItem.transactionDate) as string) ?? '',
+          note: (txItem.note as string) ?? '',
+          createdBy: ((txItem.created_by ?? txItem.createdBy) as string) ?? '',
+        })));
       })
       .catch(() => setError(t('loadError2')))
       .finally(() => setLoading(false));
@@ -240,11 +270,15 @@ export default function ContractDetailPage({ params }: { params: Promise<{ id: s
               <TableBody>
                 {assets.map((a) => (
                   <TableRow key={a.id}>
-                    <TableCell>{a.assetName}</TableCell>
+                    <TableCell>
+                      <Link href={`/assets/${a.id}`} className="text-primary-600 hover:underline font-medium">
+                        {a.assetName}
+                      </Link>
+                    </TableCell>
                     <TableCell>{a.assetType}</TableCell>
                     <TableCell>{a.brand}</TableCell>
                     <TableCell>
-                      <Badge variant={a.status === 'pawned' ? 'warning' : a.status === 'redeemed' ? 'success' : 'default'}>
+                      <Badge variant={a.status === 'holding' ? 'warning' : a.status === 'redeemed' ? 'success' : 'default'}>
                         {a.status}
                       </Badge>
                     </TableCell>
